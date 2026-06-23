@@ -1,1 +1,1939 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio 6: Sistema SCADA con KEPServerEX e InfiLink - Control y Monitoreo Industrial</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+        }
+        .activity-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .activity-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #c7254e;
+        }
+        .diagram {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        ul {
+            padding-left: 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .criteria-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .criteria-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+        .scada-box {
+            background-color: #fff9e6;
+            border: 2px solid #f39c12;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .kepware-box {
+            background-color: #e8f5e9;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .infilink-box {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🏭 Laboratorio 6: Sistema SCADA con KEPServerEX e InfiLink</h1>
+<h2 style="text-align: center; border: none;">Control y Monitoreo de Proceso Industrial con PLC Delta DVP-SE</h2>
+
+<div class="info">
+<strong>⏱️ Duración estimada:</strong> 8 horas académicas (2 sesiones)<br>
+<strong>👥 Modalidad:</strong> Trabajo en parejas<br>
+<strong>📚 Nivel:</strong> Avanzado - Sistemas de Supervisión y Control<br>
+<strong>Plataforma:</strong> KEPServerEX (OPC Server) + InfiLink SCADA
+</div>
+
+<div class="criteria-box">
+<h3>📋 Criterios de Evaluación que se Desarrollan:</h3>
+<ul style="color: white;">
+<li><strong>3.1.1</strong> Describe características y arquitectura de plataformas SCADA.</li>
+<li><strong>3.1.2</strong> Programa script para control y monitoreo de un proceso industrial.</li>
+<li><strong>3.1.3</strong> Establece comunicación de plataforma SCADA con software y hardware tipo PLC.</li>
+<li><strong>3.1.4</strong> Realiza puesta en marcha para alcanzar la operación del sistema SCADA.</li>
+</ul>
+</div>
+
+<h2>🎯 Objetivos de la Práctica</h2>
+
+<div class="activity-box">
+<ol>
+<li><strong>Comprender la arquitectura SCADA</strong> con separación de capas: OPC Server (KEPServerEX) + HMI/SCADA (InfiLink).</li>
+<li><strong>Instalar y configurar KEPServerEX</strong> como servidor OPC UA/DA para conectividad con PLCs Delta.</li>
+<li><strong>Configurar driver Modbus TCP</strong> en KEPServerEX para comunicación con PLCs Delta DVP-SE.</li>
+<li><strong>Instalar y configurar InfiLink</strong> como plataforma SCADA cliente OPC.</li>
+<li><strong>Configurar conexión OPC</strong> en InfiLink para lectura/escritura de tags desde KEPServerEX.</li>
+<li><strong>Diseñar pantallas de supervisión</strong> con InfiLink Designer (animaciones, tendencias, alarmas).</li>
+<li><strong>Programar scripts en InfiLink</strong> para lógica de control, cálculo de KPIs y automatización.</li>
+<li><strong>Configurar sistema de alarmas</strong> con InfiLink Alarm Manager y notificaciones.</li>
+<li><strong>Implementar historización de datos</strong> con InfiLink Historian o base de datos externa.</li>
+<li><strong>Crear recetas de producción</strong> usando funcionalidad de recetas de InfiLink.</li>
+<li><strong>Realizar puesta en marcha completa</strong> del sistema SCADA integrado: KEPServerEX → InfiLink → PLCs.</li>
+<li><strong>Validar funcionalidad</strong> mediante pruebas de comunicación OPC, operación y recuperación de fallos.</li>
+<li><strong>Documentar arquitectura del sistema</strong> incluyendo configuración de KEPServerEX e InfiLink.</li>
+<li><strong>Aplicar normas de seguridad</strong> industrial y ciberseguridad en el sistema SCADA.</li>
+</ol>
+</div>
+
+<h2>📖 Fundamento Teórico</h2>
+
+<div class="activity-box">
+<h3>🏗️ Arquitectura SCADA con KEPServerEX e InfiLink</h3>
+
+<p>Esta arquitectura separa la conectividad de dispositivos (KEPServerEX) de la visualización y control (InfiLink), siguiendo el estándar OPC (OLE for Process Control):</p>
+
+<h4>📊 Componentes Principales</h4>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│              ARQUITECTURA SCADA EMPRESARIAL                     │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   NIVEL ERP     │     │   NIVEL SCADA    │     │   NIVEL CAMPO   │
+│                 │     │                  │     │                 │
+│  • SAP          │     │  • InfiLink      │     │  • PLC Delta 1  │
+│  • MES          │◄───►│    (HMI/SCADA)   │◄───►│  • PLC Delta 2  │
+│  • Historian    │     │  • Historian     │     │  • Sensores     │
+│                 │     │  • Alarmas       │     │  • Actuadores   │
+└─────────────────┘     └─────────┬────────┘     └─────────────────┘
+                                  │
+                    ┌─────────────┴─────────────┐
+                    │                           │
+              ┌─────▼──────┐           ┌────────▼───────┐
+              │ KEPServerEX│           │ KEPServerEX    │
+              │ OPC Server │           │ (Modbus TCP)   │
+              │ OPC UA/DA  │           │ Channel/Device │
+              └────────────┘           └────────────────┘
+
+Capas de la Arquitectura:
+1. Nivel Campo: PLCs Delta con Modbus TCP
+2. Nivel Conectividad: KEPServerEX (OPC Server)
+3. Nivel SCADA: InfiLink (OPC Client) + Historian + Alarmas
+4. Nivel Empresarial: ERP, MES, SQL Server
+
+Flujo de Datos:
+PLC → Modbus TCP → KEPServerEX → OPC → InfiLink → Operador
+</div>
+
+<div class="kepware-box">
+<strong>💡 ¿Qué es KEPServerEX?</strong>
+<ul>
+<li><strong>OPC Server:</strong> Convierte protocolos industriales (Modbus, Siemens, Allen-Bradley) a estándar OPC</li>
+<li><strong>Conectividad:</strong> Soporta 150+ drivers de dispositivos</li>
+<li><strong>OPC UA/DA:</strong> Soporta OPC Classic (DA) y OPC UA moderno</li>
+<li><strong>Escalabilidad:</strong> Desde 1 hasta miles de tags</li>
+<li><strong>Diagnóstico:</strong> Herramientas avanzadas de monitoreo y troubleshooting</li>
+<li><strong>Try & Buy:</strong> Versión de prueba gratuita por 30 días</li>
+</ul>
+</div>
+
+<div class="infilink-box">
+<strong>💡 ¿Qué es InfiLink?</strong>
+<ul>
+<li><strong>HMI/SCADA:</strong> Plataforma de supervisión y control industrial</li>
+<li><strong>Designer:</strong> Entorno de desarrollo de pantallas gráficas</li>
+<li><strong>Runtime:</strong> Motor de ejecución de aplicaciones SCADA</li>
+<li><strong>Tag Database:</strong> Base de datos de variables del proceso</li>
+<li><strong>Scripting:</strong> Lenguaje de scripting para lógica de control</li>
+<li><strong>Alarm Manager:</strong> Sistema completo de alarmas y eventos</li>
+<li><strong>Historian:</strong> Almacenamiento y visualización de datos históricos</li>
+<li><strong>OPC Client:</strong> Conectividad nativa con servidores OPC (KEPServerEX)</li>
+<li><strong>Web Access:</strong> Visualización vía navegador web</li>
+</ul>
+</div>
+
+<h3>🔌 Protocolo OPC (OLE for Process Control)</h3>
+
+<p>OPC es el estándar industrial para interoperabilidad entre dispositivos de automatización y software SCADA:</p>
+
+<h4>📡 Tipos de OPC</h4>
+
+<table>
+<tr>
+<th>Tipo OPC</th>
+<th>Descripción</th>
+<th>Uso en esta práctica</th>
+</tr>
+<tr>
+<td>OPC DA (Data Access)</td>
+<td>Acceso a datos en tiempo real (COM/DCOM)</td>
+<td>Comunicación KEPServerEX → InfiLink</td>
+</tr>
+<tr>
+<td>OPC UA (Unified Architecture)</td>
+<td>Arquitectura unificada (multiplataforma, seguro)</td>
+<td>Conectividad moderna, IoT</td>
+</tr>
+<tr>
+<td>OPC HDA (Historical Data Access)</td>
+<td>Acceso a datos históricos</td>
+<td>Consultas a InfiLink Historian</td>
+</tr>
+<tr>
+<td>OPC A&E (Alarms & Events)</td>
+<td>Gestión de alarmas y eventos</td>
+<td>Sistema de alarmas InfiLink</td>
+</tr>
+</table>
+
+<h4>🗺️ Configuración de KEPServerEX</h4>
+
+<div class="diagram">
+Estructura de KEPServerEX:
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Project
+└── Channel1 (Modbus TCP)
+    ├── Device1 (PLC_Delta_1 - 192.168.1.10)
+    │   ├── Tag: Nivel (Address: 40001, Type: Float)
+    │   ├── Tag: Flujo (Address: 40002, Type: Float)
+    │   ├── Tag: Temperatura (Address: 40003, Type: Float)
+    │   └── Tag: ComandoArranque (Address: 00001, Type: Boolean)
+    │
+    └── Device2 (PLC_Delta_2 - 192.168.1.20)
+        ├── Tag: SetpointNivel (Address: 40001, Type: Float)
+        ├── Tag: SetpointFlujo (Address: 40002, Type: Float)
+        └── Tag: EstadoBomba (Address: 00001, Type: Boolean)
+
+Configuración del Channel:
+  Driver: Modbus TCP
+  Network Setting: Ethernet
+  Polling: 1000 ms
+  
+Configuración del Device:
+  ID: 1 (para Device1), 2 (para Device2)
+  Model: Modbus TCP/IP
+  IP Address: 192.168.1.10 / 192.168.1.20
+  Port: 502
+</div>
+
+<h3>📝 InfiLink Tag Database</h3>
+
+<p>InfiLink usa una base de datos de tags que se vinculan a tags OPC de KEPServerEX:</p>
+
+<div class="diagram">
+Estructura de Tags en InfiLink:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Conexión OPC:
+  Server: Kepware.KEPServerEX.6
+  Node: localhost (o IP del servidor)
+  
+Tags de InfiLink vinculados a OPC:
+
+TagName         | OPC Item Path              | Data Type
+────────────────┼────────────────────────────┼─────────────
+Tanque_Nivel    | Channel1.Device1.Nivel     | Float
+Tanque_Flujo    | Channel1.Device1.Flujo     | Float
+Tanque_SP       | Channel1.Device2.SetpointNivel | Float
+Bomba_Estado    | Channel1.Device1.EstadoBomba | Boolean
+Bomba_Comando   | Channel1.Device1.ComandoArranque | Boolean
+
+Vinculación:
+  InfiLink Tag → OPC Item → KEPServerEX → PLC
+</div>
+
+<h3> InfiLink Scripting</h3>
+
+<p>InfiLink tiene su propio lenguaje de scripting que se ejecuta en diferentes momentos:</p>
+
+<table>
+<tr>
+<th>Tipo de Script</th>
+<th>Cuándo se ejecuta</th>
+<th>Uso</th>
+</tr>
+<tr>
+<td>On Startup</td>
+<td>Cuando inicia la aplicación</td>
+<td>Inicialización de variables</td>
+</tr>
+<tr>
+<td>Cyclic/Timer</td>
+<td>Cada X segundos (configurable)</td>
+<td>Cálculos periódicos, KPIs</td>
+</tr>
+<tr>
+<td>On Shutdown</td>
+<td>Cuando cierra la aplicación</td>
+<td>Limpieza, guardar estado</td>
+</tr>
+<tr>
+<td>Button/Event</td>
+<td>Cuando se presiona un botón</td>
+<td>Control manual, comandos</td>
+</tr>
+<tr>
+<td>Alarm/Condition</td>
+<td>Cuando se cumple una condición</td>
+<td>Alarmas, enclavamientos</td>
+</tr>
+</table>
+
+<h4>📝 Ejemplo de Script en InfiLink</h4>
+
+<div class="diagram">
+Script: Cálculo de Eficiencia (Cyclic - cada 60 segundos)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+IF ProduccionObjetivo > 0 THEN
+    Eficiencia = (ProduccionReal / ProduccionObjetivo) * 100;
+ELSE
+    Eficiencia = 0;
+END_IF;
+
+IF Eficiencia < 80 THEN
+    MESSAGE = "⚠️ Eficiencia baja: " + Eficiencia;
+    TRIGGER_ALARM("EficienciaBaja");
+END_IF;
+
+Script: Secuencia de Arranque (Button Script - botón ARRANQUE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+IF Tanque_Nivel < 20 THEN
+    MESSAGE = "⚠️ Nivel insuficiente";
+    RETURN;
+END_IF;
+
+IF Confirmar("¿Iniciar proceso?") THEN
+    Tanque_ValvulaEntrada = 1;
+    WAIT(3);  (* Esperar 3 segundos *)
+    Bomba_Comando = 1;
+    MESSAGE = "✅ Proceso iniciado";
+END_IF;
+</div>
+
+<h3>⚠️ Consideraciones de Seguridad</h3>
+
+<table>
+<tr>
+<th>Riesgo</th>
+<th>Medida de Prevención</th>
+</tr>
+<tr>
+<td>Acceso no autorizado a KEPServerEX</td>
+<td>Autenticación de usuarios, firewall</td>
+</tr>
+<tr>
+<td>Manipulación de tags OPC</td>
+<td>Permisos de escritura/lectura, validación de rangos</td>
+</tr>
+<tr>
+<td>Fallo de comunicación DCOM</td>
+<td>Configuración correcta de DCOM, usuarios con permisos</td>
+</tr>
+<tr>
+<td>Pérdida de datos históricos</td>
+<td>Backups automáticos de InfiLink Historian</td>
+</tr>
+<tr>
+<td>Ciberataques</td>
+<td>Red industrial aislada, actualizaciones de seguridad</td>
+</tr>
+</table>
+
+<div class="warning">
+<strong>⚠️ NORMAS DE SEGURIDAD APLICABLES:</strong>
+<ul>
+<li><strong>IEC 62443:</strong> Seguridad de sistemas de automatización y control industrial</li>
+<li><strong>OPC Foundation:</strong> Estándares de seguridad OPC UA</li>
+<li><strong>NIST SP 800-82:</strong> Guía de seguridad para sistemas de control industrial</li>
+<li><strong>NOM-029-STPS:</strong> Mantenimiento de instalaciones eléctricas (México)</li>
+</ul>
+</div>
+</div>
+
+<h2>🔧 Materiales y Equipos</h2>
+
+<div class="activity-box">
+<table>
+<tr>
+<th>Cantidad</th>
+<th>Elemento</th>
+<th>Especificaciones</th>
+</tr>
+<tr>
+<td>2</td>
+<td>PLC Delta DVP-SE</td>
+<td>Con puerto Ethernet (10/100Base-TX)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Switch Ethernet</td>
+<td>5 puertos, 10/100 Mbps</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Servidor SCADA</td>
+<td>PC con Windows 10/11, 8GB RAM, 50GB disco</td>
+</tr>
+<tr>
+<td>1</td>
+<td>KEPServerEX</td>
+<td>Versión 6.x (30 días prueba o licencia)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>InfiLink SCADA</td>
+<td>Versión de prueba o licencia educativa</td>
+</tr>
+<tr>
+<td>1</td>
+<td>SQL Server Express</td>
+<td>Para historización (opcional)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Bomba centrífuga DC</td>
+<td>12V/24V DC con control de velocidad</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Sensor de nivel</td>
+<td>Ultrasónico o capacitivo (0-10V o 4-20mA)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Sensor de flujo</td>
+<td>Turbina o electromagnético (pulsos o 4-20mA)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Tanques de agua</td>
+<td>Capacidad 10-20L</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Cable Ethernet</td>
+<td>CAT5e/CAT6, RJ45</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Software ISPSoft</td>
+<td>Programación de PLCs Delta</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Fuente de poder</td>
+<td>24V DC, 5A</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EPP</td>
+<td>Gafas de seguridad, guantes</td>
+</tr>
+</table>
+</div>
+
+<h2>📋 Desarrollo de la Práctica</h2>
+
+<div class="activity-box">
+<h3><span class="activity-number">1</span> Instalación y Configuración de KEPServerEX</h3>
+
+<p><strong>Objetivo:</strong> Instalar KEPServerEX y configurar canal Modbus TCP para PLCs Delta.</p>
+
+<h4>💻 Procedimiento de Instalación</h4>
+
+<ol>
+<li><strong>Descargar KEPServerEX:</strong>
+<ul>
+<li>Ir a <code>https://www.kepware.com/products/kepserverex/</code></li>
+<li>Solicitar versión de prueba (30 días)</li>
+<li>Descargar instalador (requiere registro)</li>
+</ul>
+</li>
+
+<li><strong>Instalar KEPServerEX:</strong>
+<ul>
+<li>Ejecutar instalador como administrador</li>
+<li>Aceptar términos de licencia</li>
+<li>Seleccionar componentes:
+<ul>
+<li>✓ KEPServerEX Core</li>
+<li>✓ Modbus TCP/IP Driver</li>
+<li>✓ OPC Classic (DA, HDA, A&E)</li>
+<li>✓ OPC UA Server</li>
+<li>✓ Administration Tool</li>
+</ul>
+</li>
+<li>Completar instalación y reiniciar</li>
+</ul>
+</li>
+
+<li><strong>Abrir Configuration Application:</strong>
+<ul>
+<li>Iniciar <strong>KEPServerEX Configuration</strong></li>
+<li>Aceptar licencia</li>
+<li>Activar versión de prueba o ingresar licencia</li>
+</ul>
+</li>
+
+<li><strong>Crear Channel Modbus TCP:</strong>
+<ul>
+<li>Clic derecho en <strong>Project</strong> → <strong>New Channel</strong></li>
+<li>Nombre: <code>Channel1</code></li>
+<li>Driver: <strong>Modbus TCP/IP</strong></li>
+<li>Descripción: <code>PLCs Delta DVP-SE</code></li>
+<li>Configurar:
+<ul>
+<li><strong>Polling Interval:</strong> 1000 ms</li>
+<li><strong>Network Setting:</strong> Ethernet</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Crear Device para PLC Maestro:</strong>
+<ul>
+<li>Clic derecho en <strong>Channel1</strong> → <strong>New Device</strong></li>
+<li>Nombre: <code>PLC_Delta_1</code></li>
+<li>Model: <strong>Modbus TCP/IP</strong></li>
+<li>ID: <code>1</code></li>
+<li>Configurar:
+<ul>
+<li><strong>IP Address:</strong> 192.168.1.10</li>
+<li><strong>Port:</strong> 502</li>
+<li><strong>Timeout:</strong> 3000 ms</li>
+<li><strong>Retries:</strong> 3</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Crear Device para PLC Esclavo:</strong>
+<ul>
+<li>Repetir proceso con:
+<ul>
+<li>Nombre: <code>PLC_Delta_2</code></li>
+<li>ID: <code>2</code></li>
+<li>IP Address: <code>192.168.1.20</code></li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Crear Tags en KEPServerEX:</strong>
+<ul>
+<li>En <strong>PLC_Delta_1</strong>, crear tags:
+
+<table>
+<tr>
+<th>Tag Name</th>
+<th>Address</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>Nivel</td>
+<td>40001</td>
+<td>Float</td>
+<td>Nivel del tanque (%)</td>
+</tr>
+<tr>
+<td>Flujo</td>
+<td>40002</td>
+<td>Float</td>
+<td>Flujo de bomba (L/min)</td>
+</tr>
+<tr>
+<td>Temperatura</td>
+<td>40003</td>
+<td>Float</td>
+<td>Temperatura motor (°C)</td>
+</tr>
+<tr>
+<td>ComandoArranque</td>
+<td>00001</td>
+<td>Boolean</td>
+<td>Comando de arranque</td>
+</tr>
+<tr>
+<td>EstadoBomba</td>
+<td>00002</td>
+<td>Boolean</td>
+<td>Estado de bomba</td>
+</tr>
+</table>
+</li>
+
+<li>En <strong>PLC_Delta_2</strong>, crear tags:
+
+<table>
+<tr>
+<th>Tag Name</th>
+<th>Address</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>SetpointNivel</td>
+<td>40001</td>
+<td>Float</td>
+<td>Setpoint de nivel</td>
+</tr>
+<tr>
+<td>SetpointFlujo</td>
+<td>40002</td>
+<td>Float</td>
+<td>Setpoint de flujo</td>
+</tr>
+</table>
+</li>
+</ul>
+</li>
+
+<li><strong>Verificar comunicación:</strong>
+<ul>
+<li>En KEPServerEX, ir a <strong>Diagnostics</strong></li>
+<li>Verificar que Devices muestren:
+<ul>
+<li>Estado: <strong>Connected</strong></li>
+<li>Quality: <strong>Good</strong></li>
+</ul>
+</li>
+<li>Ver que los tags muestren valores actualizados</li>
+</ul>
+</li>
+
+<li><strong>Configurar OPC Server:</strong>
+<ul>
+<li>KEPServerEX automáticamente expone tags vía OPC DA y OPC UA</li>
+<li>Verificar que OPC Server esté corriendo:
+<ul>
+<li>Servicio: <strong>KEPServerEX v6</strong></li>
+<li>Estado: <strong>Running</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<div class="kepware-box">
+<strong>💡 Diagnóstico en KEPServerEX:</strong>
+<ul>
+<li><strong>Quick Client:</strong> Herramienta para ver tags OPC en tiempo real</li>
+<li><strong>Traffic Monitor:</strong> Ver tráfico Modbus TCP</li>
+<li><strong>Error Codes:</strong> Consultar códigos de error Modbus</li>
+<li><strong>Event Log:</strong> Registro de eventos y errores</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">2</span> Instalación y Configuración de InfiLink</h3>
+
+<p><strong>Objetivo:</strong> Instalar InfiLink y configurar conexión OPC a KEPServerEX.</p>
+
+<h4>🔧 Procedimiento de Instalación</h4>
+
+<ol>
+<li><strong>Descargar InfiLink:</strong>
+<ul>
+<li>Ir al sitio web del fabricante de InfiLink</li>
+<li>Solicitar versión de prueba o educativa</li>
+<li>Descargar instalador</li>
+</ul>
+</li>
+
+<li><strong>Instalar InfiLink:</strong>
+<ul>
+<li>Ejecutar instalador como administrador</li>
+<li>Aceptar términos de licencia</li>
+<li>Seleccionar componentes:
+<ul>
+<li>✓ InfiLink Designer (desarrollo)</li>
+<li>✓ InfiLink Runtime (ejecución)</li>
+<li>✓ OPC Client</li>
+<li>✓ Historian</li>
+<li>✓ Alarm Manager</li>
+<li>✓ Web Server (opcional)</li>
+</ul>
+</li>
+<li>Completar instalación y reiniciar</li>
+</ul>
+</li>
+
+<li><strong>Abrir InfiLink Designer:</strong>
+<ul>
+<li>Iniciar <strong>InfiLink Designer</strong></li>
+<li>Crear nuevo proyecto:
+<ul>
+<li>Nombre: <code>ProcesoIndustrial</code></li>
+<li>Descripción: <code>Control de nivel y flujo</code></li>
+<li>Ruta: <code>C:\InfiLink\Projects\ProcesoIndustrial</code></li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar conexión OPC:</strong>
+<ul>
+<li>En Designer, ir a <strong>Project</strong> → <strong>OPC Configuration</strong></li>
+<li>Clic en <strong>Add OPC Server</strong></li>
+<li>Seleccionar:
+<ul>
+<li><strong>OPC Server:</strong> Kepware.KEPServerEX.6</li>
+<li><strong>Node:</strong> localhost (o IP del servidor)</li>
+<li><strong>Update Rate:</strong> 1000 ms</li>
+</ul>
+</li>
+<li>Test connection - debe mostrar <strong>"Connected"</strong></li>
+</ul>
+</li>
+
+<li><strong>Configurar Tag Database:</strong>
+<ul>
+<li>En Designer, ir a <strong>Tags</strong> → <strong>Tag Database</strong></li>
+<li>Crear tags vinculados a OPC:
+
+<table>
+<tr>
+<th>TagName</th>
+<th>OPC Item Path</th>
+<th>Data Type</th>
+</tr>
+<tr>
+<td>Tanque_Nivel</td>
+<td>Channel1.Device1.Nivel</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>Tanque_Flujo</td>
+<td>Channel1.Device1.Flujo</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>Tanque_Setpoint</td>
+<td>Channel1.Device2.SetpointNivel</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>Bomba_Comando</td>
+<td>Channel1.Device1.ComandoArranque</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Bomba_Estado</td>
+<td>Channel1.Device1.EstadoBomba</td>
+<td>Boolean</td>
+</tr>
+</table>
+</li>
+</ul>
+</li>
+
+<li><strong>Verificar tags OPC:</strong>
+<ul>
+<li>En Tag Database, verificar que todos los tags muestren:
+<ul>
+<li><strong>Quality:</strong> Good</li>
+<li><strong>Value:</strong> Valor actualizado</li>
+</ul>
+</li>
+<li>Si hay error, revisar:
+<ul>
+<li>KEPServerEX está corriendo</li>
+<li>Configuración OPC correcta</li>
+<li>PLCs están accesibles</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar proyecto:</strong>
+<ul>
+<li><strong>Project</strong> → <strong>Properties</strong>
+<ul>
+<li><strong>Startup Screen:</strong> MainScreen</li>
+<li><strong>Security:</strong> Enable user authentication</li>
+<li><strong>Alarm Settings:</strong> Enable alarm system</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<div class="infilink-box">
+<strong>💡 InfiLink Designer vs Runtime:</strong>
+<ul>
+<li><strong>Designer:</strong> Entorno de desarrollo (diseño de pantallas, configuración)</li>
+<li><strong>Runtime:</strong> Motor de ejecución (operación normal)</li>
+<li>Para probar: <strong>File</strong> → <strong>Run Project</strong></li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">3</span> Diseño de Pantallas con InfiLink Designer</h3>
+
+<p><strong>Objetivo:</strong> Crear interfaces de supervisión usando herramientas gráficas de InfiLink.</p>
+
+<h4>🎨 Creación de Pantalla Principal</h4>
+
+<ol>
+<li><strong>Crear nueva pantalla:</strong>
+<ul>
+<li>En Designer, <strong>File</strong> → <strong>New Screen</strong></li>
+<li>Nombre: <code>MainScreen</code></li>
+<li>Tamaño: <strong>1024 x 768</strong></li>
+<li>Background color: <strong>Light Gray</strong></li>
+</ul>
+</li>
+
+<li><strong>Diseñar layout:</strong>
+<ul>
+<li>Usar <strong>Rectangle</strong> para crear paneles</li>
+<li>Agregar <strong>Label</strong> para títulos y etiquetas</li>
+<li>Organizar en secciones:
+<ul>
+<li>Header: Título, logo, fecha/hora</li>
+<li>Panel izquierdo: Navegación</li>
+<li>Panel central: Visualización del proceso</li>
+<li>Panel derecho: Alarmas, KPIs</li>
+<li>Footer: Botones de control</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Agregar componentes animados:</strong>
+
+<table>
+<tr>
+<th>Componente</th>
+<th>Herramienta</th>
+<th>Propiedad Animada</th>
+<th>Tag</th>
+</tr>
+<tr>
+<td>Tanque con nivel</td>
+<td>Vertical Bar</td>
+<td>Fill Level</td>
+<td>Tanque_Nivel</td>
+</tr>
+<tr>
+<td>Bomba</td>
+<td>Symbol (pump)</td>
+<td>Visible / Color</td>
+<td>Bomba_Estado</td>
+</tr>
+<tr>
+<td>Valor numérico</td>
+<td>Numeric Display</td>
+<td>Value</td>
+<td>Tanque_Nivel</td>
+</tr>
+<tr>
+<td>Input de setpoint</td>
+<td>Numeric Input</td>
+<td>Value</td>
+<td>Tanque_Setpoint</td>
+</tr>
+<tr>
+<td>Botón ARRANQUE</td>
+<td>Button</td>
+<td>Script</td>
+<td>Bomba_Comando = 1</td>
+</tr>
+<tr>
+<td>Botón PARO</td>
+<td>Button</td>
+<td>Script</td>
+<td>Bomba_Comando = 0</td>
+</tr>
+<tr>
+<td>LED de alarma</td>
+<td>Circle</td>
+<td>Color</td>
+<td>Tanque_Nivel > 90</td>
+</tr>
+</table>
+</li>
+
+<li><strong>Configurar animaciones:</strong>
+<ul>
+<li>Seleccionar objeto (ej. Vertical Bar)</li>
+<li>Clic derecho → <strong>Properties</strong> → <strong>Animation</strong></li>
+<li>Seleccionar tipo: <strong>Fill</strong></li>
+<li>Vincular tag: <code>Tanque_Nivel</code></li>
+<li>Configurar rango:
+<ul>
+<li><strong>Min:</strong> 0</li>
+<li><strong>Max:</strong> 100</li>
+</ul>
+</li>
+<li>Repetir para cada objeto animado</li>
+</ul>
+</li>
+
+<li><strong>Crear botones de navegación:</strong>
+<ul>
+<li>Agregar botones:
+<ul>
+<li><strong>Inicio:</strong> MainScreen</li>
+<li><strong>Tendencias:</strong> TrendsScreen</li>
+<li><strong>Alarmas:</strong> AlarmsScreen</li>
+<li><strong>Recetas:</strong> RecipesScreen</li>
+</ul>
+</li>
+<li>Script de botón:
+<div class="diagram">
+OpenScreen("TrendsScreen");
+</div>
+</li>
+</ul>
+</li>
+
+<li><strong>Agregar fecha y hora:</strong>
+<ul>
+<li>Usar <strong>Label</strong> con función:
+<div class="diagram">
+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+</div>
+</li>
+<li>Configurar actualización: <strong>Timer</strong> cada 1000 ms</li>
+</ul>
+</li>
+
+<li><strong>Guardar pantalla:</strong>
+<ul>
+<li><strong>File</strong> → <strong>Save</strong></li>
+<li><strong>Build</strong> → <strong>Build Project</strong></li>
+</ul>
+</li>
+</ol>
+
+<h4>📊 Ejemplo de Pantalla Principal</h4>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│  SISTEMA SCADA - CONTROL DE NIVEL Y FLUJO      2026-06-24 14:30│
+├──────────────┬──────────────────────────────┬───────────────────┤
+│              │                              │                   │
+│  NAVEGACIÓN  │   VISUALIZACIÓN DEL PROCESO  │    ALARMAS        │
+│              │                              │                   │
+│  [Inicio]    │   ┌────────────┐             │  🔴 Nivel Alto    │
+│  [Tendencias]│   │  TANQUE    │             │   Flujo OK      │
+│  [Alarmas]   │   │  ████████  │ 85%         │  🟢 Presión OK    │
+│  [Recetas]   │   │  ████████  │             │                   │
+│              │   │  ░░░░░░░░  │             │  KPIs:            │
+│  Usuario:    │   ─────┬──────             │  Eficiencia: 92%  │
+│  Admin       │         │                    │  Producción:      │
+│              │   ┌─────┴──────┐             │  1250 L           │
+│              │   │   BOMBA    │             │                   │
+│              │   │   [▶]      │             │                   │
+│              │   │ 75 L/min   │             │                   │
+│              │   └────────────┘             │                   │
+│              │                              │                   │
+│              │   Setpoint: [85] %           │                   │
+│              │   Flujo: [75] L/min          │                   │
+│              │                              │                   │
+├──────────────┴──────────────────────────────┴───────────────────┤
+│  [ARRANQUE]  [PARO]  [EMERGENCIA]  |  Estado: ● OPERANDO       │
+└─────────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">4</span> Programación de Scripts en InfiLink</h3>
+
+<p><strong>Objetivo:</strong> Desarrollar scripts para control, cálculo de KPIs y automatización.</p>
+
+<h4>📝 Script 1: Cálculo de KPIs (Timer - cada 60 segundos)</h4>
+
+<div class="diagram">
+Script: CalculoKPIs
+━━━━━━━━━━━━━━━━━━━
+Tipo: Timer Script
+Intervalo: 60000 ms (60 segundos)
+
+// Calcular producción total
+IF Bomba_Estado = 1 THEN
+    ProduccionAcumulada = ProduccionAcumulada + (Tanque_Flujo / 60);
+END_IF;
+
+// Calcular eficiencia
+IF ProduccionObjetivo > 0 THEN
+    Eficiencia = (ProduccionAcumulada / ProduccionObjetivo) * 100;
+ELSE
+    Eficiencia = 0;
+END_IF;
+
+// Calcular tiempo de operación
+IF Bomba_Estado = 1 THEN
+    TiempoOperacion = TiempoOperacion + 1; // en minutos
+END_IF;
+
+// Verificar alarmas de eficiencia
+IF Eficiencia < 80 THEN
+    MESSAGE = "⚠️ Eficiencia baja: " + Eficiencia + "%";
+    TRIGGER_ALARM("EficienciaBaja");
+END_IF;
+</div>
+
+<h4>📝 Script 2: Secuencia de Arranque (Button Script)</h4>
+
+<div class="diagram">
+Script: ArranqueProceso
+━━━━━━━━━━━━━━━━━━━━━━
+Tipo: Button Script (botón ARRANQUE)
+
+// Verificar condiciones iniciales
+IF Tanque_Nivel < 20 THEN
+    MESSAGE = "⚠️ Nivel de tanque insuficiente";
+    RETURN;
+END_IF;
+
+IF EmergenciaActiva = 1 THEN
+    MESSAGE = "⚠️ Emergencia activa. No se puede arrancar";
+    RETURN;
+END_IF;
+
+// Confirmación del operador
+IF Confirmar("¿Desea iniciar el proceso?\nNivel actual: " + Tanque_Nivel) THEN
+    // Paso 1: Abrir válvula
+    Tanque_ValvulaEntrada = 1;
+    MESSAGE = "✅ Válvula de entrada abierta";
+    
+    // Paso 2: Esperar 3 segundos
+    WAIT(3000);
+    
+    // Paso 3: Activar bomba
+    Bomba_Comando = 1;
+    MESSAGE = "✅ Bomba activada";
+    
+    // Registrar evento
+    MESSAGE = "Proceso iniciado por " + CurrentUser;
+    LOG_EVENT("Proceso iniciado", CurrentUser);
+ELSE
+    MESSAGE = "Arranque cancelado";
+END_IF;
+</div>
+
+<h4>📝 Script 3: Control de Alarmas (Condition Script)</h4>
+
+<div class="diagram">
+Script: ControlAlarmas
+━━━━━━━━━━━━━━━━━━━━━
+Tipo: Condition Script
+
+// Alarma de nivel alto
+IF Tanque_Nivel > 90 THEN
+    AlarmaNivelAlto = 1;
+    MESSAGE = "🔴 NIVEL ALTO: " + Tanque_Nivel + "%";
+    TRIGGER_ALARM("NivelAlto");
+    
+    // Acción automática: cerrar válvula
+    Tanque_ValvulaEntrada = 0;
+END_IF;
+
+// Alarma de nivel bajo
+IF Tanque_Nivel < 20 THEN
+    AlarmaNivelBajo = 1;
+    MESSAGE = "🟡 NIVEL BAJO: " + Tanque_Nivel + "%";
+    TRIGGER_ALARM("NivelBajo");
+    
+    // Acción automática: parar bomba
+    Bomba_Comando = 0;
+END_IF;
+
+// Alarma de temperatura alta
+IF Motor_Temperatura > 80 THEN
+    AlarmaTempAlta = 1;
+    MESSAGE = "🔴 TEMPERATURA ALTA: " + Motor_Temperatura + "°C";
+    TRIGGER_ALARM("TempAlta");
+    
+    // Parar bomba por seguridad
+    Bomba_Comando = 0;
+END_IF;
+
+// Reset de alarmas cuando vuelven a normal
+IF Tanque_Nivel <= 90 AND Tanque_Nivel >= 85 THEN
+    AlarmaNivelAlto = 0;
+END_IF;
+
+IF Tanque_Nivel >= 20 AND Tanque_Nivel <= 25 THEN
+    AlarmaNivelBajo = 0;
+END_IF;
+</div>
+
+<h4>📝 Script 4: Parada de Emergencia (Button Script)</h4>
+
+<div class="diagram">
+Script: ParadaEmergencia
+━━━━━━━━━━━━━━━━━━━━━━━
+Tipo: Button Script (botón EMERGENCIA)
+
+// Confirmación de emergencia
+IF Confirmar("⚠️ PARADA DE EMERGENCIA\n¿Está seguro?") THEN
+    // Parar todos los equipos
+    Bomba_Comando = 0;
+    Tanque_ValvulaEntrada = 0;
+    Tanque_ValvulaSalida = 0;
+    
+    // Activar alarma de emergencia
+    EmergenciaActiva = 1;
+    TRIGGER_ALARM("ParadaEmergencia");
+    
+    // Mensaje crítico
+    MESSAGE = "🔴 PARADA DE EMERGENCIA ACTIVADA";
+    
+    // Registrar en log
+    LOG_EVENT("Emergencia activada por " + CurrentUser + " a las " + DateTime.Now);
+    
+    // Notificar a supervisor
+    SEND_NOTIFICATION("Supervisor", "Emergencia activada");
+ELSE
+    MESSAGE = "Emergencia cancelada";
+END_IF;
+</div>
+
+<div class="infilink-box">
+<strong>💡 Funciones Comunes en InfiLink Scripting:</strong>
+<ul>
+<li><strong>OpenScreen("ScreenName"):</strong> Abrir pantalla</li>
+<li><strong>CloseScreen("ScreenName"):</strong> Cerrar pantalla</li>
+<li><strong>MESSAGE = "texto":</strong> Mostrar mensaje en barra de estado</li>
+<li><strong>Confirmar("texto"):</strong> Cuadro de confirmación (True/False)</li>
+<li><strong>WAIT(milisegundos):</strong> Pausar ejecución</li>
+<li><strong>TRIGGER_ALARM(AlarmName):</strong> Activar alarma</li>
+<li><strong>LOG_EVENT("texto"):</strong> Escribir en log de eventos</li>
+<li><strong>DateTime.Now:</strong> Fecha y hora del sistema</li>
+<li><strong>CurrentUser:</strong> Usuario actual</li>
+<li><strong>SEND_NOTIFICATION(user, message):</strong> Enviar notificación</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">5</span> Configuración de Alarmas con Alarm Manager</h3>
+
+<p><strong>Objetivo:</strong> Implementar sistema de alarmas y eventos en InfiLink.</p>
+
+<h4>🚨 Configuración de Alarmas</h4>
+
+<ol>
+<li><strong>Configurar alarmas en tags:</strong>
+<ul>
+<li>En Tag Database, seleccionar tag (ej. <code>Tanque_Nivel</code>)</li>
+<li>Clic en <strong>Alarm Settings</strong></li>
+<li>Configurar:
+<ul>
+<li><strong>High Limit:</strong> 90 (activa cuando &gt; 90)</li>
+<li><strong>Low Limit:</strong> 20 (activa cuando &lt; 20)</li>
+<li><strong>Priority:</strong> High (Critical, High, Medium, Low)</li>
+<li><strong>Enabled:</strong> Yes</li>
+<li><strong>Deadband:</strong> 2 (para evitar oscilaciones)</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Crear definiciones de alarmas:</strong>
+<ul>
+<li>Ir a <strong>Alarm Manager</strong> → <strong>Alarm Definitions</strong></li>
+<li>Agregar alarmas:
+
+<table>
+<tr>
+<th>Alarm Name</th>
+<th>Tag</th>
+<th>Condition</th>
+<th>Priority</th>
+<th>Message</th>
+</tr>
+<tr>
+<td>NivelAlto</td>
+<td>Tanque_Nivel</td>
+<td>&gt; 90</td>
+<td>Critical</td>
+<td>Nivel de tanque superior a 90%</td>
+</tr>
+<tr>
+<td>NivelBajo</td>
+<td>Tanque_Nivel</td>
+<td>&lt; 20</td>
+<td>High</td>
+<td>Nivel de tanque inferior a 20%</td>
+</tr>
+<tr>
+<td>TempAlta</td>
+<td>Motor_Temperatura</td>
+<td>&gt; 80</td>
+<td>Critical</td>
+<td>Temperatura de motor &gt; 80°C</td>
+</tr>
+<tr>
+<td>ParadaEmergencia</td>
+<td>EmergenciaActiva</td>
+<td>= 1</td>
+<td>Critical</td>
+<td>Parada de emergencia activada</td>
+</tr>
+</table>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar Alarm Viewer:</strong>
+<ul>
+<li>Crear nueva pantalla: <code>AlarmsScreen</code></li>
+<li>Agregar componente <strong>Alarm Viewer</strong>:
+<ul>
+<li>Desde Toolbox → <strong>Alarm Viewer</strong></li>
+<li>Configurar:
+<ul>
+<li><strong>Alarm Source:</strong> Alarm Manager</li>
+<li><strong>Display Mode:</strong> Active and Historical</li>
+<li><strong>Columns:</strong> Time, Tag, Priority, Message, State, Ack</li>
+<li><strong>Filter:</strong> Show last 24 hours</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar historización de alarmas:</strong>
+<ul>
+<li>En <strong>Alarm Manager Properties</strong>:
+<ul>
+<li><strong>Historical Storage:</strong> Enable</li>
+<li><strong>Database:</strong> SQL Server (configurar conexión)</li>
+<li><strong>Retention:</strong> 90 days</li>
+<li><strong>Archive:</strong> Enable automatic archiving</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Agregar botón de acknowledge:</strong>
+<ul>
+<li>En Alarm Viewer, agregar botón <strong>Acknowledge Selected</strong></li>
+<li>Script:
+<div class="diagram">
+AlarmViewer.AcknowledgeSelected();
+MESSAGE = "Alarmas reconocidas";
+</div>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar notificaciones:</strong>
+<ul>
+<li>En <strong>Alarm Manager</strong> → <strong>Notifications</strong></li>
+<li>Configurar:
+<ul>
+<li><strong>Email:</strong> Configurar SMTP server</li>
+<li><strong>SMS:</strong> Configurar gateway SMS (opcional)</li>
+<li><strong>Popup:</strong> Enable popup alerts</li>
+<li><strong>Sound:</strong> Enable sound alerts</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<h4>📊 Visualización de Alarmas</h4>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                    ALARM VIEWER - HISTORIAL                     │
+├──────────┬────────────┬──────────┬─────────┬─────────┬─────────┤
+│ Time     │ Tag        │ Priority │ Message │ State   │ Ack     │
+├──────────────────────┼──────────┼─────────┼─────────┼─────────┤
+│ 14:30:15 │ Tanque_    │ Critical │ Nivel   │ Active  │ No      │
+│          │ Nivel      │          │ Alto    │         │         │
+├──────────┼────────────┼──────────┼─────────┼─────────┼─────────┤
+│ 14:25:00 │ Motor_     │ High     │ Temp    │ Active  │ Yes     │
+│          │ Temp       │          │ Alta    │         │         │
+├──────────┼────────────┼──────────┼──────────────────┼─────────
+│ 14:20:30 │ Emergencia │ Critical │ Emerg.  │ Active  │ Yes     │
+│          │ Activa     │          │ Activada│         │         │
+└──────────┴────────────┴──────────┴─────────┴─────────┴─────────┘
+
+Estados:
+  Active  = Alarma activa, no reconocida
+  Ack     = Alarma reconocida por operador
+  Normal  = Alarma desactivada, condición normal
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">6</span> Historización de Datos y Reportes</h3>
+
+<p><strong>Objetivo:</strong> Configurar almacenamiento de datos históricos en InfiLink.</p>
+
+<h4>💾 Configuración de InfiLink Historian</h4>
+
+<ol>
+<li><strong>Configurar tags para historización:</strong>
+<ul>
+<li>En Tag Database, seleccionar tags críticos:
+<ul>
+<li>Tanque_Nivel</li>
+<li>Tanque_Flujo</li>
+<li>Motor_Temperatura</li>
+<li>ProduccionAcumulada</li>
+</ul>
+</li>
+<li>Para cada tag, activar:
+<ul>
+<li><strong>Historian:</strong> Enable</li>
+<li><strong>Deadband:</strong> 1.0 (no guardar si cambio &lt; 1%)</li>
+<li><strong>Sample Period:</strong> 60 segundos</li>
+<li><strong>Storage:</strong> Database</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar base de datos:</strong>
+<ul>
+<li>InfiLink usa SQL Server o base de datos interna</li>
+<li>Configurar conexión:
+<ul>
+<li><strong>Server:</strong> localhost</li>
+<li><strong>Database:</strong> InfiLinkHistorian</li>
+<li><strong>Authentication:</strong> Windows o SQL</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Crear pantalla de tendencias:</strong>
+<ul>
+<li>Crear nueva ventana <code>TrendsScreen</code></li>
+<li>Agregar componente <strong>Trend Chart</strong>:
+<ul>
+<li>Desde Toolbox → <strong>Trend</strong></li>
+<li>Configurar:
+<ul>
+<li><strong>Pens:</strong> Tanque_Nivel, Tanque_Flujo</li>
+<li><strong>Time Range:</strong> Last 24 hours</li>
+<li><strong>Update Rate:</strong> 60 seconds</li>
+<li><strong>Y-Axis:</strong> Auto-scale</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Script de reporte diario:</strong>
+<div class="diagram">
+Script: ReporteDiario
+━━━━━━━━━━━━━━━━━━━
+Tipo: Timer Script (daily at 23:59)
+
+// Calcular totales del día
+ProduccionTotal = ProduccionAcumulada;
+TiempoTotal = TiempoOperacion / 60; // convertir a horas
+
+IF TiempoTotal > 0 THEN
+    PromedioFlujo = ProduccionTotal / TiempoTotal;
+ELSE
+    PromedioFlujo = 0;
+END_IF;
+
+// Guardar en archivo de texto
+FilePath = "C:\\Reportes\\Reporte_" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+File.WriteAllText(FilePath, 
+    "Reporte Diario - " + DateTime.Now.ToString("yyyy-MM-dd") + "\n" +
+    "Producción Total: " + ProduccionTotal + " L\n" +
+    "Tiempo Operación: " + TiempoTotal + " h\n" +
+    "Flujo Promedio: " + PromedioFlujo + " L/h\n" +
+    "Eficiencia: " + Eficiencia + "%\n"
+);
+
+MESSAGE = "Reporte generado: " + FilePath;
+
+// Enviar por email
+SEND_EMAIL("supervisor@empresa.com", "Reporte Diario", 
+    "Adjunto reporte de producción del día");
+</div>
+</li>
+</ol>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">7</span> Implementación de Recetas de Producción</h3>
+
+<p><strong>Objetivo:</strong> Crear sistema de recetas de producción.</p>
+
+<h4>📋 Configuración de Recetas</h4>
+
+<ol>
+<li><strong>Abrir Recipe Manager:</strong>
+<ul>
+<li>En Designer, <strong>Tools</strong> → <strong>Recipe Manager</strong></li>
+<li>Crear nueva receta: <code>RecetaProduccion</code></li>
+</ul>
+</li>
+
+<li><strong>Definir parámetros de receta:</strong>
+
+<table>
+<tr>
+<th>Parameter Name</th>
+<th>Data Type</th>
+<th>Tag Vinculado</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>SetpointNivel</td>
+<td>Float</td>
+<td>Tanque_Setpoint</td>
+<td>Nivel objetivo (%)</td>
+</tr>
+<tr>
+<td>SetpointFlujo</td>
+<td>Float</td>
+<td>Bomba_SetpointFlujo</td>
+<td>Flujo objetivo (L/min)</td>
+</tr>
+<tr>
+<td>TiempoCiclo</td>
+<td>Integer</td>
+<td>Proceso_TiempoCiclo</td>
+<td>Tiempo de ciclo (min)</td>
+</tr>
+<tr>
+<td>TemperaturaObj</td>
+<td>Float</td>
+<td>Motor_TempObjetivo</td>
+<td>Temperatura objetivo (°C)</td>
+</tr>
+</table>
+</li>
+
+<li><strong>Crear recetas de ejemplo:</strong>
+
+<table>
+<tr>
+<th>Recipe Name</th>
+<th>SetpointNivel</th>
+<th>SetpointFlujo</th>
+<th>TiempoCiclo</th>
+</tr>
+<tr>
+<td>Produccion_Estandar</td>
+<td>85.0</td>
+<td>75.0</td>
+<td>60</td>
+</tr>
+<tr>
+<td>Produccion_Rapida</td>
+<td>90.0</td>
+<td>100.0</td>
+<td>40</td>
+</tr>
+<tr>
+<td>Produccion_Economica</td>
+<td>80.0</td>
+<td>60.0</td>
+<td>80</td>
+</tr>
+</table>
+</li>
+
+<li><strong>Crear pantalla de gestión de recetas:</strong>
+<ul>
+<li>Crear ventana <code>RecipesScreen</code></li>
+<li>Agregar componentes:
+<ul>
+<li><strong>ComboBox:</strong> Lista de recetas disponibles</li>
+<li><strong>Button "Cargar":</strong> Cargar receta seleccionada</li>
+<li><strong>Button "Guardar":</strong> Guardar configuración actual</li>
+<li><strong>DataGrid:</strong> Mostrar parámetros de receta</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Script para cargar receta:</strong>
+<div class="diagram">
+Script: CargarReceta
+━━━━━━━━━━━━━━━━━━
+Tipo: Button Script
+
+// Obtener receta seleccionada
+RecetaSeleccionada = ComboBox_Recetas.SelectedItem;
+
+IF RecetaSeleccionada IS NOT NULL THEN
+    // Cargar receta desde Recipe Manager
+    IF RecipeManager.LoadRecipe("RecetaProduccion", RecetaSeleccionada) THEN
+        MESSAGE = "✅ Receta cargada: " + RecetaSeleccionada;
+        LOG_EVENT("Receta cargada: " + RecetaSeleccionada, CurrentUser);
+    ELSE
+        MESSAGE = "❌ Error al cargar receta";
+    END_IF;
+ELSE
+    MESSAGE = "Seleccione una receta";
+END_IF;
+</div>
+</li>
+
+<li><strong>Script para guardar receta:</strong>
+<div class="diagram">
+Script: GuardarReceta
+━━━━━━━━━━━━━━━━━━
+Tipo: Button Script
+
+// Solicitar nombre de receta
+NombreReceta = InputBox("Ingrese nombre de la receta:", "Nueva Receta");
+
+IF NombreReceta IS NOT NULL AND NombreReceta != "" THEN
+    // Guardar configuración actual como receta
+    IF RecipeManager.SaveRecipe("RecetaProduccion", NombreReceta) THEN
+        MESSAGE = "✅ Receta guardada: " + NombreReceta;
+        // Actualizar lista de recetas
+        ComboBox_Recetas.Refresh();
+    ELSE
+        MESSAGE = "❌ Error al guardar receta";
+    END_IF;
+END_IF;
+</div>
+</li>
+</ol>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">8</span> Puesta en Marcha del Sistema SCADA</h3>
+
+<p><strong>Objetivo:</strong> Realizar la puesta en marcha completa del sistema.</p>
+
+<h4>🚀 Procedimiento de Puesta en Marcha</h4>
+
+<ol>
+<li><strong>Verificaciones previas (CHECKLIST):</strong>
+<ul>
+<li>☐ Servidor SCADA energizado</li>
+<li>☐ KEPServerEX instalado y corriendo</li>
+<li>☐ InfiLink instalado</li>
+<li>☐ PLCs Delta energizados y en modo RUN</li>
+<li>☐ Cables Ethernet conectados</li>
+<li>☐ Sensores calibrados</li>
+<li>☐ EPP colocado</li>
+<li>☐ Botón de emergencia funcional</li>
+</ul>
+</li>
+
+<li><strong>Iniciar KEPServerEX:</strong>
+<ul>
+<li>Verificar servicio corriendo</li>
+<li>Abrir Configuration Application</li>
+<li>Verificar Devices conectados</li>
+<li>Verificar tags con Quality: Good</li>
+</ul>
+</li>
+
+<li><strong>Probar comunicación OPC:</strong>
+<ul>
+<li>Abrir <strong>OPC Quick Client</strong> (incluido con KEPServerEX)</li>
+<li>Conectar a <strong>Kepware.KEPServerEX.6</strong></li>
+<li>Browse Channel1.PLC_Delta_1</li>
+<li>Verificar que tags muestren valores</li>
+</ul>
+</li>
+
+<li><strong>Iniciar InfiLink Designer:</strong>
+<ul>
+<li>Abrir proyecto <code>ProcesoIndustrial</code></li>
+<li>Verificar OPC configuration</li>
+<li>Verificar tags en Tag Database</li>
+<li>Todos deben mostrar Quality: Good</li>
+</ul>
+</li>
+
+<li><strong>Probar pantallas:</strong>
+<ul>
+<li><strong>Build</strong> → <strong>Build Project</strong></li>
+<li><strong>Run Project</strong> (MainScreen)</li>
+<li>Verificar que:
+<ul>
+<li>Tanque muestre nivel animado</li>
+<li>Bomba muestre estado</li>
+<li>Valores numéricos se actualicen</li>
+<li>Botones respondan</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Iniciar InfiLink Runtime:</strong>
+<ul>
+<li>En Designer, <strong>Project</strong> → <strong>Properties</strong></li>
+<li>Startup Screen: <code>MainScreen</code></li>
+<li><strong>Run</strong> → <strong>Start Runtime</strong></li>
+<li>Verificar operación normal</li>
+</ul>
+</li>
+
+<li><strong>Pruebas de operación:</strong>
+
+<table>
+<tr>
+<th>Prueba</th>
+<th>Procedimiento</th>
+<th>Resultado Esperado</th>
+</tr>
+<tr>
+<td>Lectura de sensores</td>
+<td>Verificar valores en pantalla</td>
+<td>Valores coherentes</td>
+</tr>
+<tr>
+<td>Cambio de setpoint</td>
+<td>Modificar desde InfiLink</td>
+<td>Tag en KEPServerEX se actualiza</td>
+</tr>
+<tr>
+<td>Control de bomba</td>
+<td>Activar/parar desde InfiLink</td>
+<td>Bomba responde</td>
+</tr>
+<tr>
+<td>Alarmas</td>
+<td>Simular nivel alto</td>
+<td>Alarma se activa en Alarm Viewer</td>
+</tr>
+<tr>
+<td>Tendencias</td>
+<td>Ver gráfica de nivel</td>
+<td>Datos se actualizan</td>
+</tr>
+<tr>
+<td>Historización</td>
+<td>Verificar base de datos</td>
+<td>Datos almacenados</td>
+</tr>
+<tr>
+<td>Recetas</td>
+<td>Cargar receta</td>
+<td>Setpoints se actualizan</td>
+</tr>
+<tr>
+<td>Emergencia</td>
+<td>Activar E-Stop</td>
+<td>Sistema se detiene</td>
+</tr>
+</table>
+</li>
+
+<li><strong>Validar comunicación:</strong>
+<ul>
+<li>Desconectar cable Ethernet de PLC</li>
+<li>Verificar que KEPServerEX muestre error</li>
+<li>Verificar que InfiLink muestre Quality: Bad</li>
+<li>Reconectar cable</li>
+<li>Verificar recuperación automática</li>
+</ul>
+</li>
+</ol>
+
+<div class="success">
+<strong>✅ Criterios de Éxito:</strong>
+<ul>
+<li>KEPServerEX: Devices conectados, tags con Quality: Good</li>
+<li>InfiLink: Tags vinculados correctamente vía OPC</li>
+<li>Pantallas: Animaciones funcionando, scripts ejecutándose</li>
+<li>Alarmas: Se activan y registran correctamente</li>
+<li>Historización: Datos se almacenan en base de datos</li>
+<li>Recetas: Se cargan y aplican correctamente</li>
+<li>Comunicación: Sin timeouts, recuperación ante fallos</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">9</span> Seguridad y Ciberseguridad</h3>
+
+<p><strong>Objetivo:</strong> Implementar medidas de seguridad en el sistema SCADA.</p>
+
+<h4>🔐 Configuración de Seguridad</h4>
+
+<ol>
+<li><strong>Configurar usuarios en InfiLink:</strong>
+<ul>
+<li><strong>Tools</strong> → <strong>User Management</strong></li>
+<li>Crear usuarios:
+<ul>
+<li><strong>Admin:</strong> Acceso total</li>
+<li><strong>Operador:</strong> Operación normal</li>
+<li><strong>Viewer:</strong> Solo lectura</li>
+</ul>
+</li>
+<li>Asignar contraseñas seguras</li>
+</ul>
+</li>
+
+<li><strong>Configurar permisos por área:</strong>
+<ul>
+<li><strong>User Management</strong> → <strong>Roles</strong></li>
+<li>Definir roles:
+<ul>
+<li><strong>Operación:</strong> Control de equipos</li>
+<li><strong>Configuración:</strong> Cambio de setpoints</li>
+<li><strong>Administración:</strong> Gestión de usuarios</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Configurar firewall:</strong>
+<ul>
+<li>Abrir solo puertos necesarios:
+<ul>
+<li><strong>502:</strong> Modbus TCP</li>
+<li><strong>OPC DA:</strong> DCOM (puertos dinámicos)</li>
+<li><strong>OPC UA:</strong> 49320</li>
+</ul>
+</li>
+<li>Bloquear acceso desde Internet</li>
+</ul>
+</li>
+
+<li><strong>Configurar DCOM seguro:</strong>
+<ul>
+<li><strong>Panel de Control</strong> → <strong>Servicios de componentes</strong></li>
+<li>Configurar KEPServerEX:
+<ul>
+<li><strong>Identity:</strong> Usuario específico (no System)</li>
+<li><strong>Security:</strong> Restringir a usuarios autorizados</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Backups automáticos:</strong>
+<ul>
+<li>Configurar backup de:
+<ul>
+<li>Proyecto InfiLink</li>
+<li>Configuración KEPServerEX</li>
+<li>Base de datos Historian</li>
+</ul>
+</li>
+<li>Frecuencia: Diario</li>
+<li>Retención: 30 días</li>
+</ul>
+</li>
+</ol>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">10</span> Redacción del Informe Técnico</h3>
+
+<p><strong>Objetivo:</strong> Documentar el sistema SCADA implementado.</p>
+
+<h4>📄 Estructura del Informe</h4>
+
+<ol>
+<li><strong>Portada</strong></li>
+<li><strong>Resumen ejecutivo</strong> (300 palabras)</li>
+<li><strong>Introducción</strong> — Arquitectura SCADA con KEPServerEX e InfiLink</li>
+<li><strong>Marco teórico</strong> — OPC, KEPServerEX, InfiLink, Modbus TCP</li>
+<li><strong>Metodología</strong> — 10 actividades realizadas</li>
+<li><strong>Resultados</strong> — Capturas de KEPServerEX e InfiLink</li>
+<li><strong>Análisis y discusión</strong> — Evaluación del sistema</li>
+<li><strong>Conclusiones</strong></li>
+<li><strong>Recomendaciones de seguridad</strong></li>
+<li><strong>Bibliografía</strong></li>
+<li><strong>Anexos</strong> — Configuraciones, scripts, diagramas</li>
+</ol>
+
+<h4>📊 Contenido Obligatorio</h4>
+
+<table>
+<tr>
+<th>Sección</th>
+<th>Contenido</th>
+</tr>
+<tr>
+<td>Arquitectura</td>
+<td>Diagrama KEPServerEX + InfiLink + PLCs</td>
+</tr>
+<tr>
+<td>KEPServerEX</td>
+<td>Configuración de Channel, Device, Tags</td>
+</tr>
+<tr>
+<td>InfiLink</td>
+<td>OPC configuration, Tags, pantallas</td>
+</tr>
+<tr>
+<td>Scripts</td>
+<td>Código de scripts InfiLink</td>
+</tr>
+<tr>
+<td>Alarmas</td>
+<td>Configuración de Alarm Manager</td>
+</tr>
+<tr>
+<td>Historización</td>
+<td>Configuración de Historian</td>
+</tr>
+<tr>
+<td>Recetas</td>
+<td>Recipe Manager</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Usuarios, permisos, DCOM</td>
+</tr>
+<tr>
+<td>Puesta en marcha</td>
+<td>Checklist y pruebas</td>
+</tr>
+</table>
+
+<div class="success">
+<strong>✅ Criterios de Evaluación:</strong>
+<ul>
+<li><strong>3.1.1</strong> Descripción clara de arquitectura SCADA</li>
+<li><strong>3.1.2</strong> Scripts InfiLink funcionales y documentados</li>
+<li><strong>3.1.3</strong> Comunicación KEPServerEX → InfiLink → PLC verificada</li>
+<li><strong>3.1.4</strong> Puesta en marcha completa con pruebas</li>
+<li>Calidad de pantallas InfiLink</li>
+<li>Sistema de alarmas operativo</li>
+<li>Historización y recetas implementadas</li>
+<li>Documentación profesional</li>
+</ul>
+</div>
+</div>
+
+<h2>📚 Referencias</h2>
+
+<div class="activity-box">
+<ol>
+<li><strong>PTC.</strong> (2026). <em>KEPServerEX User Manual</em>. PTC Inc.</li>
+<li><strong>InfiLink.</strong> (2026). <em>InfiLink SCADA User Guide</em>.</li>
+<li><strong>OPC Foundation.</strong> (2020). <em>OPC Classic and OPC UA Specifications</em>.</li>
+<li><strong>Delta Electronics.</strong> (2023). <em>DVP-SE Programming Manual</em>.</li>
+<li><strong>ISA.</strong> (2022). <em>IEC 62443: Industrial communication networks security</em>.</li>
+</ol>
+</div>
+
+<div class="info" style="text-align: center; margin-top: 30px;">
+<strong>🎓 ¡Éxito en tu práctica!</strong><br>
+<strong>🏭 KEPServerEX + InfiLink = Solución SCADA industrial robusta</strong>
+</div>
+
+</body>
+</html>
