@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -130,6 +129,25 @@
             padding: 15px;
             margin: 15px 0;
         }
+	.figura-guia {
+  	margin: 24px auto;
+  	text-align: center;
+  	page-break-inside: avoid;
+	}
+
+	.figura-guia img {
+  	max-width: 100%;
+  	height: auto;
+  	border: 1px solid #ccc;
+  	border-radius: 8px;
+	}
+
+	.figura-guia figcaption {
+  	margin-top: 8px;
+  	font-size: 0.9em;
+  	color: #444;
+  	font-style: italic;
+	}
     </style>
 </head>
 <body>
@@ -184,28 +202,10 @@
 <h4>📊 Estructura del Control en Cascada</h4>
 
 <div class="diagram">
-┌─────────────────────────────────────────────────────────────┐
-│                    LAZO PRIMARIO (EXTERNO)                  │
-│                                                             │
-│   SP_Nivel ──⊕────[PID Nivel]─────┐                        │
-│            ─                     │                         │
-│            │                     ▼                         │
-│          ──┘              SP_Flujo (Setpoint Remoto)       │
-│                              │                              │
-│   PV_Nivel ←─────────────────┘                              │
-│   (Tanque)                                                  │
-└─────────────────────────────────────────────────────────────┘
-                    │
-                    ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   LAZO SECUNDARIO (INTERNO)                 │
-│                                                             │
-│   SP_Flujo ──────[PID Flujo]─────[Bomba]─────► Flujo      │
-│            ─                     │                          │
-│            │                     ▼                          │
-│          ──┘              PV_Flujo (Medición)               │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+<figure class="figura-guia">
+  <img src="1.PNG" alt="Estructura del control en cascada" width="700" height="500">
+  <figcaption>Figura 1. Estructura del control en cascada.</figcaption>
+</figure>
 
 Ventajas del Control en Cascada:
 ✓ Rechazo rápido de perturbaciones en el lazo secundario (flujo)
@@ -536,26 +536,10 @@ Comunicación Modbus TCP:
 <h4>🔌 Diagrama de Conexión de Red</h4>
 
 <div class="diagram">
-                    RED ETHERNET TCP/IP
-                    ┌───────────────────┐
-                    │   SWITCH 5 PUERTOS│
-                    │   10/100 Mbps     │
-                    └─────────┬─────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        │                     │                     │
-  ┌─────┴─────┐       ┌──────┴──────┐       ┌─────┴─────┐
-  │ PLC Maestro│       │ PLC Esclavo │       │   Laptop  │
-  │  DVP-SE    │       │   DVP-SE    │       │Programación│
-  │192.168.1.10│       │192.168.1.20 │       │192.168.1.100│
-  └────────────┘       └─────────────┘       └─────────────┘
-        │                     │
-  ┌─────┴─────┐       ┌──────┴──────┐
-  │ HMI Maestro│       │ HMI Esclavo │
-  │192.168.1.30│       │192.168.1.40 │
-  └────────────┘       └─────────────┘
-
+<figure class="figura-guia">
+  <img src="2.PNG" alt="Estructura del control en cascada" width="700" height="500">
+  
+</figure>
 Configuración de Red:
   IP PLC Maestro:   192.168.1.10
   IP PLC Esclavo:   192.168.1.20
@@ -746,38 +730,10 @@ Comandos de Verificación desde Laptop:
 <h4>📊 Arquitectura de E/S Distribuidas</h4>
 
 <div class="diagram">
-┌─────────────────────────┐         ┌─────────────────────────┐
-│   PLC MAESTRO (DVP-SE)  │         │   PLC ESCLAVO (DVP-SE)  │
-│   IP: 192.168.1.10      │         │   IP: 192.168.1.20      │
-│   Control de Nivel      │         │   Control de Flujo      │
-│                         │         │                         │
-│  Entradas:              │         │  Entradas:              │
-│  X0: Sensor Nivel       │◄───┐    │  X0: Sensor Flujo       │
-│      (DVP06XA CH1)      │    │    │      (Pulsos)           │
-│  X1: Nivel Alto         │    │    │  X1: Falla Bomba        │
-│  X2: Nivel Bajo         │    │    │                         │
-│  X3: Emergencia         │    │    │  Salidas:               │
-│                         │    │    │  Y0: Enable Bomba       │
-│  Salidas:               │    │    │  Y1: Alarma Local       │
-│  Y0: Válvula Entrada    │    │    │                         │
-│  Y1: Alarma Maestro     │    │    │  Analógicas:            │
-│                         │    │    │  DVP06XA CH1:           │
-│  Ethernet:              │    │    │    Control Bomba 0-10V  │
-│  ETH: Modbus TCP        │    │    │                         │
-└───────────┬─────────────┘    │    └───────────┬─────────────┘
-            │                  │                │
-            │    ETHERNET      │                │
-            │  192.168.1.x     │                │
-            │  Puerto 502      │                │
-            └──────────────────┘                │
-                                                │
-     ┌──────────────────┐              ┌────────┴───────┐
-     │    TANQUE        │              │    BOMBA       │
-     │    SUPERIOR      │              │    DC          │
-     │                  │              │                │
-     │  Nivel Sensor    │              └────────────────┘
-     └──────────────────┘
-
+<figure class="figura-guia">
+  <img src="3.PNG" alt="Estructura del control en cascada" width="700" height="500">
+  
+</figure>
 Sensores:
   Sensor Nivel: Ultrasónico 0-10V → DVP06XA CH1 → PLC Maestro
   Sensor Flujo: Turbina pulsos → X0 (contador) → PLC Esclavo
@@ -904,206 +860,12 @@ Actuadores:
 <h4>🎛️ Estrategia de Control Distribuido</h4>
 
 <div class="diagram">
-┌──────────────────────────────────────────────────────────────┐
-│                    PLC MAESTRO (DVP-SE)                      │
-│                    IP: 192.168.1.10                          │
-│                    CONTROL DE NIVEL                          │
-│                                                              │
-│  SP_Nivel (HMI) ──⊕────[PID Nivel]─────┐                    │
-│                 ─                     │                      │
-│                 │                     │                      │
-│               ──┘                     ▼                      │
-│                                 SP_Flujo_Remoto              │
-│  PV_Nivel (Sensor)                    │                      │
-│                                       │                      │
-│                              Modbus TCP Client               │
-│                              WREGB a 192.168.1.20            │
-│                              (Escribe en 40001)              │
-└──────────────────────────────────────────────────────────────┘
-                                       │
-                                       │ Ethernet
-                                       │ TCP/IP
-                                       │ Puerto 502
-                                       ▼
-┌──────────────────────────────────────────────────────────────┐
-│                   PLC ESCLAVO (DVP-SE)                       │
-│                   IP: 192.168.1.20                           │
-│                   CONTROL DE FLUJO                           │
-│                                                              │
-│  SP_Flujo_Recibido ─────[PID Flujo]────[Bomba]──► Flujo    │
-│  (desde 40001)     ─                     │                   │
-│                    │                     │                   │
-│                  ──┘                     ▼                   │
-│                                 PV_Flujo (Sensor)            │
-│                                       │                      │
-│                              Modbus TCP Server               │
-│                              (Lee desde 40002)               │
-└──────────────────────────────────────────────────────────────┘
+<figure class="figura-guia">
+  <img src="4.PNG" alt="Estructura del control en cascada" width="700" height="500">
+  
+</figure>
 </div>
 
-<h4>📝 Programa PLC Maestro - Control de Nivel con Modbus TCP</h4>
-
-<div class="diagram">
-PLC MAESTRO (DVP-SE) - Control de Nivel
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Network 1: Lectura de sensor de nivel (analógico)
-      M1000 (Comunicación OK)
-      │
-      ├──[ MOV  D0     D100 ]─────────  (D0 = valor ADC 0-4000)
-      ├──[ MUL  D100   K100 ]─────────  (Escalar a 0-100%)
-      ├──[ DIV  D100   K4000 ]──────── 
-      │
-      └──[ MOV  D100   D820 ]─────────  (PV_Nivel = 0-100%)
-
-Network 2: Control PID de Nivel
-      M1000
-      │
-      ├──[ PID  D810  D820 ]──────────  (D810=SP, D820=PV)
-      │   Parámetros:
-      │   D800 = Kp (ganancia proporcional)
-      │   D801 = Ti (tiempo integral)
-      │   D802 = Td (tiempo derivativo)
-      │   D803 = ΔT (tiempo muestreo, ej. K500 = 500ms)
-      │
-      └──[ MOV  D830   D300 ]─────────  (D300 = Salida PID 0-100%)
-
-Network 3: Escalamiento de SP_Flujo para esclavo
-      M1000
-      │
-      ├──[ MUL  D300   K40 ]──────────  (0-100 → 0-4000)
-      │
-      └──[ MOV  D300   D400 ]─────────  (D400 = SP_Flujo a enviar)
-
-Network 4: Escritura Modbus TCP - Enviar SP_Flujo al esclavo
-      M1000
-      │   M1162 (Flag escritura)
-      ├──[ WREGB  K1  H0A01  K4000  D400  K1 ]──
-      │   │      │   │       │       │     │
-      │   │      │   │       │       │     └─ Cantidad de registros
-      │   │      │   │       │       └─ Valor a escribir (D400)
-      │   │      │   │       └─ Dirección registro esclavo (4000)
-      │   │      │   └─ ID de conexión Modbus TCP (0A=10, 01=1)
-      │   │      └─ Puerto COM (1=Ethernet)
-      │   └─ Número de slave (1)
-      │
-      └──[ RST  M1162 ]────────────────  (Reset flag)
-
-Network 5: Lectura Modbus TCP - Leer PV_Flujo del esclavo
-      M1000
-      │   M1163 (Flag lectura)
-      ├──[ RDREGB  K1  H0A01  K4001  D500  K1 ]──
-      │   │       │   │       │       │     │
-      │   │       │   │       │       │     └─ Cantidad de registros
-      │   │       │   │       │       └─ Registro destino (D500)
-      │   │       │   │       └─ Dirección registro esclavo (4001)
-      │   │       │   └─ ID de conexión Modbus TCP (0A01)
-      │   │       └─ Puerto COM (1=Ethernet)
-      │   └─ Número de slave (1)
-      │
-      ├──[ MOV  D500   D821 ]──────────  (PV_Flujo remoto)
-      │
-      └──[ RST  M1163 ]────────────────  (Reset flag)
-
-Network 6: Control de válvula de entrada
-      X2 (Nivel Bajo)
-      │
-      ├──[ SET  Y0 ]───────────────────  (Abrir válvula)
-      
-      X1 (Nivel Alto)
-      │
-      └──[ RST  Y0 ]───────────────────  (Cerrar válvula)
-
-Network 7: Parada de emergencia
-      X3 (Emergencia NC)
-      │
-      ├──[ RST  M1000 ]────────────────  (Detener comunicación)
-      ├──[ RST  Y0 ]───────────────────  (Cerrar válvula)
-      └──[ MOV  K0    D400 ]───────────  (SP_Flujo = 0)
-
-Network 8: Indicador de comunicación Ethernet
-      M1050 (Ethernet Link OK)
-      │
-      ├──[ SET  M1000 ]────────────────  (Red activa)
-      
-      M1051 (Ethernet Error)
-      │
-      └──[ RST  M1000 ]────────────────  (Error de red)
-</div>
-
-<h4>📝 Programa PLC Esclavo - Control de Flujo con Modbus TCP Server</h4>
-
-<div class="diagram">
-PLC ESCLAVO (DVP-SE) - Control de Flujo
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Network 1: Lectura de sensor de flujo (pulsos)
-      M1000 (Siempre activo)
-      │
-      ├──[ SPD  X0  K200  D0 ]─────────  (Contar pulsos en 200ms)
-      │
-      ├──[ MOV  D0    D100 ]───────────  (Copiar pulsos)
-      ├──[ MUL  D100  K60 ]────────────  (Pulsos/min)
-      ├──[ MUL  D100  K1000 ]──────────
-      ├──[ DIV  D100  K200 ]───────────
-      │
-      └──[ MOV  D100  D820 ]───────────  (PV_Flujo = L/min)
-
-Network 2: Control PID de Flujo
-      M1000
-      │
-      ├──[ PID  D810  D820 ]───────────  (D810=SP, D820=PV)
-      │   Parámetros:
-      │   D800 = Kp (ganancia proporcional)
-      │   D801 = Ti (tiempo integral, ej. K300)
-      │   D802 = Td (tiempo derivativo, ej. K75)
-      │   D803 = ΔT (tiempo muestreo, ej. K200 = 200ms)
-      │
-      └──[ MOV  D830  D2002 ]──────────  (D2002 = Salida PID 0-100%)
-
-Network 3: Escalamiento de salida PID a 0-10V
-      M1000
-      │
-      ├──[ MUL  D2002  K40 ]───────────  (0-100 → 0-4000)
-      │
-      └──[ MOV  D2002  D2100 ]─────────  (D2100 → DVP06XA CH1)
-
-Network 4: Control de enable de bomba
-      M1000
-      │   X1 (Falla bomba)
-      ├──[ AND   M1000 ]──[ ANI  X1 ]──[ OUT  Y0 ]──
-      │                                   (Enable bomba)
-      │
-      └──[ OUT  M2003 ]─────────────────  (Estado bomba = Run)
-
-Network 5: Mapeo de registros Modbus TCP Server
-      M1000
-      │
-      ├──[ MOV  D4000  D4000 ]─────────  (SP_Flujo_Recibido de maestro)
-      ├──[ MOV  D820   D4001 ]─────────  (PV_Flujo medido → 4002)
-      ├──[ MOV  D2002  D4002 ]─────────  (Salida PID → 4003)
-      └──[ MOV  M2003  D4003 ]─────────  (Estado bomba → 4004)
-
-      Nota: D4000-D4999 son registros accesibles vía Modbus TCP
-            como holding registers 40001-41000
-
-Network 6: Alarmas locales
-      X1 (Falla bomba)
-      │
-      ├──[ SET  M2004 ]────────────────  (Alarma falla)
-      ├──[ SET  Y1 ]───────────────────  (Alarma visual)
-      └──[ RST  Y0 ]───────────────────  (Detener bomba)
-      
-      M1001 (Reset alarma)
-      │
-      └──[ RST  M2004 ]────────────────  (Reset alarma)
-      └──[ RST  Y1 ]───────────────────  (Apagar alarma)
-
-Network 7: Indicador de servidor Modbus TCP activo
-      M1060 (Modbus TCP Server activo)
-      │
-      └──[ SET  M1000 ]────────────────  (Servidor listo)
-</div>
 
 <div class="info">
 <strong>💡 Sintonización del Control en Cascada:</strong>
@@ -1136,32 +898,10 @@ Network 7: Indicador de servidor Modbus TCP activo
 <h4>🖥️ HMI Maestro - Supervisión de Nivel</h4>
 
 <div class="diagram">
-┌─────────────────────────────────────────────────────────┐
-│  HMI MAESTRO - Control de Nivel de Tanque               │
-│  IP: 192.168.1.30                                       │
-│  PLC: DVP-SE (192.168.1.10)                             │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────────────┐                                    │
-│  │   TANQUE        │  SP_Nivel: [1500] L               │
-│  │   ███████████   │  PV_Nivel: [1485] L               │
-│  │   ███████████   │  ─────────────────────            │
-│  │   ███████████   │  SP_Flujo: [75.5] L/min           │
-│  │   ███████████   │  PV_Flujo: [74.2] L/min           │
-│  │   ░░░░░░░░░░░   │                                    │
-│  │                 │  Estado Sistema: [● NORMAL]       │
-│  └─────────────────┘                                    │
-│                                                         │
-│  [ MARCHA ]  [ PARO ]  [ EMERGENCIA ]                  │
-│                                                         │
-│  Alarmas Activas:                                       │
-│  ☐ Nivel Alto    ☐ Nivel Bajo    ☐ Falla Comunicación │
-│                                                         │
-│  ────────────────────────────────────────────────────   │
-│  Red Ethernet: [● ACTIVA]  PLC: 192.168.1.10           │
-│  Ping: 2ms  Errores Modbus: 0                          │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+<figure class="figura-guia">
+  <img src="5.PNG" alt="Estructura del control en cascada" width="700" height="500">
+  
+</figure>
 
 Configuración HMI Maestro:
   - Conexión: Ethernet TCP/IP
@@ -1184,36 +924,10 @@ Elementos HMI:
 <h4>🖥️ HMI Esclavo - Control de Flujo</h4>
 
 <div class="diagram">
-┌─────────────────────────────────────────────────────────┐
-│  HMI ESCLAVO - Control de Flujo de Bomba                │
-│  IP: 192.168.1.40                                       │
-│  PLC: DVP-SE (192.168.1.20)                             │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────────────┐                                    │
-│  │    BOMBA        │  SP_Flujo: [75.5] L/min           │
-│  │    ┌───┐        │  (desde maestro)                  │
-│  │    │ ▶ │        │  PV_Flujo: [74.2] L/min           │
-│  │    └───┘        │  ─────────────────────            │
-│  │   RUNNING       │  Salida PID: [68.5] %             │
-│  │                 │                                    │
-│  └─────────────────┘  Estado: [● OPERANDO]            │
-│                                                         │
-│  [ MANUAL ]  [ AUTO ]  [ RESET ALARMA ]                │
-│                                                         │
-│  Parámetros PID:                                        │
-│  Kp: [2.5]  Ti: [300]ms  Td: [75]ms                    │
-│                                                         │
-│  ────────────────────────────────────────────────────   │
-│  Temperatura Motor: [45] °C                             │
-│  Horas Operación: [1250] h                              │
-│                                                         │
-│  Alarmas Locales:                                       │
-│  ☐ Sobrecorriente  ☐ Sobrecalentamiento  ☐ Sin Flujo  │
-│                                                         │
-│  Red: [● CONECTADO]  PLC: 192.168.1.20                 │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+<figure class="figura-guia">
+  <img src="6.PNG" alt="Estructura del control en cascada" width="700" height="500">
+  
+</figure>
 
 Configuración HMI Esclavo:
   - Conexión: Ethernet TCP/IP
