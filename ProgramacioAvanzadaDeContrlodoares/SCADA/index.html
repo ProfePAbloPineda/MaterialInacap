@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -199,27 +198,9 @@
 <h4>📊 Componentes Principales</h4>
 
 <div class="diagram">
-┌─────────────────────────────────────────────────────────────────┐
-│              ARQUITECTURA SCADA EMPRESARIAL                     │
-└─────────────────────────────────────────────────────────────────┘
-
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   NIVEL ERP     │     │   NIVEL SCADA    │     │   NIVEL CAMPO   │
-│                 │     │                  │     │                 │
-│  • SAP          │     │  • InfiLink      │     │  • PLC Delta 1  │
-│  • MES          │◄───►│    (HMI/SCADA)   │◄───►│  • PLC Delta 2  │
-│  • Historian    │     │  • Historian     │     │  • Sensores     │
-│                 │     │  • Alarmas       │     │  • Actuadores   │
-└─────────────────┘     └─────────┬────────┘     └─────────────────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    │                           │
-              ┌─────▼──────┐           ┌────────▼───────┐
-              │ KEPServerEX│           │ KEPServerEX    │
-              │ OPC Server │           │ (Modbus TCP)   │
-              │ OPC UA/DA  │           │ Channel/Device │
-              └────────────┘           └────────────────┘
-
+<figure class="figura-guia">
+  <img src="1.PNG" alt="Estructura del control en cascada" width="700" height="500">
+</figure>
 Capas de la Arquitectura:
 1. Nivel Campo: PLCs Delta con Modbus TCP
 2. Nivel Conectividad: KEPServerEX (OPC Server)
@@ -294,22 +275,9 @@ PLC → Modbus TCP → KEPServerEX → OPC → InfiLink → Operador
 <h4>🗺️ Configuración de KEPServerEX</h4>
 
 <div class="diagram">
-Estructura de KEPServerEX:
-━━━━━━━━━━━━━━━━━━━━━━━━
-
-Project
-└── Channel1 (Modbus TCP)
-    ├── Device1 (PLC_Delta_1 - 192.168.1.10)
-    │   ├── Tag: Nivel (Address: 40001, Type: Float)
-    │   ├── Tag: Flujo (Address: 40002, Type: Float)
-    │   ├── Tag: Temperatura (Address: 40003, Type: Float)
-    │   └── Tag: ComandoArranque (Address: 00001, Type: Boolean)
-    │
-    └── Device2 (PLC_Delta_2 - 192.168.1.20)
-        ├── Tag: SetpointNivel (Address: 40001, Type: Float)
-        ├── Tag: SetpointFlujo (Address: 40002, Type: Float)
-        └── Tag: EstadoBomba (Address: 00001, Type: Boolean)
-
+<figure class="figura-guia">
+  <img src="2.PNG" alt="Estructura del control en cascada" width="700" height="500">
+</figure>
 Configuración del Channel:
   Driver: Modbus TCP
   Network Setting: Ethernet
@@ -327,25 +295,9 @@ Configuración del Device:
 <p>InfiLink usa una base de datos de tags que se vinculan a tags OPC de KEPServerEX:</p>
 
 <div class="diagram">
-Estructura de Tags en InfiLink:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Conexión OPC:
-  Server: Kepware.KEPServerEX.6
-  Node: localhost (o IP del servidor)
-  
-Tags de InfiLink vinculados a OPC:
-
-TagName         | OPC Item Path              | Data Type
-────────────────┼────────────────────────────┼─────────────
-Tanque_Nivel    | Channel1.Device1.Nivel     | Float
-Tanque_Flujo    | Channel1.Device1.Flujo     | Float
-Tanque_SP       | Channel1.Device2.SetpointNivel | Float
-Bomba_Estado    | Channel1.Device1.EstadoBomba | Boolean
-Bomba_Comando   | Channel1.Device1.ComandoArranque | Boolean
-
-Vinculación:
-  InfiLink Tag → OPC Item → KEPServerEX → PLC
+<figure class="figura-guia">
+  <img src="3.PNG" alt="Estructura del control en cascada" width="700" height="500">
+</figure>
 </div>
 
 <h3> InfiLink Scripting</h3>
@@ -388,34 +340,9 @@ Vinculación:
 <h4>📝 Ejemplo de Script en InfiLink</h4>
 
 <div class="diagram">
-Script: Cálculo de Eficiencia (Cyclic - cada 60 segundos)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-IF ProduccionObjetivo > 0 THEN
-    Eficiencia = (ProduccionReal / ProduccionObjetivo) * 100;
-ELSE
-    Eficiencia = 0;
-END_IF;
-
-IF Eficiencia < 80 THEN
-    MESSAGE = "⚠️ Eficiencia baja: " + Eficiencia;
-    TRIGGER_ALARM("EficienciaBaja");
-END_IF;
-
-Script: Secuencia de Arranque (Button Script - botón ARRANQUE)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-IF Tanque_Nivel < 20 THEN
-    MESSAGE = "⚠️ Nivel insuficiente";
-    RETURN;
-END_IF;
-
-IF Confirmar("¿Iniciar proceso?") THEN
-    Tanque_ValvulaEntrada = 1;
-    WAIT(3);  (* Esperar 3 segundos *)
-    Bomba_Comando = 1;
-    MESSAGE = "✅ Proceso iniciado";
-END_IF;
+<figure class="figura-guia">
+  <img src="4.PNG" alt="Estructura del control en cascada" width="700" height="500">
+</figure>
 </div>
 
 <h3>⚠️ Consideraciones de Seguridad</h3>
@@ -1020,33 +947,9 @@ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
 
 <h4>📊 Ejemplo de Pantalla Principal</h4>
 
-<div class="diagram">
-┌─────────────────────────────────────────────────────────────────┐
-│  SISTEMA SCADA - CONTROL DE NIVEL Y FLUJO      2026-06-24 14:30│
-├──────────────┬──────────────────────────────┬───────────────────┤
-│              │                              │                   │
-│  NAVEGACIÓN  │   VISUALIZACIÓN DEL PROCESO  │    ALARMAS        │
-│              │                              │                   │
-│  [Inicio]    │   ┌────────────┐             │  🔴 Nivel Alto    │
-│  [Tendencias]│   │  TANQUE    │             │   Flujo OK      │
-│  [Alarmas]   │   │  ████████  │ 85%         │  🟢 Presión OK    │
-│  [Recetas]   │   │  ████████  │             │                   │
-│              │   │  ░░░░░░░░  │             │  KPIs:            │
-│  Usuario:    │   ─────┬──────             │  Eficiencia: 92%  │
-│  Admin       │         │                    │  Producción:      │
-│              │   ┌─────┴──────┐             │  1250 L           │
-│              │   │   BOMBA    │             │                   │
-│              │   │   [▶]      │             │                   │
-│              │   │ 75 L/min   │             │                   │
-│              │   └────────────┘             │                   │
-│              │                              │                   │
-│              │   Setpoint: [85] %           │                   │
-│              │   Flujo: [75] L/min          │                   │
-│              │                              │                   │
-├──────────────┴──────────────────────────────┴───────────────────┤
-│  [ARRANQUE]  [PARO]  [EMERGENCIA]  |  Estado: ● OPERANDO       │
-└─────────────────────────────────────────────────────────────────┘
-</div>
+<figure class="figura-guia">
+  <img src="5.PNG" alt="Estructura del control en cascada" width="700" height="500">
+</figure>
 </div>
 
 <div class="activity-box">
@@ -1351,27 +1254,9 @@ MESSAGE = "Alarmas reconocidas";
 
 <h4>📊 Visualización de Alarmas</h4>
 
-<div class="diagram">
-┌─────────────────────────────────────────────────────────────────┐
-│                    ALARM VIEWER - HISTORIAL                     │
-├──────────┬────────────┬──────────┬─────────┬─────────┬─────────┤
-│ Time     │ Tag        │ Priority │ Message │ State   │ Ack     │
-├──────────────────────┼──────────┼─────────┼─────────┼─────────┤
-│ 14:30:15 │ Tanque_    │ Critical │ Nivel   │ Active  │ No      │
-│          │ Nivel      │          │ Alto    │         │         │
-├──────────┼────────────┼──────────┼─────────┼─────────┼─────────┤
-│ 14:25:00 │ Motor_     │ High     │ Temp    │ Active  │ Yes     │
-│          │ Temp       │          │ Alta    │         │         │
-├──────────┼────────────┼──────────┼──────────────────┼─────────
-│ 14:20:30 │ Emergencia │ Critical │ Emerg.  │ Active  │ Yes     │
-│          │ Activa     │          │ Activada│         │         │
-└──────────┴────────────┴──────────┴─────────┴─────────┴─────────┘
-
-Estados:
-  Active  = Alarma activa, no reconocida
-  Ack     = Alarma reconocida por operador
-  Normal  = Alarma desactivada, condición normal
-</div>
+<figure class="figura-guia">
+  <img src="6.PNG" alt="Estructura del control en cascada" width="700" height="500">
+</figure>
 </div>
 
 <div class="activity-box">
