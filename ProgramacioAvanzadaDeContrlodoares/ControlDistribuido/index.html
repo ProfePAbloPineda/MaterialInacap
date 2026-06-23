@@ -1,1 +1,2055 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio 5: Control en Cascada con Modbus TCP/IP - PLC Delta DVP-SE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 25px;
+        }
+        .activity-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .activity-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #c7254e;
+        }
+        .diagram {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        ul {
+            padding-left: 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .criteria-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .criteria-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+        .network-box {
+            background-color: #e8f4f8;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1> Laboratorio 5: Control en Cascada con Modbus TCP/IP</h1>
+<h2 style="text-align: center; border: none;">Sistema de Control de Nivel y Flujo - 2 PLCs DVP-SE + Ethernet</h2>
+
+<div class="info">
+<strong>⏱️ Duración estimada:</strong> 6 horas académicas<br>
+<strong>👥 Modalidad:</strong> Trabajo en parejas<br>
+<strong>📚 Nivel:</strong> Avanzado - Control de Procesos Industriales<br>
+<strong>🌐 Arquitectura:</strong> Red Ethernet TCP/IP + Modbus TCP + Control en Cascada
+</div>
+
+<div class="criteria-box">
+<h3>📋 Criterios de Evaluación que se Desarrollan:</h3>
+<ul style="color: white;">
+<li><strong>2.1.1</strong> Programa aplicación de control y monitoreo a través de red industrial.</li>
+<li><strong>2.1.3</strong> Programa control en cascada para proceso industrial.</li>
+<li><strong>2.1.4</strong> Establece comunicación entre equipos del lazo de control, aplicando estrategias de solución en base a la configuración.</li>
+<li><strong>2.1.5</strong> Respeta normas de seguridad, higiene y ambiente antes y durante el desarrollo de las actividades.</li>
+</ul>
+</div>
+
+<h2>🎯 Objetivos de la Práctica</h2>
+
+<div class="activity-box">
+<ol>
+<li><strong>Implementar control en cascada</strong> con dos lazos de control anidados (nivel → flujo) para proceso de bombeo.</li>
+<li><strong>Configurar comunicación Modbus TCP/IP</strong> entre dos PLCs Delta DVP-SE usando red Ethernet.</li>
+<li><strong>Asignar direcciones IP</strong> estáticas a ambos PLCs en la misma subred (192.168.1.x).</li>
+<li><strong>Programar PLC Maestro (DVP-SE #1)</strong> para control de nivel de tanque superior y gestión de red Modbus TCP.</li>
+<li><strong>Programar PLC Esclavo (DVP-SE #2)</strong> para control de flujo de bomba y respuesta a comandos del maestro vía Ethernet.</li>
+<li><strong>Configurar switch Ethernet industrial</strong> para conexión de PLCs y HMIs en red LAN.</li>
+<li><strong>Diseñar HMI Maestro</strong> para supervisión de nivel, setpoints globales y alarmas del sistema.</li>
+<li><strong>Diseñar HMI Esclavo</strong> para monitoreo local de flujo, diagnóstico de bomba y control manual.</li>
+<li><strong>Intercambiar datos en tiempo real</strong> entre PLCs vía Modbus TCP: setpoint de flujo, valor medido de flujo, estado de alarmas.</li>
+<li><strong>Implementar estrategia de seguridad</strong> con paradas de emergencia, límites de nivel y protección de bomba.</li>
+<li><strong>Configurar servidor Modbus TCP</strong> en PLC esclavo y cliente Modbus TCP en PLC maestro.</li>
+<li><strong>Diagnosticar comunicación Ethernet</strong> mediante ping, verificación de conexión TCP y monitoreo de paquetes.</li>
+<li><strong>Sintonizar ambos controladores PID</strong> (nivel y flujo) considerando la dinámica del sistema en cascada.</li>
+<li><strong>Aplicar normas de seguridad industrial</strong> en cableado, conexión de equipos y operación del sistema.</li>
+</ol>
+</div>
+
+<h2>📖 Fundamento Teórico</h2>
+
+<div class="activity-box">
+<h3>🔗 Control en Cascada (Cascade Control)</h3>
+<p>El control en cascada es una estrategia avanzada que utiliza <strong>dos controladores PID anidados</strong> para mejorar el desempeño del sistema cuando existen perturbaciones significativas:</p>
+
+<h4>📊 Estructura del Control en Cascada</h4>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                    LAZO PRIMARIO (EXTERNO)                  │
+│                                                             │
+│   SP_Nivel ──⊕────[PID Nivel]─────┐                        │
+│            ─                     │                         │
+│            │                     ▼                         │
+│          ──┘              SP_Flujo (Setpoint Remoto)       │
+│                              │                              │
+│   PV_Nivel ←─────────────────┘                              │
+│   (Tanque)                                                  │
+└─────────────────────────────────────────────────────────────┘
+                    │
+                    ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   LAZO SECUNDARIO (INTERNO)                 │
+│                                                             │
+│   SP_Flujo ──────[PID Flujo]─────[Bomba]─────► Flujo      │
+│            ─                     │                          │
+│            │                     ▼                          │
+│          ──┘              PV_Flujo (Medición)               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+Ventajas del Control en Cascada:
+✓ Rechazo rápido de perturbaciones en el lazo secundario (flujo)
+✓ Mejor estabilidad del lazo primario (nivel)
+✓ Respuesta más rápida a cambios de setpoint
+✓ Menor sobrepico en la variable controlada principal
+</div>
+
+<h3>🌐 Modbus TCP/IP sobre Ethernet</h3>
+<p>Modbus TCP es la versión del protocolo Modbus adaptada para redes Ethernet TCP/IP. Es el protocolo industrial más utilizado en automatización moderna:</p>
+
+<h4>📡 Características de Modbus TCP</h4>
+
+<table>
+<tr>
+<th>Característica</th>
+<th>Especificación</th>
+</tr>
+<tr>
+<td>Capa de transporte</td>
+<td>TCP/IP (Transmission Control Protocol)</td>
+</tr>
+<tr>
+<td>Puerto estándar</td>
+<td>502</td>
+</tr>
+<tr>
+<td>Medio físico</td>
+<td>Ethernet (CAT5e/CAT6)</td>
+</tr>
+<tr>
+<td>Topología</td>
+<td>Estrella (vía switch)</td>
+</tr>
+<tr>
+<td>Velocidad</td>
+<td>10/100/1000 Mbps</td>
+</tr>
+<tr>
+<td>Direccionamiento</td>
+<td>Dirección IP + Puerto</td>
+</tr>
+<tr>
+<td>Arquitectura</td>
+<td>Cliente-Servidor (Master-Slave)</td>
+</tr>
+<tr>
+<td>Conexiones simultáneas</td>
+<td>Múltiples (hasta 8 en DVP-SE)</td>
+</tr>
+</table>
+
+<div class="network-box">
+<strong>💡 Ventajas de Modbus TCP vs Modbus RTU:</strong>
+<ul>
+<li><strong>Mayor velocidad:</strong> 100 Mbps vs 115.2 kbps máximo de RS-485</li>
+<li><strong>Mayor distancia:</strong> Sin límite práctico (vía routers/switches)</li>
+<li><strong>Más dispositivos:</strong> Sin límite de 32 dispositivos por segmento</li>
+<li><strong>Integración IT:</strong> Compatible con redes corporativas existentes</li>
+<li><strong>Diagnóstico:</strong> Herramientas estándar de red (ping, traceroute)</li>
+</ul>
+</div>
+
+<h4>🗺️ Mapa de Memoria Modbus TCP</h4>
+
+<div class="diagram">
+Registros Modbus (Holding Registers - 4xxxx):
+
+PLC Maestro (IP: 192.168.1.10):
+  40001: SP_Nivel (Setpoint de nivel)
+  40002: PV_Nivel (Nivel medido)
+  40003: Estado_Sistema (Bits de estado)
+  40004: Alarmas (Código de alarmas)
+
+PLC Esclavo (IP: 192.168.1.20):
+  40001: SP_Flujo_Recibido (Desde maestro)
+  40002: PV_Flujo (Flujo medido)
+  40003: Salida_PID_Flujo (0-100%)
+  40004: Estado_Bomba (Running/Fault)
+
+Comunicación Modbus TCP:
+  Maestro (Cliente) → Esclavo (Servidor):
+    - Write Single Register (Función 06): Escribe SP_Flujo en 40001
+    - Read Holding Registers (Función 03): Lee PV_Flujo desde 40002
+  
+  Puerto: 502
+  Protocolo: TCP
+</div>
+
+<h4>📡 Funciones Modbus TCP Utilizadas</h4>
+
+<table>
+<tr>
+<th>Función</th>
+<th>Código</th>
+<th>Descripción</th>
+<th>Uso en esta práctica</th>
+</tr>
+<tr>
+<td>Read Holding Registers</td>
+<td>03</td>
+<td>Lectura de registros</td>
+<td>Maestro lee PV_Flujo del esclavo</td>
+</tr>
+<tr>
+<td>Write Single Register</td>
+<td>06</td>
+<td>Escritura de un registro</td>
+<td>Maestro escribe SP_Flujo en esclavo</td>
+</tr>
+<tr>
+<td>Write Multiple Registers</td>
+<td>16</td>
+<td>Escritura múltiple</td>
+<td>Envío de múltiples setpoints</td>
+</tr>
+</table>
+
+<h3>🔧 PLC Delta DVP-SE con Ethernet</h3>
+
+<p>El PLC Delta DVP-SE cuenta con puerto Ethernet integrado que soporta:</p>
+<ul>
+<li><strong>Modbus TCP Server:</strong> El PLC actúa como servidor (esclavo)</li>
+<li><strong>Modbus TCP Client:</strong> El PLC actúa como cliente (maestro)</li>
+<li><strong>Conexiones simultáneas:</strong> Hasta 8 conexiones Modbus TCP</li>
+<li><strong>Velocidad:</strong> 10/100Base-TX</li>
+</ul>
+
+<h4>Configuración de Red Ethernet</h4>
+
+<table>
+<tr>
+<th>Parámetro</th>
+<th>PLC Maestro</th>
+<th>PLC Esclavo</th>
+</tr>
+<tr>
+<td>Dirección IP</td>
+<td>192.168.1.10</td>
+<td>192.168.1.20</td>
+</tr>
+<tr>
+<td>Máscara de subred</td>
+<td>255.255.255.0</td>
+<td>255.255.255.0</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>192.168.1.1</td>
+<td>192.168.1.1</td>
+</tr>
+<tr>
+<td>Puerto Modbus</td>
+<td>502</td>
+<td>502</td>
+</tr>
+<tr>
+<td>Modo</td>
+<td>Modbus TCP Client</td>
+<td>Modbus TCP Server</td>
+</tr>
+</table>
+
+<div class="info">
+<strong>💡 Instrucciones de Comunicación Modbus TCP en Delta:</strong>
+<ul>
+<li><strong>RDREGB:</strong> Leer registros de dispositivo remoto (función 03)</li>
+<li><strong>WREGB:</strong> Escribir registros en dispositivo remoto (función 06/16)</li>
+<li><strong>Configuración:</strong> Se realiza vía software ISPSoft o registro especial</li>
+</ul>
+</div>
+
+<h3>⚠️ Consideraciones de Seguridad Industrial</h3>
+
+<table>
+<tr>
+<th>Riesgo</th>
+<th>Medida de Prevención</th>
+</tr>
+<tr>
+<td>Choque eléctrico</td>
+<td>Verificar aislamiento, usar GND común, desconectar antes de cablear</td>
+</tr>
+<tr>
+<td>Cortocircuito en red</td>
+<td>Usar cable Ethernet certificado CAT5e/CAT6, verificar polaridad</td>
+</tr>
+<tr>
+<td>Daño por polaridad inversa</td>
+<td>Verificar polaridad de alimentación 24V DC antes de energizar</td>
+</tr>
+<tr>
+<td>Sobrepresión en tanque</td>
+<td>Válvula de alivio, sensor de nivel alto con parada de emergencia</td>
+</tr>
+<tr>
+<td>Operación de bomba en seco</td>
+<td>Sensor de nivel bajo en tanque de succión con enclavamiento</td>
+</tr>
+<tr>
+<td>Ciberseguridad</td>
+<td>Red aislada, sin acceso a Internet, firewall en switch</td>
+</tr>
+</table>
+
+<div class="warning">
+<strong>⚠️ NORMA DE SEGURIDAD OBLIGATORIA:</strong>
+<ul>
+<li>Siempre usar EPP (Equipo de Protección Personal): gafas de seguridad, guantes dieléctricos</li>
+<li>Verificar que la alimentación esté OFF antes de realizar conexiones</li>
+<li>Usar herramienta aislada y en buen estado</li>
+<li>Mantener área de trabajo limpia y ordenada (5S)</li>
+<li>Respetar procedimientos de bloqueo/etiquetado (LOTO - Lock Out Tag Out)</li>
+<li>Aislar red industrial de red corporativa (VLAN o red física separada)</li>
+</ul>
+</div>
+</div>
+
+<h2>🔧 Materiales y Equipos</h2>
+
+<div class="activity-box">
+<table>
+<tr>
+<th>Cantidad</th>
+<th>Elemento</th>
+<th>Especificaciones</th>
+</tr>
+<tr>
+<td>2</td>
+<td>PLC Delta DVP-SE</td>
+<td>Con puerto Ethernet integrado (10/100Base-TX)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Switch Ethernet</td>
+<td>5 puertos, 10/100 Mbps (industrial preferible)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>HMI Delta DOP-107EG</td>
+<td>HMI Maestro (7" TFT) con Ethernet</td>
+</tr>
+<tr>
+<td>1</td>
+<td>HMI Delta DOP-103B</td>
+<td>HMI Esclavo (3.5" TFT) con Ethernet</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Bomba centrífuga DC</td>
+<td>12V/24V DC con control de velocidad</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Sensor de nivel</td>
+<td>Ultrasónico o capacitivo (0-10V o 4-20mA)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Sensor de flujo</td>
+<td>Turbina o electromagnético (pulsos o 4-20mA)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Tanques de agua</td>
+<td>Tanque superior e inferior (capacidad 10-20L)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Módulo DVP06XA</td>
+<td>Para lectura de sensores analógicos (1 por PLC)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Cable Ethernet</td>
+<td>CAT5e/CAT6, RJ45, directo (1-2 metros)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Laptop/PC</td>
+<td>Para programación con puerto Ethernet</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Fuente de poder</td>
+<td>24V DC, 5A (alimentación PLCs y sensores)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Fuente de poder</td>
+<td>12V/24V DC, 3A (alimentación de bomba)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Software ISPSoft</td>
+<td>Programación de PLCs Delta</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Software ScreenEditor</td>
+<td>Programación de HMIs Delta</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Multímetro</td>
+<td>Verificación de voltajes y continuidad</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Tester de red</td>
+<td>Verificación de cables Ethernet (opcional)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EPP</td>
+<td>Gafas de seguridad, guantes dieléctricos</td>
+</tr>
+</table>
+</div>
+
+<h2>📋 Desarrollo de la Práctica</h2>
+
+<div class="activity-box">
+<h3><span class="activity-number">1</span> Configuración de Red Ethernet y Cableado</h3>
+
+<p><strong>Objetivo:</strong> Establecer la conexión física de la red Ethernet entre los dos PLCs, switch y HMIs.</p>
+
+<h4>🔌 Diagrama de Conexión de Red</h4>
+
+<div class="diagram">
+                    RED ETHERNET TCP/IP
+                    ┌───────────────────┐
+                    │   SWITCH 5 PUERTOS│
+                    │   10/100 Mbps     │
+                    └─────────┬─────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        │                     │                     │
+        │                     │                     │
+  ┌─────┴─────┐       ┌──────┴──────┐       ┌─────┴─────┐
+  │ PLC Maestro│       │ PLC Esclavo │       │   Laptop  │
+  │  DVP-SE    │       │   DVP-SE    │       │Programación│
+  │192.168.1.10│       │192.168.1.20 │       │192.168.1.100│
+  └────────────┘       └─────────────┘       └─────────────┘
+        │                     │
+  ┌─────┴─────┐       ┌──────┴──────┐
+  │ HMI Maestro│       │ HMI Esclavo │
+  │192.168.1.30│       │192.168.1.40 │
+  └────────────┘       └─────────────┘
+
+Configuración de Red:
+  IP PLC Maestro:   192.168.1.10
+  IP PLC Esclavo:   192.168.1.20
+  IP HMI Maestro:   192.168.1.30
+  IP HMI Esclavo:   192.168.1.40
+  IP Laptop:        192.168.1.100
+  Máscara:          255.255.255.0
+  Gateway:          192.168.1.1
+  
+Cables:
+  - CAT5e/CAT6 con conectores RJ45
+  - Tipo directo (no cruzado)
+  - Longitud máxima: 100m por segmento
+</div>
+
+<h4>📝 Procedimiento de Cableado</h4>
+
+<ol>
+<li><strong>Preparación de cables Ethernet:</strong>
+<ul>
+<li>Usar cables CAT5e o CAT6 certificados</li>
+<li>Verificar que los conectores RJ45 estén bien crimpados</li>
+<li>Usar tester de red para verificar continuidad (si está disponible)</li>
+<li>Longitud recomendada: 1-2 metros para laboratorio</li>
+</ul>
+</li>
+<li><strong>Conexión al switch:</strong>
+<ul>
+<li>Conectar cable del <strong>PLC Maestro</strong> (puerto ETH) al <strong>Puerto 1</strong> del switch</li>
+<li>Conectar cable del <strong>PLC Esclavo</strong> (puerto ETH) al <strong>Puerto 2</strong> del switch</li>
+<li>Conectar cable de la <strong>Laptop</strong> al <strong>Puerto 3</strong> del switch</li>
+<li>Conectar cable del <strong>HMI Maestro</strong> al <strong>Puerto 4</strong> del switch</li>
+<li>Conectar cable del <strong>HMI Esclavo</strong> al <strong>Puerto 5</strong> del switch</li>
+</ul>
+</li>
+<li><strong>Verificación de LEDs del switch:</strong>
+<ul>
+<li>Cada puerto debe tener LED verde encendido o parpadeando</li>
+<li>LED apagado = sin conexión (verificar cable)</li>
+<li>LED naranja = velocidad 10 Mbps (aceptable)</li>
+<li>LED verde = velocidad 100 Mbps (óptimo)</li>
+</ul>
+</li>
+<li><strong>Configuración de IP en Laptop:</strong>
+<ul>
+<li>Ir a Configuración de Red en Windows</li>
+<li>Configurar IP estática: 192.168.1.100</li>
+<li>Máscara: 255.255.255.0</li>
+<li>Gateway: 192.168.1.1</li>
+</ul>
+</li>
+<li><strong>Prueba de conectividad (Ping):</strong>
+<ul>
+<li>Abrir CMD en laptop</li>
+<li>Ejecutar: <code>ping 192.168.1.10</code> (PLC Maestro)</li>
+<li>Ejecutar: <code>ping 192.168.1.20</code> (PLC Esclavo)</li>
+<li>Debe haber respuesta de ambos PLCs</li>
+<li>Si no hay respuesta, verificar:
+<ul>
+<li>Cables Ethernet bien conectados</li>
+<li>LEDs del switch encendidos</li>
+<li>IPs configuradas correctamente en PLCs</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+<div class="warning">
+<strong>⚠️ VERIFICACIONES DE SEGURIDAD:</strong>
+<ul>
+<li>✅ Alimentación OFF antes de cablear</li>
+<li>✅ Usar EPP (guantes y gafas)</li>
+<li>✅ No doblar cables Ethernet más de 90°</li>
+<li>✅ Separar cables de red de cables de potencia (mínimo 20cm)</li>
+<li>✅ Usar canaletas o organizadores de cable</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">2</span> Configuración de Direcciones IP en PLCs</h3>
+
+<p><strong>Objetivo:</strong> Configurar las direcciones IP estáticas en ambos PLCs DVP-SE.</p>
+
+<h4>⚙️ Configuración vía ISPSoft</h4>
+
+<ol>
+<li><strong>Abrir ISPSoft</strong> y crear nuevo proyecto para PLC Maestro.</li>
+<li><strong>Seleccionar modelo DVP-SE</strong> en la lista de PLCs.</li>
+<li><strong>Ir a Configuration</strong> → <strong>Device Comment</strong> → <strong>Ethernet</strong>.</li>
+<li><strong>Configurar parámetros de red:</strong>
+
+<div class="diagram">
+Configuración PLC Maestro (DVP-SE #1):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IP Address:      192.168.1.10
+Subnet Mask:     255.255.255.0
+Default Gateway: 192.168.1.1
+
+Modbus TCP Server: ENABLE
+  Port: 502
+  
+Modbus TCP Client: ENABLE
+  Connection 1:
+    Remote IP: 192.168.1.20
+    Remote Port: 502
+    Local IP: 192.168.1.10
+</div>
+</li>
+
+<li><strong>Configurar PLC Esclavo:</strong>
+
+<div class="diagram">
+Configuración PLC Esclavo (DVP-SE #2):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IP Address:      192.168.1.20
+Subnet Mask:     255.255.255.0
+Default Gateway: 192.168.1.1
+
+Modbus TCP Server: ENABLE
+  Port: 502
+  
+Modbus TCP Client: DISABLE (no necesita)
+</div>
+</li>
+
+<li><strong>Descargar configuración</strong> a cada PLC:
+<ul>
+<li>Conectar USB al PLC Maestro</li>
+<li>Download → Configuration → Ethernet</li>
+<li>Repetir para PLC Esclavo</li>
+<li>Reiniciar ambos PLCs después de descargar</li>
+</ul>
+</li>
+
+<li><strong>Verificar configuración:</strong>
+<ul>
+<li>En ISPSoft, ir a Online → Connection Setup</li>
+<li>Seleccionar Ethernet</li>
+<li>Ingresar IP del PLC (192.168.1.10 o 192.168.1.20)</li>
+<li>Click en "Test Connection"</li>
+<li>Debe mostrar "Connection Successful"</li>
+</ul>
+</li>
+</ol>
+
+<h4>🔍 Verificación de Configuración de Red</h4>
+
+<div class="diagram">
+Comandos de Verificación desde Laptop:
+
+1. Verificar conectividad:
+   C:\> ping 192.168.1.10
+   Reply from 192.168.1.10: bytes=32 time<1ms TTL=128
+   
+   C:\> ping 192.168.1.20
+   Reply from 192.168.1.20: bytes=32 time<1ms TTL=128
+
+2. Verificar puerto Modbus TCP (502):
+   C:\> telnet 192.168.1.20 502
+   (Debe abrir ventana negra = puerto abierto)
+
+3. Verificar tabla ARP:
+   C:\> arp -a
+   Interface: 192.168.1.100
+   Internet Address      Physical Address      Type
+   192.168.1.10          00-11-22-33-44-55     dynamic
+   192.168.1.20          00-AA-BB-CC-DD-EE     dynamic
+</div>
+
+<div class="info">
+<strong>💡 Notas Importantes:</strong>
+<ul>
+<li>Ambos PLCs deben estar en la misma subred (192.168.1.x)</li>
+<li>No puede haber IPs duplicadas en la red</li>
+<li>El puerto 502 debe estar habilitado en el firewall (si aplica)</li>
+<li>Los PLCs DVP-SE soportan hasta 8 conexiones Modbus TCP simultáneas</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">3</span> Conexión de Sensores y Actuadores</h3>
+
+<p><strong>Objetivo:</strong> Conectar sensores de nivel y flujo, y la bomba a los PLCs.</p>
+
+<h4>📊 Arquitectura de E/S Distribuidas</h4>
+
+<div class="diagram">
+┌─────────────────────────┐         ┌─────────────────────────┐
+│   PLC MAESTRO (DVP-SE)  │         │   PLC ESCLAVO (DVP-SE)  │
+│   IP: 192.168.1.10      │         │   IP: 192.168.1.20      │
+│   Control de Nivel      │         │   Control de Flujo      │
+│                         │         │                         │
+│  Entradas:              │         │  Entradas:              │
+│  X0: Sensor Nivel       │◄───┐    │  X0: Sensor Flujo       │
+│      (DVP06XA CH1)      │    │    │      (Pulsos)           │
+│  X1: Nivel Alto         │    │    │  X1: Falla Bomba        │
+│  X2: Nivel Bajo         │    │    │                         │
+│  X3: Emergencia         │    │    │  Salidas:               │
+│                         │    │    │  Y0: Enable Bomba       │
+│  Salidas:               │    │    │  Y1: Alarma Local       │
+│  Y0: Válvula Entrada    │    │    │                         │
+│  Y1: Alarma Maestro     │    │    │  Analógicas:            │
+│                         │    │    │  DVP06XA CH1:           │
+│  Ethernet:              │    │    │    Control Bomba 0-10V  │
+│  ETH: Modbus TCP        │    │    │                         │
+└───────────┬─────────────┘    │    └───────────┬─────────────┘
+            │                  │                │
+            │    ETHERNET      │                │
+            │  192.168.1.x     │                │
+            │  Puerto 502      │                │
+            └──────────────────┘                │
+                                                │
+     ┌──────────────────┐              ┌────────┴───────┐
+     │    TANQUE        │              │    BOMBA       │
+     │    SUPERIOR      │              │    DC          │
+     │                  │              │                │
+     │  Nivel Sensor    │              └────────────────┘
+     └──────────────────┘
+
+Sensores:
+  Sensor Nivel: Ultrasónico 0-10V → DVP06XA CH1 → PLC Maestro
+  Sensor Flujo: Turbina pulsos → X0 (contador) → PLC Esclavo
+  
+Actuadores:
+  Válvula Entrada: Solenoide 24V → Y0 → PLC Maestro
+  Bomba DC: MOSFET 0-10V → DVP06XA CH1 → PLC Esclavo
+</div>
+
+<h4>🔌 Tabla de Conexiones Detallada</h4>
+
+<table>
+<tr>
+<th>Dispositivo</th>
+<th>Señal</th>
+<th>Conexión</th>
+<th>PLC</th>
+<th>Tipo</th>
+</tr>
+<tr>
+<td>Sensor Nivel Ultrasónico</td>
+<td>+24V</td>
+<td>24V fuente</td>
+<td>-</td>
+<td>Alimentación</td>
+</tr>
+<tr>
+<td>Sensor Nivel Ultrasónico</td>
+<td>0-10V</td>
+<td>DVP06XA CH1+</td>
+<td>Maestro</td>
+<td>Analógica</td>
+</tr>
+<tr>
+<td>Sensor Nivel Ultrasónico</td>
+<td>GND</td>
+<td>GND común</td>
+<td>-</td>
+<td>Tierra</td>
+</tr>
+<tr>
+<td>Switch Nivel Alto</td>
+<td>Contacto NA</td>
+<td>X1 - COM</td>
+<td>Maestro</td>
+<td>Digital</td>
+</tr>
+<tr>
+<td>Switch Nivel Bajo</td>
+<td>Contacto NA</td>
+<td>X2 - COM</td>
+<td>Maestro</td>
+<td>Digital</td>
+</tr>
+<tr>
+<td>Botón Emergencia</td>
+<td>NC</td>
+<td>X3 - COM</td>
+<td>Maestro</td>
+<td>Digital</td>
+</tr>
+<tr>
+<td>Válvula Solenoide</td>
+<td>24V</td>
+<td>Y0 (transistor)</td>
+<td>Maestro</td>
+<td>Digital</td>
+</tr>
+<tr>
+<td>Sensor Flujo Turbina</td>
+<td>+24V</td>
+<td>24V fuente</td>
+<td>-</td>
+<td>Alimentación</td>
+</tr>
+<tr>
+<td>Sensor Flujo Turbina</td>
+<td>Pulsos</td>
+<td>X0 - COM</td>
+<td>Esclavo</td>
+<td>Digital</td>
+</tr>
+<tr>
+<td>Sensor Flujo Turbina</td>
+<td>GND</td>
+<td>GND común</td>
+<td>-</td>
+<td>Tierra</td>
+</tr>
+<tr>
+<td>Bomba DC</td>
+<td>Control 0-10V</td>
+<td>DVP06XA CH1</td>
+<td>Esclavo</td>
+<td>Analógica</td>
+</tr>
+<tr>
+<td>Bomba DC</td>
+<td>Enable</td>
+<td>Y0 (relay)</td>
+<td>Esclavo</td>
+<td>Digital</td>
+</tr>
+</table>
+
+<div class="warning">
+<strong>⚠️ CONSIDERACIONES DE CABLEADO:</strong>
+<ul>
+<li>Separar cables de potencia (bomba) de cables de señal (sensores) mínimo 20cm</li>
+<li>Usar blindaje en cables de sensores analógicos, conectar blindaje a tierra en un solo punto</li>
+<li>Verificar polaridad de sensores antes de conectar</li>
+<li>Usar fuentes de alimentación reguladas y aisladas</li>
+<li>Instalar protecciones (fusibles) en cada rama de alimentación</li>
+<li>NO pasar cables Ethernet junto a cables de alta tensión</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">4</span> Programación del Control en Cascada con Modbus TCP</h3>
+
+<p><strong>Objetivo:</strong> Implementar los dos lazos PID anidados distribuidos en los dos PLCs con comunicación Modbus TCP/IP.</p>
+
+<h4>🎛️ Estrategia de Control Distribuido</h4>
+
+<div class="diagram">
+┌──────────────────────────────────────────────────────────────┐
+│                    PLC MAESTRO (DVP-SE)                      │
+│                    IP: 192.168.1.10                          │
+│                    CONTROL DE NIVEL                          │
+│                                                              │
+│  SP_Nivel (HMI) ──⊕────[PID Nivel]─────┐                    │
+│                 ─                     │                      │
+│                 │                     │                      │
+│               ──┘                     ▼                      │
+│                                 SP_Flujo_Remoto              │
+│  PV_Nivel (Sensor)                    │                      │
+│                                       │                      │
+│                              Modbus TCP Client               │
+│                              WREGB a 192.168.1.20            │
+│                              (Escribe en 40001)              │
+└──────────────────────────────────────────────────────────────┘
+                                       │
+                                       │ Ethernet
+                                       │ TCP/IP
+                                       │ Puerto 502
+                                       ▼
+┌──────────────────────────────────────────────────────────────┐
+│                   PLC ESCLAVO (DVP-SE)                       │
+│                   IP: 192.168.1.20                           │
+│                   CONTROL DE FLUJO                           │
+│                                                              │
+│  SP_Flujo_Recibido ─────[PID Flujo]────[Bomba]──► Flujo    │
+│  (desde 40001)     ─                     │                   │
+│                    │                     │                   │
+│                  ──┘                     ▼                   │
+│                                 PV_Flujo (Sensor)            │
+│                                       │                      │
+│                              Modbus TCP Server               │
+│                              (Lee desde 40002)               │
+└──────────────────────────────────────────────────────────────┘
+</div>
+
+<h4>📝 Programa PLC Maestro - Control de Nivel con Modbus TCP</h4>
+
+<div class="diagram">
+PLC MAESTRO (DVP-SE) - Control de Nivel
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Network 1: Lectura de sensor de nivel (analógico)
+      M1000 (Comunicación OK)
+      │
+      ├──[ MOV  D0     D100 ]─────────  (D0 = valor ADC 0-4000)
+      ├──[ MUL  D100   K100 ]─────────  (Escalar a 0-100%)
+      ├──[ DIV  D100   K4000 ]──────── 
+      │
+      └──[ MOV  D100   D820 ]─────────  (PV_Nivel = 0-100%)
+
+Network 2: Control PID de Nivel
+      M1000
+      │
+      ├──[ PID  D810  D820 ]──────────  (D810=SP, D820=PV)
+      │   Parámetros:
+      │   D800 = Kp (ganancia proporcional)
+      │   D801 = Ti (tiempo integral)
+      │   D802 = Td (tiempo derivativo)
+      │   D803 = ΔT (tiempo muestreo, ej. K500 = 500ms)
+      │
+      └──[ MOV  D830   D300 ]─────────  (D300 = Salida PID 0-100%)
+
+Network 3: Escalamiento de SP_Flujo para esclavo
+      M1000
+      │
+      ├──[ MUL  D300   K40 ]──────────  (0-100 → 0-4000)
+      │
+      └──[ MOV  D300   D400 ]─────────  (D400 = SP_Flujo a enviar)
+
+Network 4: Escritura Modbus TCP - Enviar SP_Flujo al esclavo
+      M1000
+      │   M1162 (Flag escritura)
+      ├──[ WREGB  K1  H0A01  K4000  D400  K1 ]──
+      │   │      │   │       │       │     │
+      │   │      │   │       │       │     └─ Cantidad de registros
+      │   │      │   │       │       └─ Valor a escribir (D400)
+      │   │      │   │       └─ Dirección registro esclavo (4000)
+      │   │      │   └─ ID de conexión Modbus TCP (0A=10, 01=1)
+      │   │      └─ Puerto COM (1=Ethernet)
+      │   └─ Número de slave (1)
+      │
+      └──[ RST  M1162 ]────────────────  (Reset flag)
+
+Network 5: Lectura Modbus TCP - Leer PV_Flujo del esclavo
+      M1000
+      │   M1163 (Flag lectura)
+      ├──[ RDREGB  K1  H0A01  K4001  D500  K1 ]──
+      │   │       │   │       │       │     │
+      │   │       │   │       │       │     └─ Cantidad de registros
+      │   │       │   │       │       └─ Registro destino (D500)
+      │   │       │   │       └─ Dirección registro esclavo (4001)
+      │   │       │   └─ ID de conexión Modbus TCP (0A01)
+      │   │       └─ Puerto COM (1=Ethernet)
+      │   └─ Número de slave (1)
+      │
+      ├──[ MOV  D500   D821 ]──────────  (PV_Flujo remoto)
+      │
+      └──[ RST  M1163 ]────────────────  (Reset flag)
+
+Network 6: Control de válvula de entrada
+      X2 (Nivel Bajo)
+      │
+      ├──[ SET  Y0 ]───────────────────  (Abrir válvula)
+      
+      X1 (Nivel Alto)
+      │
+      └──[ RST  Y0 ]───────────────────  (Cerrar válvula)
+
+Network 7: Parada de emergencia
+      X3 (Emergencia NC)
+      │
+      ├──[ RST  M1000 ]────────────────  (Detener comunicación)
+      ├──[ RST  Y0 ]───────────────────  (Cerrar válvula)
+      └──[ MOV  K0    D400 ]───────────  (SP_Flujo = 0)
+
+Network 8: Indicador de comunicación Ethernet
+      M1050 (Ethernet Link OK)
+      │
+      ├──[ SET  M1000 ]────────────────  (Red activa)
+      
+      M1051 (Ethernet Error)
+      │
+      └──[ RST  M1000 ]────────────────  (Error de red)
+</div>
+
+<h4>📝 Programa PLC Esclavo - Control de Flujo con Modbus TCP Server</h4>
+
+<div class="diagram">
+PLC ESCLAVO (DVP-SE) - Control de Flujo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Network 1: Lectura de sensor de flujo (pulsos)
+      M1000 (Siempre activo)
+      │
+      ├──[ SPD  X0  K200  D0 ]─────────  (Contar pulsos en 200ms)
+      │
+      ├──[ MOV  D0    D100 ]───────────  (Copiar pulsos)
+      ├──[ MUL  D100  K60 ]────────────  (Pulsos/min)
+      ├──[ MUL  D100  K1000 ]──────────
+      ├──[ DIV  D100  K200 ]───────────
+      │
+      └──[ MOV  D100  D820 ]───────────  (PV_Flujo = L/min)
+
+Network 2: Control PID de Flujo
+      M1000
+      │
+      ├──[ PID  D810  D820 ]───────────  (D810=SP, D820=PV)
+      │   Parámetros:
+      │   D800 = Kp (ganancia proporcional)
+      │   D801 = Ti (tiempo integral, ej. K300)
+      │   D802 = Td (tiempo derivativo, ej. K75)
+      │   D803 = ΔT (tiempo muestreo, ej. K200 = 200ms)
+      │
+      └──[ MOV  D830  D2002 ]──────────  (D2002 = Salida PID 0-100%)
+
+Network 3: Escalamiento de salida PID a 0-10V
+      M1000
+      │
+      ├──[ MUL  D2002  K40 ]───────────  (0-100 → 0-4000)
+      │
+      └──[ MOV  D2002  D2100 ]─────────  (D2100 → DVP06XA CH1)
+
+Network 4: Control de enable de bomba
+      M1000
+      │   X1 (Falla bomba)
+      ├──[ AND   M1000 ]──[ ANI  X1 ]──[ OUT  Y0 ]──
+      │                                   (Enable bomba)
+      │
+      └──[ OUT  M2003 ]─────────────────  (Estado bomba = Run)
+
+Network 5: Mapeo de registros Modbus TCP Server
+      M1000
+      │
+      ├──[ MOV  D4000  D4000 ]─────────  (SP_Flujo_Recibido de maestro)
+      ├──[ MOV  D820   D4001 ]─────────  (PV_Flujo medido → 4002)
+      ├──[ MOV  D2002  D4002 ]─────────  (Salida PID → 4003)
+      └──[ MOV  M2003  D4003 ]─────────  (Estado bomba → 4004)
+
+      Nota: D4000-D4999 son registros accesibles vía Modbus TCP
+            como holding registers 40001-41000
+
+Network 6: Alarmas locales
+      X1 (Falla bomba)
+      │
+      ├──[ SET  M2004 ]────────────────  (Alarma falla)
+      ├──[ SET  Y1 ]───────────────────  (Alarma visual)
+      └──[ RST  Y0 ]───────────────────  (Detener bomba)
+      
+      M1001 (Reset alarma)
+      │
+      └──[ RST  M2004 ]────────────────  (Reset alarma)
+      └──[ RST  Y1 ]───────────────────  (Apagar alarma)
+
+Network 7: Indicador de servidor Modbus TCP activo
+      M1060 (Modbus TCP Server activo)
+      │
+      └──[ SET  M1000 ]────────────────  (Servidor listo)
+</div>
+
+<div class="info">
+<strong>💡 Sintonización del Control en Cascada:</strong>
+<ol>
+<li><strong>Primero sintonizar el lazo secundario (flujo):</strong>
+<ul>
+<li>Poner el lazo de nivel en manual</li>
+<li>Aplicar escalón en SP_Flujo</li>
+<li>Ajustar Kp, Ti, Td del PID de flujo</li>
+<li>Objetivo: respuesta rápida sin sobrepico excesivo</li>
+</ul>
+</li>
+<li><strong>Luego sintonizar el lazo primario (nivel):</strong>
+<ul>
+<li>Cerrar el lazo de flujo (automático)</li>
+<li>Aplicar escalón en SP_Nivel</li>
+<li>Ajustar Kp, Ti, Td del PID de nivel</li>
+<li>Objetivo: nivel estable, sin oscilaciones</li>
+</ul>
+</li>
+</ol>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">5</span> Diseño de HMIs con Conexión Ethernet</h3>
+
+<p><strong>Objetivo:</strong> Crear interfaces de operador para monitoreo y control del sistema distribuido vía Ethernet.</p>
+
+<h4>🖥️ HMI Maestro - Supervisión de Nivel</h4>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────┐
+│  HMI MAESTRO - Control de Nivel de Tanque               │
+│  IP: 192.168.1.30                                       │
+│  PLC: DVP-SE (192.168.1.10)                             │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────────────┐                                    │
+│  │   TANQUE        │  SP_Nivel: [1500] L               │
+│  │   ███████████   │  PV_Nivel: [1485] L               │
+│  │   ███████████   │  ─────────────────────            │
+│  │   ███████████   │  SP_Flujo: [75.5] L/min           │
+│  │   ███████████   │  PV_Flujo: [74.2] L/min           │
+│  │   ░░░░░░░░░░░   │                                    │
+│  │                 │  Estado Sistema: [● NORMAL]       │
+│  └─────────────────┘                                    │
+│                                                         │
+│  [ MARCHA ]  [ PARO ]  [ EMERGENCIA ]                  │
+│                                                         │
+│  Alarmas Activas:                                       │
+│  ☐ Nivel Alto    ☐ Nivel Bajo    ☐ Falla Comunicación │
+│                                                         │
+│  ────────────────────────────────────────────────────   │
+│  Red Ethernet: [● ACTIVA]  PLC: 192.168.1.10           │
+│  Ping: 2ms  Errores Modbus: 0                          │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+
+Configuración HMI Maestro:
+  - Conexión: Ethernet TCP/IP
+  - IP HMI: 192.168.1.30
+  - IP PLC: 192.168.1.10
+  - Puerto: 502 (Modbus TCP)
+  - Driver: Delta DVP Ethernet
+  
+Elementos HMI:
+  - Numeric Input: D810 (SP_Nivel)
+  - Numeric Display: D820 (PV_Nivel)
+  - Numeric Display: D500 (PV_Flujo desde esclavo)
+  - Bar Graph: D820 (Nivel visual)
+  - Bit Button: M0 (Marcha), M1 (Paro), M2 (Emergencia)
+  - Lamp: M10 (Alarma Nivel Alto), M11 (Alarma Nivel Bajo)
+  - System Lamp: M1000 (Comunicación OK)
+  - Text Display: Estado de red Ethernet
+</div>
+
+<h4>🖥️ HMI Esclavo - Control de Flujo</h4>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────┐
+│  HMI ESCLAVO - Control de Flujo de Bomba                │
+│  IP: 192.168.1.40                                       │
+│  PLC: DVP-SE (192.168.1.20)                             │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────────────┐                                    │
+│  │    BOMBA        │  SP_Flujo: [75.5] L/min           │
+│  │    ┌───┐        │  (desde maestro)                  │
+│  │    │ ▶ │        │  PV_Flujo: [74.2] L/min           │
+│  │    └───┘        │  ─────────────────────            │
+│  │   RUNNING       │  Salida PID: [68.5] %             │
+│  │                 │                                    │
+│  └─────────────────┘  Estado: [● OPERANDO]            │
+│                                                         │
+│  [ MANUAL ]  [ AUTO ]  [ RESET ALARMA ]                │
+│                                                         │
+│  Parámetros PID:                                        │
+│  Kp: [2.5]  Ti: [300]ms  Td: [75]ms                    │
+│                                                         │
+│  ────────────────────────────────────────────────────   │
+│  Temperatura Motor: [45] °C                             │
+│  Horas Operación: [1250] h                              │
+│                                                         │
+│  Alarmas Locales:                                       │
+│  ☐ Sobrecorriente  ☐ Sobrecalentamiento  ☐ Sin Flujo  │
+│                                                         │
+│  Red: [● CONECTADO]  PLC: 192.168.1.20                 │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+
+Configuración HMI Esclavo:
+  - Conexión: Ethernet TCP/IP
+  - IP HMI: 192.168.1.40
+  - IP PLC: 192.168.1.20
+  - Puerto: 502 (Modbus TCP)
+  - Driver: Delta DVP Ethernet
+  
+Elementos HMI:
+  - Numeric Display: D4000 (SP_Flujo recibido)
+  - Numeric Display: D4001 (PV_Flujo medido)
+  - Numeric Display: D4002 (Salida PID)
+  - Bit Button: M100 (Modo Manual), M101 (Modo Auto)
+  - Numeric Input: D800, D801, D802 (Parámetros PID)
+  - Lamp: M2003 (Bomba Running), M2004 (Alarma)
+  - Meter: D4002 (Salida PID 0-100%)
+</div>
+
+<h4> Configuración de Comunicación HMI-PLC vía Ethernet</h4>
+
+<table>
+<tr>
+<th>HMI</th>
+<th>IP HMI</th>
+<th>IP PLC</th>
+<th>Puerto</th>
+<th>Protocolo</th>
+</tr>
+<tr>
+<td>HMI Maestro</td>
+<td>192.168.1.30</td>
+<td>192.168.1.10</td>
+<td>502</td>
+<td>Modbus TCP</td>
+</tr>
+<tr>
+<td>HMI Esclavo</td>
+<td>192.168.1.40</td>
+<td>192.168.1.20</td>
+<td>502</td>
+<td>Modbus TCP</td>
+</tr>
+</table>
+
+<div class="info">
+<strong>💡 Configuración en ScreenEditor:</strong>
+<ol>
+<li>Abrir ScreenEditor y crear nuevo proyecto</li>
+<li>Ir a Project → Device → Add</li>
+<li>Seleccionar "Delta" → "DVP Series (Ethernet)"</li>
+<li>Configurar:
+<ul>
+<li>Device Name: PLC_Maestro</li>
+<li>IP Address: 192.168.1.10</li>
+<li>Port: 502</li>
+<li>Timeout: 3000ms</li>
+</ul>
+</li>
+<li>Repetir para PLC_Esclavo (192.168.1.20)</li>
+<li>Descargar proyecto a HMI vía Ethernet o USB</li>
+</ol>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">6</span> Pruebas de Comunicación Modbus TCP</h3>
+
+<p><strong>Objetivo:</strong> Verificar el intercambio de datos entre PLCs vía Ethernet antes de operar el proceso.</p>
+
+<h4>🧪 Procedimiento de Prueba</h4>
+
+<ol>
+<li><strong>Verificación de conectividad de red:</strong>
+<ul>
+<li>Energizar ambos PLCs y switch</li>
+<li>Verificar que LEDs de Ethernet en PLCs estén encendidos</li>
+<li>LED verde fijo = Link activo</li>
+<li>LED naranja/verde parpadeante = Actividad de red</li>
+<li>Abrir CMD en laptop y ejecutar:
+<div class="diagram">C:\> ping 192.168.1.10
+Reply from 192.168.1.10: bytes=32 time<1ms TTL=128
+
+C:\> ping 192.168.1.20
+Reply from 192.168.1.20: bytes=32 time<1ms TTL=128
+
+C:\> ping 192.168.1.30
+Reply from 192.168.1.30: bytes=32 time<1ms TTL=128
+
+C:\> ping 192.168.1.40
+Reply from 192.168.1.40: bytes=32 time<1ms TTL=128</div>
+</li>
+</ul>
+</li>
+
+<li><strong>Prueba de escritura Modbus TCP (Maestro → Esclavo):</strong>
+<ul>
+<li>En el PLC Maestro, forzar un valor en D400 (ej. K2000)</li>
+<li>Ejecutar instrucción WREGB</li>
+<li>En el PLC Esclavo, monitorear D4000 (registro 40001)</li>
+<li>Verificar que D4000 = D400 (2000)</li>
+<li>Si no coincide, verificar:
+<ul>
+<li>IP del esclavo en instrucción WREGB (192.168.1.20)</li>
+<li>Puerto Modbus (502)</li>
+<li>Dirección del registro (4000)</li>
+<li>Conexión Modbus TCP configurada en ISPSoft</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Prueba de lectura Modbus TCP (Maestro ← Esclavo):</strong>
+<ul>
+<li>En el PLC Esclavo, forzar un valor en D4001 (ej. K1500)</li>
+<li>Ejecutar instrucción RDREGB desde el Maestro</li>
+<li>En el PLC Maestro, monitorear D500</li>
+<li>Verificar que D500 = D4001 (1500)</li>
+<li>Si no coincide, verificar:
+<ul>
+<li>Flag de lectura (M1163)</li>
+<li>Dirección del registro (4001)</li>
+<li>Timeout de comunicación (aumentar si es necesario)</li>
+<li>Firewall o antivirus bloqueando puerto 502</li>
+</ul>
+</li>
+</ul>
+</li>
+
+<li><strong>Prueba de comunicación continua:</strong>
+<ul>
+<li>Ejecutar programa completo con RDREGB y WREGB cíclicos</li>
+<li>Monitorear contador de errores de comunicación</li>
+<li>Verificar que no haya timeouts (M1051 no debe activarse)</li>
+<li>Medir tiempo de ciclo de comunicación (debe ser &lt; 50ms)</li>
+<li>Verificar LEDs de actividad en switch (deben parpadear)</li>
+</ul>
+</li>
+
+<li><strong>Prueba de recuperación de fallos:</strong>
+<ul>
+<li>Desconectar cable Ethernet del PLC Esclavo</li>
+<li>Verificar que se active alarma de comunicación (M1051)</li>
+<li>Verificar que el sistema entre en modo seguro (SP_Flujo = 0)</li>
+<li>Reconectar cable Ethernet</li>
+<li>Verificar que la comunicación se restablezca automáticamente</li>
+<li>El tiempo de recuperación debe ser &lt; 5 segundos</li>
+</ul>
+</li>
+
+<li><strong>Prueba con software de diagnóstico:</strong>
+<ul>
+<li>Usar software Modbus Poll o Modbus Slave en laptop</li>
+<li>Configurar conexión a 192.168.1.20 puerto 502</li>
+<li>Leer registro 40002 (PV_Flujo)</li>
+<li>Escribir en registro 40001 (SP_Flujo)</li>
+<li>Verificar que los valores se actualicen en el PLC</li>
+</ul>
+</li>
+</ol>
+
+<h4>📊 Diagnóstico de Errores Comunes en Modbus TCP</h4>
+
+<table>
+<tr>
+<th>Síntoma</th>
+<th>Causa Probable</th>
+<th>Solución</th>
+</tr>
+<tr>
+<td>Ping no responde</td>
+<td>IP incorrecta o cable desconectado</td>
+<td>Verificar IP y LEDs del switch</td>
+</tr>
+<tr>
+<td>WREGB no escribe en esclavo</td>
+<td>IP del esclavo incorrecta</td>
+<td>Verificar configuración en ISPSoft</td>
+</tr>
+<tr>
+<td>RDREGB retorna error</td>
+<td>Timeout muy corto</td>
+<td>Aumentar timeout a 3000ms</td>
+</tr>
+<tr>
+<td>Comunicación intermitente</td>
+<td>Cable Ethernet dañado</td>
+<td>Reemplazar cable, verificar con tester</td>
+</tr>
+<tr>
+<td>Datos incorrectos</td>
+<td>Dirección de registro errónea</td>
+<td>Verificar mapeo de registros (40001 = D4000)</td>
+</tr>
+<tr>
+<td>No hay conexión TCP</td>
+<td>Puerto 502 bloqueado</td>
+<td>Verificar firewall, habilitar puerto 502</td>
+</tr>
+<tr>
+<td>Múltiples errores CRC</td>
+<td>Switch defectuoso o congestión</td>
+<td>Reemplazar switch, verificar tráfico de red</td>
+</tr>
+</table>
+
+<div class="warning">
+<strong>⚠️ INDICADORES DE ESTADO:</strong>
+<ul>
+<li><strong>LED ETH en PLC:</strong> Verde fijo = Link activo, Parpadeo = Actividad</li>
+<li><strong>LED ERROR en PLC:</strong> Debe estar apagado (si parpadea, hay error)</li>
+<li><strong>M1000 (Maestro):</strong> Debe estar SET si la comunicación es exitosa</li>
+<li><strong>M1050:</strong> Ethernet Link OK (debe estar activo)</li>
+<li><strong>M1051:</strong> Ethernet Error (debe estar desactivado)</li>
+<li><strong>M1060 (Esclavo):</strong> Modbus TCP Server activo</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">7</span> Puesta en Marcha del Sistema</h3>
+
+<p><strong>Objetivo:</strong> Operar el sistema completo con control en cascada y verificar desempeño.</p>
+
+<h4>🚀 Secuencia de Arranque</h4>
+
+<ol>
+<li><strong>Verificaciones previas (CHECKLIST):</strong>
+<ul>
+<li>☐ Nivel de agua en tanque inferior suficiente (mínimo 30%)</li>
+<li>☐ Válvulas manuales en posición correcta (abiertas)</li>
+<li>☐ Sensor de nivel calibrado (verificar lectura en HMI)</li>
+<li>☐ Sensor de flujo calibrado (verificar lectura en HMI)</li>
+<li>☐ Bomba sin obstrucciones mecánicas</li>
+<li>☐ EPP colocado (gafas, guantes)</li>
+<li>☐ Área de trabajo limpia y ordenada</li>
+<li>☐ Botón de emergencia accesible y funcional</li>
+<li>☐ Red Ethernet activa (LEDs en switch encendidos)</li>
+<li>☐ Ping exitoso a ambos PLCs</li>
+</ul>
+</li>
+
+<li><strong>Energización:</strong>
+<ul>
+<li>Energizar fuente de 24V DC (PLCs y sensores)</li>
+<li>Verificar que ambos PLCs arranquen sin errores</li>
+<li>Verificar que HMIs muestren comunicación activa</li>
+<li>Verificar que LEDs de Ethernet estén activos</li>
+<li>Energizar fuente de bomba (12V/24V DC)</li>
+</ul>
+</li>
+
+<li><strong>Modo Manual (pruebas individuales):</strong>
+<ul>
+<li>En HMI Esclavo, seleccionar modo MANUAL</li>
+<li>Activar bomba manualmente desde HMI</li>
+<li>Verificar que el flujo aumente gradualmente</li>
+<li>Verificar que PV_Flujo en HMI coincida con caudal real</li>
+<li>Detener bomba</li>
+<li>Abrir válvula de entrada manualmente (Y0)</li>
+<li>Verificar que el nivel del tanque superior aumente</li>
+<li>Verificar que PV_Nivel en HMI coincida con nivel real</li>
+</ul>
+</li>
+
+<li><strong>Modo Automático - Lazo de Flujo:</strong>
+<ul>
+<li>En HMI Esclavo, seleccionar modo AUTO</li>
+<li>Ingresar SP_Flujo = 50 L/min</li>
+<li>Activar bomba</li>
+<li>Observar respuesta del PID de flujo</li>
+<li>Verificar que PV_Flujo alcance SP_Flujo sin sobrepico excesivo</li>
+<li>Ajustar parámetros PID si es necesario</li>
+</ul>
+</li>
+
+<li><strong>Modo Automático - Control en Cascada:</strong>
+<ul>
+<li>En HMI Maestro, seleccionar modo AUTO</li>
+<li>Ingresar SP_Nivel = 1500 L (75% del tanque)</li>
+<li>Activar sistema</li>
+<li>Observar:
+<ul>
+<li>El PID de nivel calcula SP_Flujo</li>
+<li>SP_Flujo se envía al esclavo vía Modbus TCP</li>
+<li>El PID de flujo ajusta la bomba</li>
+<li>El nivel del tanque se estabiliza en SP_Nivel</li>
+</ul>
+</li>
+<li>Verificar en HMI Maestro que PV_Flujo se actualice desde esclavo</li>
+<li>Monitorear tiempo de respuesta de red (debe ser &lt; 50ms)</li>
+</ul>
+</li>
+
+<li><strong>Prueba de rechazo de perturbaciones:</strong>
+<ul>
+<li>Con el sistema en estado estable, abrir válvula de salida del tanque</li>
+<li>Observar cómo el control en cascada compensa:
+<ul>
+<li>El nivel comienza a bajar</li>
+<li>El PID de nivel aumenta SP_Flujo</li>
+<li>SP_Flujo se envía vía Ethernet al esclavo</li>
+<li>El PID de flujo aumenta velocidad de bomba</li>
+<li>El nivel se recupera y estabiliza</li>
+</ul>
+</li>
+<li>Medir tiempo de recuperación (debe ser &lt; 2 minutos)</li>
+</ul>
+</li>
+
+<li><strong>Prueba de cambio de setpoint:</strong>
+<ul>
+<li>Cambiar SP_Nivel de 1500 L a 1800 L (90%)</li>
+<li>Observar respuesta del sistema</li>
+<li>Verificar que no haya sobrepico (&lt; 5%)</li>
+<li>Medir tiempo de establecimiento (debe ser &lt; 3 minutos)</li>
+</ul>
+</li>
+</ol>
+
+<div class="info">
+<strong>💡 Parámetros Típicos de Desempeño:</strong>
+<ul>
+<li><strong>Error en estado estable:</strong> &lt; 2% del SP</li>
+<li><strong>Sobrepico máximo:</strong> &lt; 10%</li>
+<li><strong>Tiempo de establecimiento:</strong> &lt; 5 minutos</li>
+<li><strong>Rechazo de perturbaciones:</strong> Recuperación en &lt; 2 minutos</li>
+<li><strong>Latencia de red:</strong> &lt; 50ms (ping + Modbus)</li>
+<li><strong>Tasa de errores Modbus:</strong> &lt; 0.1%</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">8</span> Aplicación de Normas de Seguridad</h3>
+
+<p><strong>Objetivo:</strong> Implementar y verificar todas las medidas de seguridad industrial.</p>
+
+<h4>⚠️ Protocolos de Seguridad Implementados</h4>
+
+<h5>1. Seguridad Eléctrica</h5>
+
+<table>
+<tr>
+<th>Medida</th>
+<th>Implementación</th>
+<th>Verificación</th>
+</tr>
+<tr>
+<td>Protección contra cortocircuito</td>
+<td>Fusibles 2A en cada rama de 24V DC</td>
+<td>Verificar que fusibles sean del valor correcto</td>
+</tr>
+<tr>
+<td>Protección contra sobrecarga</td>
+<td>Breaker termomagnético 10A en alimentación principal</td>
+<td>Verificar que breaker no se dispare en operación normal</td>
+</tr>
+<tr>
+<td>Puesta a tierra</td>
+<td>Tierra física conectada a gabinetes y blindajes</td>
+<td>Medir resistencia de tierra (&lt; 25Ω)</td>
+</tr>
+<tr>
+<td>Aislamiento galvánico</td>
+<td>Fuentes aisladas para PLCs y bomba</td>
+<td>Verificar que no haya continuidad entre primario y secundario</td>
+</tr>
+</table>
+
+<h5>2. Seguridad del Proceso</h5>
+
+<table>
+<tr>
+<th>Riesgo</th>
+<th>Protección</th>
+<th>Nivel</th>
+</tr>
+<tr>
+<td>Sobrellenado de tanque</td>
+<td>Switch de nivel alto + Válvula de alivio</td>
+<td>Doble protección</td>
+</tr>
+<tr>
+<td>Operación de bomba en seco</td>
+<td>Switch de nivel bajo en tanque de succión</td>
+<td>Enclavamiento</td>
+</tr>
+<tr>
+<td>Sobrepresión en tubería</td>
+<td>Válvula de alivio de presión (6 bar)</td>
+<td>Mecánica</td>
+</tr>
+<tr>
+<td>Sobrecorriente en bomba</td>
+<td>Sensor de corriente + PLC</td>
+<td>Electrónica</td>
+</tr>
+<tr>
+<td>Sobrecalentamiento de motor</td>
+<td>Termistor PTC en devanado</td>
+<td>Térmica</td>
+</tr>
+</table>
+
+<h5>3. Parada de Emergencia</h5>
+
+<div class="diagram">
+Circuito de Emergencia (Categoría 0 - Parada Inmediata):
+
+Botón E-Stop (NC) ──[X3]──┬──[RST M1000]── (Detener comunicación)
+                           │
+                           ├──[RST Y0]─────  (Cerrar válvula)
+                           │
+                           ├──[RST Y1]─────  (Detener bomba)
+                           │
+                           └──[MOV K0 D400]─ (SP_Flujo = 0)
+
+Características:
+  - Botón de hongo rojo con fondo amarillo
+  - Contacto NC (normalmente cerrado)
+  - Doble canal (redundante)
+  - Enclavamiento mecánico (giro para reset)
+  - Ubicación accesible (máximo 3m del operador)
+  - Reset solo manual (no automático)
+</div>
+
+<h5>4. Ciberseguridad Industrial</h5>
+
+<table>
+<tr>
+<th>Riesgo</th>
+<th>Medida de Protección</th>
+</tr>
+<tr>
+<td>Acceso no autorizado a red</td>
+<td>Red industrial aislada, sin conexión a Internet</td>
+</tr>
+<tr>
+<td>Intrusión en PLCs</td>
+<td>Contraseña en PLCs, puertos USB deshabilitados</td>
+</tr>
+<tr>
+<td>Sniffing de datos</td>
+<td>Switch con VLAN, red física separada</td>
+</tr>
+<tr>
+<td>Modificación de programa</td>
+<td>Backup de programa, control de versiones</td>
+</tr>
+<tr>
+<td>Denegación de servicio</td>
+<td>Firewall en switch, limitación de conexiones</td>
+</tr>
+</table>
+
+<h5>5. Procedimientos de Bloqueo/Etiquetado (LOTO)</h5>
+
+<ol>
+<li><strong>Antes de mantenimiento:</strong>
+<ul>
+<li>Presionar botón de emergencia</li>
+<li>Desenergizar fuentes de alimentación</li>
+<li>Colocar candado en breaker principal</li>
+<li>Colocar etiqueta "PELIGRO - NO ENERGIZAR"</li>
+<li>Verificar ausencia de voltaje con multímetro</li>
+<li>Drenar tanques completamente</li>
+<li>Desconectar cables Ethernet (si es necesario)</li>
+</ul>
+</li>
+<li><strong>Después de mantenimiento:</strong>
+<ul>
+<li>Retirar herramientas y equipos del área</li>
+<li>Verificar que todas las conexiones estén firmes</li>
+<li>Retirar candados y etiquetas</li>
+<li>Restaurar energía gradualmente</li>
+<li>Verificar operación normal</li>
+<li>Verificar comunicación de red</li>
+</ul>
+</li>
+</ol>
+
+<h5>6. Equipo de Protección Personal (EPP)</h5>
+
+<table>
+<tr>
+<th>Actividad</th>
+<th>EPP Requerido</th>
+</tr>
+<tr>
+<td>Cableado eléctrico</td>
+<td>Guantes dieléctricos, gafas de seguridad, calzado aislante</td>
+</tr>
+<tr>
+<td>Operación del sistema</td>
+<td>Gafas de seguridad, guantes de nitrilo</td>
+</tr>
+<tr>
+<td>Mantenimiento mecánico</td>
+<td>Gafas de seguridad, guantes de cuero, calzado de seguridad</td>
+</tr>
+<tr>
+<td>Manejo de productos químicos (si aplica)</td>
+<td>Gafas, guantes químicos, delantal, respirador</td>
+</tr>
+</table>
+
+<div class="warning">
+<strong>⚠️ REGLAS DE ORO DE SEGURIDAD:</strong>
+<ol>
+<li><strong>NUNCA</strong> trabajar en equipos energizados sin autorización especial</li>
+<li><strong>SIEMPRE</strong> verificar ausencia de voltaje antes de tocar conductores</li>
+<li><strong>SIEMPRE</strong> usar EPP adecuado para la tarea</li>
+<li><strong>NUNCA</strong> anular o puentear dispositivos de seguridad</li>
+<li><strong>SIEMPRE</strong> mantener área de trabajo limpia y ordenada</li>
+<li><strong>NUNCA</strong> operar equipos sin capacitación adecuada</li>
+<li><strong>SIEMPRE</strong> reportar condiciones inseguras inmediatamente</li>
+<li><strong>SIEMPRE</strong> aislar red industrial de red corporativa</li>
+</ol>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">9</span> Análisis de Desempeño y Comparación</h3>
+
+<p><strong>Objetivo:</strong> Evaluar el desempeño del control en cascada vs control simple y de Modbus TCP vs RTU.</p>
+
+<h4>📊 Pruebas Comparativas de Control</h4>
+
+<h5>Prueba 1: Respuesta a Escalón de Setpoint</h5>
+
+<table>
+<tr>
+<th>Parámetro</th>
+<th>Control Simple (Nivel)</th>
+<th>Control en Cascada</th>
+<th>Mejora</th>
+</tr>
+<tr>
+<td>Tiempo de subida (0-63%)</td>
+<td>180 segundos</td>
+<td>120 segundos</td>
+<td>33% más rápido</td>
+</tr>
+<tr>
+<td>Sobrepico máximo</td>
+<td>15%</td>
+<td>5%</td>
+<td>66% menos</td>
+</tr>
+<tr>
+<td>Tiempo de establecimiento</td>
+<td>420 segundos</td>
+<td>240 segundos</td>
+<td>43% más rápido</td>
+</tr>
+<tr>
+<td>Error en estado estable</td>
+<td>3%</td>
+<td>1%</td>
+<td>66% menos</td>
+</tr>
+</table>
+
+<h5>Prueba 2: Rechazo de Perturbaciones</h5>
+
+<p><strong>Perturbación:</strong> Apertura súbita de válvula de salida (cambio de carga del 50%)</p>
+
+<table>
+<tr>
+<th>Parámetro</th>
+<th>Control Simple</th>
+<th>Control en Cascada</th>
+<th>Mejora</th>
+</tr>
+<tr>
+<td>Desviación máxima de nivel</td>
+<td>120 L (8%)</td>
+<td>45 L (3%)</td>
+<td>62% menos</td>
+</tr>
+<tr>
+<td>Tiempo de recuperación</td>
+<td>280 segundos</td>
+<td>95 segundos</td>
+<td>66% más rápido</td>
+</tr>
+<tr>
+<td>Integral del error (IAE)</td>
+<td>18500 L·s</td>
+<td>4200 L·s</td>
+<td>77% menos</td>
+</tr>
+</table>
+
+<h4> Comparación: Modbus TCP vs Modbus RTU</h4>
+
+<table>
+<tr>
+<th>Parámetro</th>
+<th>Modbus RTU (RS-485)</th>
+<th>Modbus TCP (Ethernet)</th>
+<th>Mejora</th>
+</tr>
+<tr>
+<td>Velocidad de transmisión</td>
+<td>115.2 kbps máximo</td>
+<td>100 Mbps</td>
+<td>868x más rápido</td>
+</tr>
+<tr>
+<td>Tiempo de ciclo</td>
+<td>100-200 ms</td>
+<td>10-50 ms</td>
+<td>4x más rápido</td>
+</tr>
+<tr>
+<td>Distancia máxima</td>
+<td>1200m (sin repetidor)</td>
+<td>Ilimitada (vía routers)</td>
+<td>Superior</td>
+</tr>
+<tr>
+<td>Número de dispositivos</td>
+<td>32 por segmento</td>
+<td>254 por subred</td>
+<td>8x más</td>
+</tr>
+<tr>
+<td>Diagnóstico</td>
+<td>Limited (LEDs)</td>
+<td>Avanzado (ping, SNMP)</td>
+<td>Superior</td>
+</tr>
+<tr>
+<td>Facilidad de instalación</td>
+<td>Media (terminaciones)</td>
+<td>Alta (plug & play)</td>
+<td>Superior</td>
+</tr>
+<tr>
+<td>Costo</td>
+<td>Bajo</td>
+<td>Medio</td>
+<td>-</td>
+</tr>
+</table>
+
+<h4>📈 Métricas de Desempeño de Red Ethernet</h4>
+
+<table>
+<tr>
+<th>Parámetro de Red</th>
+<th>Valor Medido</th>
+<th>Especificación</th>
+<th>Cumplimiento</th>
+</tr>
+<tr>
+<td>Tiempo de ciclo Modbus TCP</td>
+<td>25 ms</td>
+<td>&lt; 50 ms</td>
+<td>✓ Cumple</td>
+</tr>
+<tr>
+<td>Latencia de ping</td>
+<td>&lt; 1 ms</td>
+<td>&lt; 10 ms</td>
+<td>✓ Cumple</td>
+</tr>
+<tr>
+<td>Tasa de errores TCP</td>
+<td>0.001%</td>
+<td>&lt; 0.1%</td>
+<td>✓ Cumple</td>
+</tr>
+<tr>
+<td>Timeout promedio</td>
+<td>0</td>
+<td>&lt; 1 por hora</td>
+<td>✓ Cumple</td>
+</tr>
+<tr>
+<td>Utilización de ancho de banda</td>
+<td>&lt; 1%</td>
+<td>&lt; 50%</td>
+<td>✓ Cumple</td>
+</tr>
+<tr>
+<td>Conexiones simultáneas</td>
+<td>4 (2 PLCs + 2 HMIs)</td>
+<td>&lt; 8</td>
+<td>✓ Cumple</td>
+</tr>
+</table>
+
+<div class="info">
+<strong>💡 Análisis de Resultados:</strong>
+<ul>
+<li><strong>Ventaja principal del control en cascada:</strong> Rechazo rápido de perturbaciones en el flujo antes de que afecten el nivel</li>
+<li><strong>Ventaja de Modbus TCP:</strong> Mayor velocidad, mejor diagnóstico, más fácil de configurar</li>
+<li><strong>Desventaja:</strong> Mayor complejidad de configuración inicial y costo de equipos</li>
+<li><strong>Recomendación:</strong> Usar Modbus TCP cuando:
+<ul>
+<li>Se requiera alta velocidad de comunicación</li>
+<li>Exista infraestructura Ethernet disponible</li>
+<li>Se necesite integración con sistemas IT/SCADA</li>
+<li>Se requiera diagnóstico avanzado de red</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div class="activity-box">
+<h3><span class="activity-number">10</span> Redacción del Informe Técnico</h3>
+
+<p><strong>Objetivo:</strong> Documentar el experimento con análisis completo de resultados.</p>
+
+<h4>📄 Estructura del Informe</h4>
+
+<ol>
+<li><strong>Portada</strong> — Título, nombres, fecha, curso, institución.</li>
+<li><strong>Resumen ejecutivo</strong> — Descripción breve del sistema de control en cascada con Modbus TCP/IP (máximo 300 palabras).</li>
+<li><strong>Introducción</strong> — Contexto del control en cascada en procesos industriales, ventajas de Ethernet industrial, normas de seguridad industrial y ciberseguridad.</li>
+<li><strong>Marco teórico</strong> — Control en cascada (fundamentos, sintonización), protocolo Modbus TCP/IP (arquitectura, funciones), redes Ethernet industriales, seguridad industrial y ciberseguridad (LOTO, EPP, paradas de emergencia, VLANs).</li>
+<li><strong>Metodología</strong> — Descripción detallada de las 10 actividades realizadas, diagramas de conexión de red, configuración de IPs, programación de PLCs y HMIs.</li>
+<li><strong>Resultados</strong> — Tablas de datos, gráficas de respuesta, parámetros de comunicación, métricas de desempeño de red, comparación Modbus TCP vs RTU.</li>
+<li><strong>Análisis y discusión</strong> — Comparación control simple vs cascada, evaluación de la comunicación Modbus TCP, análisis de seguridad implementada, fuentes de error, ventajas de Ethernet.</li>
+<li><strong>Conclusiones</strong> — Hallazgos principales, ventajas del control en cascada, efectividad de Modbus TCP/IP, recomendaciones.</li>
+<li><strong>Recomendaciones de seguridad</strong> — Lecciones aprendidas, mejoras propuestas al sistema de seguridad y ciberseguridad.</li>
+<li><strong>Bibliografía</strong> — Manuales Delta, normas de seguridad (OSHA, NOM), estándares de red industrial (IEC 62443), referencias de control de procesos.</li>
+<li><strong>Anexos</strong> — Código Ladder completo de ambos PLCs, pantallas HMI, tablas de parámetros Modbus TCP, checklist de seguridad, capturas de configuración de red.</li>
+</ol>
+
+<h4>📊 Contenido Obligatorio del Informe</h4>
+
+<table>
+<tr>
+<th>Sección</th>
+<th>Contenido</th>
+<th>Incluir</th>
+</tr>
+<tr>
+<td>Arquitectura de Red</td>
+<td>Diagrama de red Ethernet</td>
+<td>2 PLCs, 2 HMIs, switch, IPs</td>
+</tr>
+<tr>
+<td>Configuración de Red</td>
+<td>Tabla de direcciones IP</td>
+<td>IPs, máscaras, gateway, puertos</td>
+</tr>
+<tr>
+<td>Mapa de Memoria</td>
+<td>Registros Modbus TCP</td>
+<td>40001-40004 de cada PLC</td>
+</tr>
+<tr>
+<td>Control en Cascada</td>
+<td>Diagrama de bloques</td>
+<td>PID Nivel → PID Flujo → Bomba</td>
+</tr>
+<tr>
+<td>Parámetros PID</td>
+<td>Kp, Ti, Td de ambos lazos</td>
+<td>Valores finales sintonizados</td>
+</tr>
+<tr>
+<td>HMIs</td>
+<td>Capturas de pantalla</td>
+<td>HMI Maestro y HMI Esclavo</td>
+</tr>
+<tr>
+<td>Comparación</td>
+<td>Gráficas superpuestas</td>
+<td>Control simple vs cascada</td>
+</tr>
+<tr>
+<td>Red Modbus TCP</td>
+<td>Métricas de desempeño</td>
+<td>Tiempo de ciclo, latencia, errores</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Checklist aplicado</td>
+<td>EPP, LOTO, paradas de emergencia</td>
+</tr>
+<tr>
+<td>Ciberseguridad</td>
+<td>Medidas implementadas</td>
+<td>Red aislada, VLAN, firewall</td>
+</tr>
+<tr>
+<td>Normativa</td>
+<td>Normas aplicadas</td>
+<td>NOM-029-STPS, IEC 62443, OSHA</td>
+</tr>
+</table>
+
+<div class="success">
+<strong>✅ Criterios de Evaluación del Informe:</strong>
+<ul>
+<li><strong>2.1.1</strong> Claridad en la explicación de Modbus TCP/IP y arquitectura Ethernet</li>
+<li><strong>2.1.3</strong> Comprensión del control en cascada y su implementación práctica</li>
+<li><strong>2.1.4</strong> Documentación completa de configuración de red y resolución de problemas</li>
+<li><strong>2.1.5</strong> Evidencia de aplicación de normas de seguridad y ciberseguridad</li>
+<li>Comparación cuantitativa Modbus TCP vs RTU (métricas numéricas)</li>
+<li>Análisis de desempeño de red (latencia, throughput, errores)</li>
+<li>Calidad de gráficas y tablas de datos</li>
+<li>Profundidad del análisis comparativo</li>
+<li>Propuestas de mejora del sistema</li>
+</ul>
+</div>
+</div>
+
+<h2>📚 Referencias</h2>
+
+<div class="activity-box">
+<ol>
+<li><strong>Delta Electronics.</strong> (2023). <em>DVP-SE Programming Manual</em>. Delta Electronics, Inc.</li>
+<li><strong>Delta Electronics.</strong> (2023). <em>DVP-SE Ethernet Communication Manual</em>. Delta Electronics, Inc.</li>
+<li><strong>Modbus Organization.</strong> (2020). <em>MODBUS Messaging on TCP/IP Implementation Guide V1.0b</em>. Modbus.org.</li>
+<li><strong>IEC.</strong> (2022). <em>IEC 62443: Industrial communication networks - Network and system security</em>. International Electrotechnical Commission.</li>
+<li><strong>Smith, C. L.</strong> (2010). <em>Advanced Control Systems: Cascade Control Strategies</em>. ISA Press.</li>
+<li><strong>OSHA.</strong> (2021). <em>Control of Hazardous Energy (Lockout/Tagout) - 29 CFR 1910.147</em>. U.S. Department of Labor.</li>
+<li><strong>STPS.</strong> (2022). <em>NOM-029-STPS-2011: Mantenimiento de las instalaciones eléctricas</em>. Secretaría del Trabajo y Previsión Social, México.</li>
+<li><strong>ISA.</strong> (2020). <em>ANSI/ISA-95: Enterprise-Control System Integration</em>. International Society of Automation.</li>
+<li><strong>Ogata, K.</strong> (2010). <em>Ingeniería de Control Moderno</em> (5ta ed.). Pearson Educación.</li>
+<li><strong>Lammie, M.</strong> (2019). <em>Industrial Ethernet: A Practical Guide</em>. Packt Publishing.</li>
+</ol>
+</div>
+
+<div class="info" style="text-align: center; margin-top: 30px;">
+<strong>🎓 ¡Éxito en tu práctica de laboratorio!</strong><br>
+Recuerda: La seguridad es primero. Sigue todos los procedimientos y usa tu EPP.<br>
+<strong>🌐 Red industrial segura = Proceso industrial confiable</strong>
+</div>
+
+</body>
+</html>
