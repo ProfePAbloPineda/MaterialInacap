@@ -1,111 +1,1464 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Unidad 1 · Electrónica Analógica · AREA02</title>
-<style>
-:root{--r:#d71920;--i:#18222d;--b:#075fa8;--g:#087f5b;--a:#b45309;--p:#f4f6f8;--l:#d5dce3;--m:#596775}*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#202a33;color:var(--i);font-family:Arial,"Segoe UI",sans-serif;overflow:hidden}header{height:70px;background:#fff;border-bottom:5px solid var(--r);display:flex;align-items:center;justify-content:space-between;padding:0 3vw}.brand{display:flex;gap:16px;align-items:center}.logo{font-size:1.55rem;font-weight:900;color:var(--r)}.course{border-left:1px solid var(--l);padding-left:16px;color:#54616e;font-size:.88rem}main{height:calc(100vh - 128px);background:var(--p);position:relative}.slide{display:none;height:100%;overflow:auto;padding:4vh 6vw 5vh}.slide.active{display:block;animation:a .25s}@keyframes a{from{opacity:.3;transform:translateX(10px)}}h1{font-size:clamp(2.3rem,4vw,4.2rem);line-height:1.02;margin:.15em 0 .35em}h2{font-size:clamp(1.8rem,3vw,2.8rem);border-left:9px solid var(--r);padding-left:18px;margin:0 0 .7em}h3{font-size:1.25rem;color:var(--b);margin:.1em 0 .5em}p,li{font-size:clamp(1rem,1.35vw,1.24rem);line-height:1.43}.lead{font-size:clamp(1.25rem,2vw,1.8rem);color:#52606d}.hero{display:grid;grid-template-columns:1.5fr .6fr;gap:5vw;align-items:center;min-height:75%}.eyebrow{color:var(--r);font-weight:800;text-transform:uppercase;letter-spacing:1.4px}.unit{background:var(--i);color:#fff;padding:30px;border-top:8px solid var(--r)}.unit strong{display:block;font-size:4rem}.g2,.g3,.g4{display:grid;gap:22px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.card{background:#fff;border:1px solid var(--l);padding:22px;border-top:6px solid var(--b);box-shadow:0 5px 15px #14202a10}.red{border-top-color:var(--r)!important}.green{border-top-color:var(--g)!important}.amber{border-top-color:var(--a)!important}.call{background:#e9f2f9;border-left:7px solid var(--b);padding:17px 21px;margin:18px 0}.call.warn{background:#fff3d9;border-color:var(--a)}.call.ok{background:#e8f6ef;border-color:var(--g)}.call.danger{background:#fdebec;border-color:var(--r)}table{width:100%;border-collapse:collapse;background:#fff;font-size:1.03rem}th{background:var(--i);color:#fff;text-align:left}th,td{border:1px solid var(--l);padding:12px 14px}.flow{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap;margin:26px 0}.node{background:#fff;border:3px solid var(--b);padding:14px 19px;min-width:120px;text-align:center;font-weight:700}.round{border-radius:28px}.arrow{font-size:2rem;color:var(--r);font-weight:900}.task{background:#fff;border:2px solid var(--r);padding:19px;margin:16px 0}.task h3{color:var(--r)}.tag{display:inline-block;background:var(--i);color:#fff;padding:5px 9px;margin:3px;font-weight:700}.formula{background:#101820;color:#fff;padding:15px 20px;font:700 clamp(1.1rem,2vw,1.6rem)/1.4 Consolas,monospace;text-align:center;margin:14px 0}.visual{background:#fff;border:1px solid var(--l);padding:12px;margin:14px 0;text-align:center}.visual svg{max-width:100%;height:auto}.placeholder{background:repeating-linear-gradient(135deg,#fff,#fff 12px,#f4f6f8 12px,#f4f6f8 24px);border:3px dashed #96a2ad;padding:30px;text-align:center;margin:18px 0;min-height:180px;display:flex;flex-direction:column;justify-content:center}.placeholder strong{color:var(--r);font-size:1.2rem}.big{font-size:3rem;font-weight:900}.center{text-align:center}.wire{stroke:#18222d;stroke-width:4;fill:none}.hot{stroke:#d71920;stroke-width:4;fill:none}.comp{stroke:#075fa8;stroke-width:4;fill:#fff}.wave{stroke:#075fa8;stroke-width:4;fill:none}.label{font:700 18px Arial;fill:#18222d}.note{font:15px Arial;fill:#596775}.progress{position:absolute;bottom:0;height:5px;background:var(--r);transition:.2s}footer{height:58px;background:#fff;border-top:1px solid var(--l);display:flex;justify-content:center;align-items:center;gap:12px}button{border:0;border-radius:3px;background:var(--i);color:#fff;padding:10px 18px;font-size:1rem;font-weight:700;cursor:pointer}button:hover{background:var(--r)}button:disabled{background:#aab2ba}.source{font-size:.82rem;color:#6b7580;border-top:1px solid var(--l);padding-top:10px;margin-top:18px}@media(max-width:900px){body{overflow:auto}header{height:auto;padding:12px}.course,.unit{display:none}main{height:auto}.slide{min-height:calc(100vh - 115px)}.hero,.g2,.g3,.g4{grid-template-columns:1fr}}@media print{body{overflow:visible;background:#fff}header,footer{display:none}main{height:auto}.slide{display:block!important;height:auto;min-height:95vh;page-break-after:always;padding:16mm}.card{box-shadow:none}}
-</style></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AREA02 · Unidad 1 · Principios de Electrónica y Electrónica Analógica</title>
+    <style>
+        :root {
+            --primary: #14202a;      /* Azul marino INACAP */
+            --accent: #d9272e;       /* Rojo INACAP */
+            --teal: #176da0;         /* Azul/Teal */
+            --green: #16845b;        /* Verde éxito */
+            --warning: #e4a11b;      /* Naranja advertencia */
+            --light-bg: #f5f8fa;     /* Fondo claro */
+            --card-bg: #ffffff;      /* Fondo tarjeta */
+            --text: #1c2730;         /* Texto oscuro */
+            --text-muted: #586570;   /* Texto secundario */
+            --border: #d9e0e5;       /* Color bordes */
+            --shadow: 0 8px 30px rgba(20, 32, 42, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--text);
+            background-color: var(--light-bg);
+            overflow: hidden;
+        }
+
+        header {
+            height: 70px;
+            background: var(--card-bg);
+            border-bottom: 4px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+            position: relative;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            background: var(--accent);
+            color: white;
+            font-weight: 900;
+            font-size: 1.3rem;
+            padding: 8px 16px;
+            letter-spacing: 0.05em;
+            border-radius: 4px;
+        }
+
+        .course-info {
+            font-size: 0.9rem;
+            line-height: 1.3;
+            color: var(--text-muted);
+        }
+
+        .course-info strong {
+            color: var(--primary);
+        }
+
+        .slide-counter {
+            background: var(--light-bg);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        main {
+            height: calc(100vh - 128px);
+            position: relative;
+            width: 100%;
+        }
+
+        .slide {
+            display: none;
+            height: 100%;
+            overflow-y: auto;
+            padding: 40px 6%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Diapositiva de Portada */
+        .hero-slide {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: center;
+            height: 100%;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 4vw, 3.8rem);
+            line-height: 1.1;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .hero-content .eyebrow {
+            color: var(--accent);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .hero-content .lead {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .hero-image {
+            height: 80%;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 5px solid var(--card-bg);
+            transition: var(--transition);
+        }
+
+        .hero-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Títulos de Diapositivas */
+        h2 {
+            font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-weight: 700;
+            border-left: 6px solid var(--accent);
+            padding-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .slide-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Grillas y Tarjetas */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-1-2 {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 30px;
+        }
+
+        .grid-2-1 {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border-top: 5px solid var(--teal);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(20, 32, 42, 0.12);
+        }
+
+        .card.accent {
+            border-top-color: var(--accent);
+        }
+
+        .card.green {
+            border-top-color: var(--green);
+        }
+
+        .card.warning {
+            border-top-color: var(--warning);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .card p, .card li {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .card ul {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+
+        .card ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .card ul li::before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        /* Callouts / Destacados */
+        .callout {
+            background: #e9f2f9;
+            border-left: 6px solid var(--teal);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .callout.important {
+            background: #fff3f3;
+            border-left-color: var(--accent);
+        }
+
+        .callout.success {
+            background: #eaf5ef;
+            border-left-color: var(--green);
+        }
+
+        .callout.warning {
+            background: #fff9ea;
+            border-left-color: var(--warning);
+        }
+
+        .callout h4 {
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .callout p {
+            font-size: 0.95rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin: 15px 0;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.92rem;
+            color: var(--text);
+            vertical-align: top;
+            line-height: 1.45;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        /* Fórmulas matemáticas en bloque */
+        .math-block {
+            background: #101820;
+            color: #f2f5f7;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            border-left: 5px solid var(--accent);
+        }
+
+        .math-inline {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #eef2f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        /* Espacio para resolución en pizarra */
+        .whiteboard-space {
+            background: #ffffff;
+            border: 2px dashed #cbd5e1; /* Borde punteado sutil para delimitar la zona física */
+            border-radius: 8px;
+            min-height: 250px; /* Suficiente espacio vertical para escribir con marcador */
+            margin: 15px 0;
+        }
+
+        /* Gráficos vectoriales e ilustraciones */
+        .diagram-container {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            height: 100%;
+            min-height: 250px;
+        }
+
+        .diagram-container svg {
+            width: 100%;
+            height: 100%;
+            max-height: 380px;
+        }
+
+        /* Barra de progreso de lectura */
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 5%;
+            background: var(--accent);
+            transition: width 0.2s ease-out;
+        }
+
+        /* Footer de navegación */
+        footer {
+            height: 58px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+            position: relative;
+            z-index: 10;
+        }
+
+        footer button {
+            border: none;
+            border-radius: 4px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        footer button:hover {
+            background: var(--accent);
+        }
+
+        footer button:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body {
+                overflow: auto;
+            }
+            main {
+                height: auto;
+            }
+            .slide {
+                min-height: calc(100vh - 128px);
+                padding: 30px 20px;
+            }
+            .hero-slide, .grid-2, .grid-3, .grid-1-2, .grid-2-1 {
+                grid-template-columns: 1fr;
+            }
+            .hero-image {
+                height: 250px;
+                order: -1;
+            }
+            .diagram-container {
+                min-height: 220px;
+            }
+        }
+    </style>
+</head>
 <body>
-<header><div class="brand"><div class="logo">INACAP</div><div class="course">AREA02 · Electrónica Aplicada a la Automatización<br>Unidad 1 · Principios de Electrónica y Electrónica Analógica</div></div><strong id="count">1 / 1</strong></header>
-<main>
+    <header>
+        <div class="brand">
+            <div class="logo">INACAP</div>
+            <div class="course-info">
+                <strong>AREA02 · Electrónica Aplicada a la Automatización</strong><br>
+                Unidad 1 · Principios de Electrónica y Electrónica Analógica
+            </div>
+        </div>
+        <div class="slide-counter" id="slide-counter">1 / 25</div>
+    </header>
 
-<section class="slide active"><div class="hero"><div><div class="eyebrow">Primera etapa · Desde cero</div><h1>Principios de electrónica y electrónica analógica</h1><p class="lead">Comprender, construir y comprobar circuitos que permiten medir, adaptar y controlar señales en automatización.</p><div class="call"><strong>Recorrido:</strong> electricidad → señales → diodos → transistores → amplificadores operacionales → medición y diagnóstico.</div></div><div class="unit"><strong>01</strong><span>24 horas de laboratorio<br>Primer semestre</span></div></div></section>
+    <main>
+        <!-- Slide 1: Portada -->
+        <section class="slide active">
+            <div class="hero-slide">
+                <div class="hero-content">
+                    <span class="eyebrow">Unidad 1 · 24 Horas de Laboratorio</span>
+                    <h1>Principios de Electrónica y Electrónica Analógica</h1>
+                    <p class="lead">Bases de la electrónica aplicada, leyes fundamentales, componentes discretos, transistores como conmutación (Puente H), amplificadores operacionales y acondicionamiento de señales industriales.</p>
+                    <div class="callout">
+                        <h4>El Reto de la Unidad:</h4>
+                        <p>¿Cómo seleccionar, conectar y diagnosticar circuitos electrónicos analógicos para que actúen como la interfaz confiable entre sensores y sistemas de control en la industria?</p>
+                    </div>
+                </div>
+                <div class="hero-image" style="background-image: url('../assets/electronica_hero.jpg');"></div>
+            </div>
+        </section>
 
-<section class="slide"><h2>¿Qué aprenderemos a hacer?</h2><div class="g2"><div class="card red"><h3>Aprendizaje esperado 1.1</h3><p>Implementar circuitos electrónicos analógicos simples en placas de prueba para verificar su funcionamiento, considerando seguridad y normativa técnica.</p></div><div class="card"><h3>En palabras simples</h3><ul><li>Reconocer qué hace cada componente.</li><li>Elegirlo usando información técnica.</li><li>Conectarlo sin dañar personas ni equipos.</li><li>Medir y decidir si funciona correctamente.</li></ul></div></div><div class="call ok"><strong>Meta real:</strong> explicar qué ocurre en el circuito y demostrarlo con mediciones.</div><p class="source">Fuente curricular: Programa de asignatura Electrónica Aplicada a la Automatización (AREA02), versión vigente Otoño 2026, INACAP.</p></section>
+        <!-- Slide 2: Objetivos de Aprendizaje -->
+        <section class="slide">
+            <h2>Objetivos de Aprendizaje <span class="slide-subtitle">Alineación curricular</span></h2>
+            <div class="grid-2">
+                <div class="card accent">
+                    <h3>Aprendizaje Esperado</h3>
+                    <p>Implementa circuitos electrónicos analógicos simples en placas de pruebas para verificar su funcionamiento, considerando criterios de seguridad y normativa técnica vigente.</p>
+                    <div class="callout success" style="margin-top: 15px;">
+                        <h4>Perfil de Egreso:</h4>
+                        <p>Esta unidad entrega las destrezas de mantenimiento de instrumentación analógica de nivel 3 MCTP (ChileValora).</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Criterios de Evaluación</h3>
+                    <ul>
+                        <li><strong>1.1.1</strong> Asocia los conceptos de Electrónica y Electrónica Analógica con su especialidad, a partir de los requerimientos técnicos de un sistema de Automatización y Robótica.</li>
+                        <li><strong>1.1.2</strong> Selecciona componentes electrónicos analógicos a partir de sus características de operación (datasheet).</li>
+                        <li><strong>1.1.3</strong> Construye circuitos electrónicos analógicos en placas de pruebas (protoboard).</li>
+                        <li><strong>1.1.4</strong> Comprueba el funcionamiento midiendo parámetros eléctricos en presencia y ausencia de energía eléctrica.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>La unidad avanza en cinco etapas</h2><div class="flow"><div class="node round">1<br>Comprender</div><div class="arrow">→</div><div class="node round">2<br>Reconocer</div><div class="arrow">→</div><div class="node round">3<br>Construir</div><div class="arrow">→</div><div class="node round">4<br>Medir</div><div class="arrow">→</div><div class="node round">5<br>Diagnosticar</div></div><div class="g3"><div class="card"><h3>Conceptos</h3><p>Electricidad, electrónica, señales y magnitudes.</p></div><div class="card green"><h3>Componentes</h3><p>Diodos, transistores y amplificadores operacionales.</p></div><div class="card amber"><h3>Trabajo práctico</h3><p>Protoboard, instrumentos, seguridad, fallas y reparación.</p></div></div></section>
+        <!-- Slide 3: Conceptos Fundamentales -->
+        <section class="slide">
+            <h2>Conceptos Fundamentales <span class="slide-subtitle">Ramas de la electrónica</span></h2>
+            <div class="grid-3">
+                <div class="card">
+                    <h3>Electrónica Analógica</h3>
+                    <p>Procesa variables físicas representadas por señales eléctricas de <strong>variación continua</strong> en el tiempo. Trabaja con todo el rango de voltaje y corriente.</p>
+                    <div class="callout" style="margin-top: 15px; padding: 10px;">
+                        <strong>Ejemplo:</strong> Sensor de temperatura de coeficiente lineal (PT100, LM35).
+                    </div>
+                </div>
+                <div class="card accent">
+                    <h3>Electrónica Digital</h3>
+                    <p>Procesa información utilizando estados lógicos <strong>discretos</strong> (generalmente binarios: '0' y '1'). Los valores reales se agrupan en rangos de voltaje.</p>
+                    <div class="callout" style="margin-top: 15px; padding: 10px;">
+                        <strong>Ejemplo:</strong> Salida de encoder, transmisor digital, microcontroladores.
+                    </div>
+                </div>
+                <div class="card green">
+                    <h3>Electrónica de Potencia</h3>
+                    <p>Adapta y transforma la energía eléctrica mediante dispositivos semiconductores en conmutación para el control de cargas de alta potencia.</p>
+                    <div class="callout" style="margin-top: 15px; padding: 10px;">
+                        <strong>Ejemplo:</strong> Variadores de frecuencia, relés de estado sólido (SSR).
+                    </div>
+                </div>
+            </div>
+            <div class="callout warning" style="margin-top: 20px;">
+                <h4>La interfaz del control:</h4>
+                <p>En automatización, la mayoría de los fenómenos físicos son analógicos (presión, calor, caudal). La electrónica analógica acondiciona estas señales para que el cerebro digital (PLC/Controlador) pueda procesarlas de manera segura.</p>
+            </div>
+        </section>
 
-<section class="slide"><h2>Antes de la electrónica está la electricidad</h2><div class="g3"><div class="card red"><h3>Voltaje (V)</h3><p>Diferencia de potencial que impulsa las cargas. Se mide entre dos puntos.</p><div class="big center">V</div></div><div class="card"><h3>Corriente (A)</h3><p>Flujo de carga que atraviesa un conductor. Se mide a través de una rama.</p><div class="big center" style="color:var(--b)">I</div></div><div class="card green"><h3>Resistencia (Ω)</h3><p>Oposición al paso de corriente. Limita y distribuye energía.</p><div class="big center" style="color:var(--g)">R</div></div></div><div class="formula">Ley de Ohm: V = I · R</div></section>
+        <!-- Slide 4: Señales Analógicas y Parámetros -->
+        <section class="slide">
+            <h2>Señales Analógicas y sus Parámetros <span class="slide-subtitle">Caracterización de señales</span></h2>
+            <div class="grid-1-2">
+                <div class="card accent">
+                    <h3>Parámetros Fundamentales</h3>
+                    <ul>
+                        <li><strong>Valor Instantáneo:</strong> El voltaje v(t) en un instante específico de tiempo.</li>
+                        <li><strong>Valor Peak (Pico, V<sub>p</sub>):</strong> El valor máximo absoluto que alcanza la señal eléctrica.</li>
+                        <li><strong>Valor RMS (Eficaz, V<sub>rms</sub>):</strong> El valor equivalente en corriente continua que produce la misma disipación de calor en una resistencia.</li>
+                    </ul>
+                    <div class="math-block">
+                        V<sub>rms</sub> = V<sub>p</sub> / &radic;2 &asymp; 0.707 &bull; V<sub>p</sub><br>
+                        (Para ondas senoidales puras)
+                    </div>
+                    <ul>
+                        <li><strong>Valor Medio (V<sub>med</sub>):</strong> El promedio algebraico de todos los valores de la señal en un período (en CA pura es cero).</li>
+                    </ul>
+                </div>
+                <div class="diagram-container">
+                    <img src="1.PNG" alt="Señales Analógicas y sus Parámetros" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Un circuito necesita un camino cerrado</h2><div class="g2"><div class="visual"><svg viewBox="0 0 650 300"><path class="wire" d="M120 80 H300 M430 80 H540 V230 H120 V80"/><line class="hot" x1="120" y1="125" x2="120" y2="185"/><line class="wire" x1="95" y1="140" x2="145" y2="140"/><line class="wire" x1="105" y1="170" x2="135" y2="170"/><path class="comp" d="M300 80 l18 -25 25 50 25 -50 25 50 18 -25"/><text class="label" x="72" y="215">Fuente</text><text class="label" x="330" y="135">Carga</text><path class="hot" d="M190 55 h65"/><path fill="#d71920" d="M255 55 l-18 -10 v20z"/><text class="note" x="185" y="40">corriente</text></svg></div><div><div class="card red"><h3>Fuente</h3><p>Entrega energía: batería o fuente DC.</p></div><div class="card"><h3>Conductores</h3><p>Forman el camino entre componentes.</p></div><div class="card green"><h3>Carga</h3><p>Transforma energía: resistencia, LED, relé o motor.</p></div></div></div><div class="call warn"><strong>Circuito abierto:</strong> el camino se interrumpe y la corriente deja de circular.</div></section>
+        <!-- Slide 5: Ley de Ohm y Conceptos Eléctricos Básicos -->
+        <section class="slide">
+            <h2>La Ley de Ohm <span class="slide-subtitle">Fundamentos eléctricos</span></h2>
+            <div class="grid-3">
+                <div class="card accent">
+                    <h3>Variables Eléctricas</h3>
+                    <ul>
+                        <li><strong>Voltaje / Tensión (V o U):</strong> Fuerza impulsora o diferencia de potencial que obliga a los electrones a moverse. Medido en <strong>Voltios (V)</strong>.</li>
+                        <li><strong>Corriente / Intensidad (I):</strong> Flujo o caudal de carga eléctrica por unidad de tiempo a través de un conductor. Medido en <strong>Amperios (A)</strong>.</li>
+                        <li><strong>Resistencia (R):</strong> Oposición natural que presenta un material al paso de la corriente eléctrica. Medida en <strong>Ohmios (&Omega;)</strong>.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>La Ecuación Fundamental</h3>
+                    <p>Postula que la intensidad de la corriente que circula por un circuito eléctrico es directamente proporcional a la tensión aplicada e inversamente proporcional a la resistencia del mismo.</p>
+                    <div class="math-block">
+                        V = I &bull; R &nbsp;&nbsp;|&nbsp;&nbsp; I = V / R &nbsp;&nbsp;|&nbsp;&nbsp; R = V / I
+                    </div>
+                    <h3>Ley de Joule (Potencia Eléctrica)</h3>
+                    <p>Mide la energía disipada en forma de calor o consumida por unidad de tiempo en <strong>Vatios (W)</strong>:</p>
+                    <div class="math-block">
+                        P = V &bull; I &nbsp;&nbsp;|&nbsp;&nbsp; P = I<sup>2</sup> &bull; R &nbsp;&nbsp;|&nbsp;&nbsp; P = V<sup>2</sup> / R
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="2.png" alt="Circuito de la Ley de Ohm" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Potencia: rapidez de transferencia de energía</h2><div class="g2"><div><div class="formula">P = V · I</div><p>La potencia se expresa en watts (W). Un motor de 12 V que consume 0,5 A recibe aproximadamente 6 W.</p></div><div class="card amber"><h3>¿Por qué importa?</h3><ul><li>El componente debe soportar la potencia disipada.</li><li>La fuente debe entregar suficiente corriente.</li><li>El exceso genera temperatura y daño.</li><li>Los límites aparecen en el datasheet.</li></ul></div></div><div class="task"><h3>Comprueba</h3><p>Si una resistencia tiene 10 V y circulan 0,2 A, ¿qué potencia disipa?</p></div></section>
+        <!-- Slide 6: Circuitos Resistivos Serie y Paralelo -->
+        <section class="slide">
+            <h2>Circuitos Resistivos <span class="slide-subtitle">Serie y paralelo</span></h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Circuitos en Serie</h3>
+                    <p>Los componentes se conectan uno tras otro. La corriente es idéntica en todos ellos, y el voltaje de la fuente se divide.</p>
+                    <div class="math-block">
+                        R<sub>eq</sub> = R<sub>1</sub> + R<sub>2</sub> + ... + R<sub>n</sub>
+                    </div>
+                    <h3>Circuitos en Paralelo</h3>
+                    <p>Los componentes se conectan a los mismos terminales comunes. El voltaje es idéntico en todos ellos, y la corriente se bifurca.</p>
+                    <div class="math-block">
+                        1/R<sub>eq</sub> = 1/R<sub>1</sub> + 1/R<sub>2</sub> + ... + 1/R<sub>n</sub>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="3.png" alt="Circuitos en Serie y Paralelo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Electrónica: controlar electricidad usando información</h2><div class="g2"><div class="card red"><h3>Electricidad</h3><p>Alimentar un motor, calentar una resistencia o energizar una bobina.</p></div><div class="card"><h3>Electrónica</h3><p>Detectar, modificar, amplificar, convertir o conmutar señales.</p></div></div><div class="flow"><div class="node">Sensor</div><div class="arrow">→</div><div class="node">Circuito electrónico</div><div class="arrow">→</div><div class="node">Controlador</div><div class="arrow">→</div><div class="node">Actuador</div></div><div class="call"><strong>Ejemplos:</strong> leer temperatura, adaptar 0–10 V, activar un relé o regular un motor.</div></section>
+        <!-- Slide 7: Divisor de Tensión -->
+        <section class="slide">
+            <h2>Divisor de Tensión <span class="slide-subtitle">Concepto y funcionamiento</span></h2>
+            <div class="grid-2">
+                <div class="card accent">
+                    <h3>Concepto Fundamental</h3>
+                    <p>Un divisor de tensión es una configuración de circuito eléctrico que reparte la tensión de una fuente de alimentación entre una o más resistencias conectadas en serie.</p>
+                    <p style="margin-top: 10px;">Es de enorme importancia práctica en automatización e instrumentación para:</p>
+                    <ul>
+                        <li>Reducir niveles de tensión de una señal (por ejemplo, adaptar una señal de 24V a niveles de 5V para un microcontrolador).</li>
+                        <li>Medir variables físicas mediante sensores resistivos (como LDR, termistores NTC/PTC o potenciómetros).</li>
+                    </ul>
+                    <div class="math-block" style="margin-top: 15px; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span>V<sub>out</sub> = V<sub>in</sub> &bull; </span>
+                        <span style="font-size: 2rem; font-weight: 300; line-height: 1;">[</span>
+                        <div style="display: inline-flex; flex-direction: column; align-items: center; padding: 0 4px;">
+                            <span style="border-bottom: 2px solid #f2f5f7; padding-bottom: 2px; line-height: 1.1;">R<sub>2</sub></span>
+                            <span style="padding-top: 2px; line-height: 1.1;">R<sub>1</sub> + R<sub>2</sub></span>
+                        </div>
+                        <span style="font-size: 2rem; font-weight: 300; line-height: 1;">]</span>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="4.png" alt="Divisor de Tensión con LDR" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Analógico y digital representan información de manera distinta</h2><div class="g2"><div class="card green"><h3>Señal analógica</h3><p>Puede tomar todos los valores dentro de un intervalo.</p><p><strong>Ejemplos:</strong> 0–10 V, 4–20 mA, temperatura.</p><svg viewBox="0 0 500 130"><path class="wave" d="M10 70 C70 0 120 0 180 70 S290 140 350 70 S440 0 490 70"/><line class="wire" x1="10" y1="115" x2="490" y2="115"/></svg></div><div class="card"><h3>Señal digital</h3><p>Se interpreta mediante estados discretos, normalmente 0 y 1.</p><p><strong>Ejemplos:</strong> pulsador, final de carrera, sensor ON/OFF.</p><svg viewBox="0 0 500 130"><path class="wave" d="M10 105 H90 V25 H180 V105 H280 V25 H400 V105 H490"/></svg></div></div></section>
+        <!-- Slide 7: Ejercicios Prácticos de Pizarra -->
+        <section class="slide">
+            <h2>Ejercicios de Pizarra <span class="slide-subtitle">Desarrollo y análisis matemático</span></h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Ejercicio 1: Divisor de Tensión Sensor</h3>
+                    <p>Un sensor resistivo de luz (LDR) se conecta en un circuito divisor de tensión con V<sub>in</sub> = 10 V y una resistencia fija R<sub>1</sub> = 10 k&Omega;. La resistencia del LDR (R<sub>2</sub>) varía entre:</p>
+                    <ul>
+                        <li>Luz Intensa: 1 k&Omega;</li>
+                        <li>Oscuridad Absoluta: 90 k&Omega;</li>
+                    </ul>
+                    <p>Determine el rango de voltaje de salida (V<sub>out</sub>) que recibirá el controlador analógico.</p>
+                    <div class="whiteboard-space"></div>
+                </div>
+                <div class="card accent">
+                    <h3>Ejercicio 2: Polarización y Protección LED</h3>
+                    <p>Se desea conectar un diodo indicador LED a una salida digital de un PLC de 24 VDC. El LED requiere una corriente de operación segura de 15 mA y presenta una caída de tensión directa de V<sub>F</sub> = 2.0 V.</p>
+                    <ul>
+                        <li>Calcule el valor de la resistencia de limitación de corriente (R<sub>s</sub>) requerida en serie.</li>
+                        <li>Determine la potencia disipada por la resistencia y seleccione su potencia nominal comercial.</li>
+                    </ul>
+                    <div class="whiteboard-space"></div>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Una señal analógica tiene parámetros relevantes</h2><div class="g4"><div class="card red"><h3>Instantáneo</h3><p>Valor en un instante.</p></div><div class="card"><h3>Peak</h3><p>Mayor magnitud.</p></div><div class="card green"><h3>Medio</h3><p>Promedio temporal.</p></div><div class="card amber"><h3>RMS</h3><p>Equivalente por efecto energético.</p></div></div><div class="visual"><svg viewBox="0 0 900 260"><line class="wire" x1="60" y1="130" x2="850" y2="130"/><line class="wire" x1="60" y1="25" x2="60" y2="235"/><path class="wave" d="M60 130 C140 15 220 15 300 130 S460 245 540 130 S700 15 780 130"/><line class="hot" x1="205" y1="130" x2="205" y2="35" stroke-dasharray="8 6"/><text class="label" x="220" y="45">Valor peak</text><circle cx="650" cy="65" r="7" fill="#d71920"/><text class="label" x="665" y="70">Valor instantáneo</text></svg></div></section>
+        <!-- Slide 8: Clasificación de Componentes -->
+        <section class="slide">
+            <h2>Clasificación de Componentes Electrónicos <span class="slide-subtitle">Pasivos y Activos</span></h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Componentes Pasivos</h3>
+                    <p>No tienen la capacidad de controlar la corriente eléctrica por medio de otra señal eléctrica. Almacenan o disipan energía en campos eléctricos, magnéticos o por calor.</p>
+                    <table style="box-shadow: none; margin-top: 15px;">
+                        <tr>
+                            <th>Componente</th>
+                            <th>Unidad</th>
+                            <th>Uso en Automatización</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Resistor</strong></td>
+                            <td>Ohm (&Omega;)</td>
+                            <td>Divisor de tensión, limitación de corriente.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Condensador</strong></td>
+                            <td>Faradio (F)</td>
+                            <td>Filtro de ruido en fuentes, acoplamiento.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Inductor</strong></td>
+                            <td>Henrio (H)</td>
+                            <td>Filtros electromagnéticos, bobinas.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card accent">
+                    <h3>Componentes Activos</h3>
+                    <p>Pueden controlar el flujo de corriente mediante otra señal eléctrica o amplificar señales. Constituyen el núcleo lógico y dinámico de los circuitos analógicos.</p>
+                    <table style="box-shadow: none; margin-top: 15px;">
+                        <tr>
+                            <th>Componente</th>
+                            <th>Tipo</th>
+                            <th>Uso en Automatización</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Diodo</strong></td>
+                            <td>Semiconductor</td>
+                            <td>Rectificación, protección de polaridad.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Transistor</strong></td>
+                            <td>Semiconductor</td>
+                            <td>Conmutación de cargas (relés), drivers.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Op-Amp</strong></td>
+                            <td>Circuito Integrado</td>
+                            <td>Acondicionamiento de sensores, filtros activos.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="diagram-container" style="margin-top: 25px; min-height: 280px; height: 350px;">
+                <img src="5.png" alt="Símbolos de Clasificación de Componentes" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            </div>
+        </section>
 
-<section class="slide"><h2>El multímetro cambia de conexión según la magnitud</h2><div class="g3"><div class="card"><h3>Voltaje</h3><p>Se mide en <strong>paralelo</strong>, entre dos puntos.</p><span class="tag">Circuito energizado</span></div><div class="card amber"><h3>Corriente</h3><p>Se mide en <strong>serie</strong>; el instrumento entra en la rama.</p><span class="tag">Abrir el camino</span></div><div class="card green"><h3>Resistencia</h3><p>Se mide con el circuito <strong>desenergizado</strong>.</p><span class="tag">Sin tensión</span></div></div><div class="call danger"><strong>Error crítico:</strong> conectar el amperímetro directamente entre positivo y negativo produce un cortocircuito.</div><div class="placeholder"><strong>FOTOGRAFÍA PENDIENTE</strong><span>Multímetro real del laboratorio: bornes COM, VΩ y A, selector y puntas.</span></div></section>
+        <!-- Slide 9: El Diodo Semiconductor -->
+        <section class="slide">
+            <h2>El Diodo Semiconductor <span class="slide-subtitle">Estructura y hojas de datos</span></h2>
+            <div class="grid-1-2">
+                <div class="card accent">
+                    <h3>Funcionamiento y Polarización</h3>
+                    <ul>
+                        <li><strong>Unión PN:</strong> Dispositivo unidireccional formado por la unión de silicio tipo P (ánodo) y tipo N (cátodo).</li>
+                        <li><strong>Polarización Directa (V<sub>ánodo</sub> &gt; V<sub>cátodo</sub>):</strong> Conduce corriente una vez superada la tensión umbral (típicamente 0.7 V para silicio, 0.3 V para germanio y schottky).</li>
+                        <li><strong>Polarización Inversa (V<sub>ánodo</sub> &lt; V<sub>cátodo</sub>):</strong> No conduce. Se comporta como un circuito abierto (excepto por una pequeña corriente de fuga en el orden de microamperios).</li>
+                    </ul>
+                    <div class="callout warning" style="margin-top: 15px;">
+                        <h4>Parámetros Críticos de Datasheet (Ej. 1N4007):</h4>
+                        <p>
+                            - V<sub>RRM</sub> (Voltaje Reverso Máximo de Pico): Voltaje inverso máximo antes de la ruptura térmica (1000 V en el 1N4007).<br>
+                            - I<sub>O</sub> o I<sub>F(AV)</sub> (Corriente Directa Promedio): Corriente máxima continua que puede conducir (1 A).<br>
+                            - V<sub>F</sub> (Caída de Tensión Directa): Caída de tensión en conducción (máx 1.1 V a 1 A).
+                        </p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="6.png" alt="Diodo Rectificador: Símbolo, Curva I-V y Aspecto Físico" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Voltaje en paralelo; corriente en serie</h2><div class="g2"><div class="visual"><svg viewBox="0 0 700 330"><path class="wire" d="M90 60 H280 M420 60 H620 V260 H90 V60"/><path class="comp" d="M280 60 l18 -25 25 50 25 -50 25 50 18 -25"/><circle class="comp" cx="350" cy="215" r="48"/><text class="label" x="340" y="224">V</text><path class="hot" d="M310 180 V105 H280"/><path class="wire" d="M398 215 H450 V60 H420"/><text class="label" x="245" y="300">Voltímetro en paralelo</text></svg></div><div class="visual"><svg viewBox="0 0 700 330"><path class="wire" d="M90 60 H230 M370 60 H440 M560 60 H620 V260 H90 V60"/><path class="comp" d="M230 60 l18 -25 25 50 25 -50 25 50 18 -25"/><circle class="comp" cx="500" cy="60" r="48"/><text class="label" x="490" y="69">A</text><text class="label" x="365" y="170">Amperímetro en serie</text></svg></div></div><div class="call warn"><strong>Antes de medir:</strong> confirma borne, función AC/DC y rango. Si desconoces el valor, comienza alto.</div></section>
+        <!-- Slide 10: Aplicación del Diodo: Rectificación de Media Onda -->
+        <section class="slide">
+            <h2>Aplicación del Diodo: Rectificación de Media Onda <span class="slide-subtitle">Conversión CA a CC</span></h2>
+            <div class="grid-1-2">
+                <div class="card accent">
+                    <h3>Rectificador de Media Onda</h3>
+                    <p>Elimina el semiciclo negativo de una señal de corriente alterna. Presenta una eficiencia baja y requiere un filtrado de gran capacidad para obtener una corriente continua estable.</p>
+                    <div class="callout warning" style="margin-top: 15px;">
+                        <h4>Fórmula de salida promedio:</h4>
+                        <div class="math-block" style="font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px;">
+                            <span>V<sub>dc</sub> = </span>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center; padding: 0 4px;">
+                                <span style="border-bottom: 2px solid #f2f5f7; padding-bottom: 2px; line-height: 1.1;">V<sub>p</sub></span>
+                                <span style="padding-top: 2px; line-height: 1.1;">&pi;</span>
+                            </div>
+                            <span>&asymp; 0.318 &bull; V<sub>p</sub></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="7.png" alt="Rectificación de Media Onda" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Los componentes se clasifican por su comportamiento</h2><div class="g3"><div class="card"><h3>Pasivos</h3><ul><li>Resistencias</li><li>Condensadores</li><li>Inductores</li></ul></div><div class="card red"><h3>Semiconductores</h3><ul><li>Diodos</li><li>Transistores</li><li>Circuitos integrados</li></ul></div><div class="card green"><h3>Electromecánicos</h3><ul><li>Relés</li><li>Motores</li><li>Interruptores</li></ul></div></div><div class="call"><strong>También distinguimos:</strong> discretos e integrados; polarizados y no polarizados.</div></section>
+        <!-- Slide 11: Aplicación del Diodo: Rectificación de Onda Completa -->
+        <section class="slide">
+            <h2>Aplicación del Diodo: Rectificación de Onda Completa <span class="slide-subtitle">Conversión CA a CC</span></h2>
+            <div class="grid-1-2">
+                <div class="card green">
+                    <h3>Rectificador de Onda Completa (Puente)</h3>
+                    <p>Utiliza 4 diodos (Puente de Graetz) para aprovechar ambos semiciclos. Aumenta al doble la frecuencia del rizado, facilitando el filtrado posterior y mejorando significativamente la eficiencia.</p>
+                    <div class="callout success" style="margin-top: 15px;">
+                        <h4>Fórmula de salida promedio:</h4>
+                        <div class="math-block" style="font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px;">
+                            <span>V<sub>dc</sub> = </span>
+                            <div style="display: inline-flex; flex-direction: column; align-items: center; padding: 0 4px;">
+                                <span style="border-bottom: 2px solid #f2f5f7; padding-bottom: 2px; line-height: 1.1;">2 &bull; V<sub>p</sub></span>
+                                <span style="padding-top: 2px; line-height: 1.1;">&pi;</span>
+                            </div>
+                            <span>&asymp; 0.636 &bull; V<sub>p</sub></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="8.png" alt="Rectificación de Onda Completa" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El datasheet es el manual técnico del componente</h2><div class="g2"><div class="card red"><h3>Qué buscar</h3><ul><li>Identificación y fabricante.</li><li>Pinout.</li><li>Valores máximos absolutos.</li><li>Condiciones de operación.</li><li>Curvas y aplicaciones.</li><li>Encapsulado.</li></ul></div><div class="card"><h3>Máximo no significa recomendado</h3><p>El máximo absoluto es un límite que no debe alcanzarse en operación normal.</p><div class="call danger"><strong>Sobrepasarlo puede provocar daño permanente.</strong></div></div></div><div class="task"><h3>Búsqueda guiada</h3><p>Localiza en un diodo: corriente directa máxima, tensión inversa, caída directa y marca de cátodo.</p></div></section>
+        <!-- Slide 11: BJT y MOSFET (Conmutación y Simbología) -->
+        <section class="slide">
+            <h2>Transistor: Conmutación y Control <span class="slide-subtitle">Simbología del BJT y MOSFET</span></h2>
+            <div class="grid-1-2">
+                <div class="card">
+                    <h3>Características Lógicas</h3>
+                    <p><strong>Transistor Bipolar (BJT):</strong> Controlado por <strong>corriente</strong> en su Base (I<sub>B</sub>). Tiene bajas caídas de voltaje de saturación (V<sub>CE(sat)</sub> &approx; 0.2 V), lo que es ideal para aplicaciones de conmutación de baja potencia.</p>
+                    <p style="margin-top: 10px;"><strong>Transistor de Efecto de Campo (MOSFET):</strong> Controlado por <strong>voltaje</strong> en su Compuerta (Gate, V<sub>GS</sub>). Es el estándar para conmutación de potencia media/alta debido a su alta velocidad y baja resistencia en conducción (R<sub>DS(on)</sub>).</p>
+                    <div class="callout warning" style="margin-top: 15px; padding: 12px;">
+                        <h4>Zonas de Trabajo Lógico:</h4>
+                        <p>
+                            - **Corte:** Circuito abierto (I<sub>C</sub> = 0 o I<sub>D</sub> = 0).<br>
+                            - **Saturación / Conducción Completa:** Interruptor cerrado con conducción máxima.
+                        </p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="9.png" alt="Transistor BJT NPN: Símbolo y Polarización" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El diodo conduce preferentemente en una dirección</h2><div class="g2"><div class="visual"><svg viewBox="0 0 700 280"><line class="wire" x1="70" y1="140" x2="245" y2="140"/><polygon points="245,70 245,210 405,140" fill="#fff" stroke="#075fa8" stroke-width="5"/><line class="comp" x1="420" y1="65" x2="420" y2="215"/><line class="wire" x1="420" y1="140" x2="625" y2="140"/><text class="label" x="150" y="105">Ánodo (A)</text><text class="label" x="445" y="105">Cátodo (K)</text><text class="note" x="445" y="190">La banda física marca K</text></svg></div><div><div class="card green"><h3>Directa</h3><p>Ánodo a mayor potencial que cátodo: puede conducir.</p></div><div class="card red"><h3>Inversa</h3><p>Cátodo a mayor potencial: normalmente bloquea.</p></div></div></div><div class="call warn"><strong>Silicio:</strong> la caída directa suele rondar 0,6–0,8 V, pero depende del modelo, corriente y temperatura.</div></section>
+        <!-- Slide 12: El Transistor como Conmutador: Driver de Relé -->
+        <section class="slide">
+            <h2>El Transistor como Conmutador <span class="slide-subtitle">Driver de relé y diodo volante</span></h2>
+            <div class="grid-1-2">
+                <div class="card accent">
+                    <h3>El Desafío de las Cargas Inductivas</h3>
+                    <p>Al desactivar el transistor, la bobina del relé se opone bruscamente al corte de corriente generando un transitorio inductivo de muy alto voltaje en sentido inverso:</p>
+                    <div class="math-block">
+                        v(t) = L &bull; (di(t)/dt)
+                    </div>
+                    <p>Este pico de tensión reverso superará con creces la tensión de ruptura del transistor, destruyéndolo por sobreesfuerzo.</p>
+                    <div class="callout important" style="margin-top: 15px;">
+                        <h4>Diodo Volante de Protección:</h4>
+                        <p>Se conecta en paralelo inverso a la carga. Cuando el transistor corta, el diodo se polariza en directo, ofreciendo un camino seguro de baja resistencia para descargar y disipar la energía magnética almacenada en la bobina.</p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="10.png" alt="Control de Relé con Transistor NPN" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Un diodo real no es un interruptor perfecto</h2><div class="g2"><div class="visual"><svg viewBox="0 0 600 360"><line class="wire" x1="60" y1="280" x2="550" y2="280"/><line class="wire" x1="290" y1="35" x2="290" y2="330"/><path class="hot" d="M292 275 C345 270 360 258 385 190 S450 65 535 50"/><path class="wave" d="M286 280 C235 282 180 283 90 290"/><line x1="385" y1="280" x2="385" y2="190" stroke="#b45309" stroke-width="2" stroke-dasharray="6 5"/><text class="label" x="405" y="180">Conducción</text><text class="note" x="390" y="305">≈ 0,7 V</text></svg></div><div><ul><li>En directa la corriente aumenta con rapidez.</li><li>En inversa existe una corriente muy pequeña.</li><li>Una resistencia en serie limita corriente.</li><li>La temperatura cambia el comportamiento.</li></ul><div class="call danger"><strong>No conectar un LED directamente a una fuente.</strong></div></div></div></section>
+        <!-- Slide 13: Control de Potencia con PWM -->
+        <section class="slide">
+            <h2>Control de Potencia con PWM <span class="slide-subtitle">Modulación de tensión promedio</span></h2>
+            <div class="grid-2">
+                <div class="card accent">
+                    <h3>¿Qué es PWM?</h3>
+                    <p>Modulación por Ancho de Pulso (Pulse Width Modulation). Consiste en variar el tiempo de encendido respecto al período total para modificar el valor de la tensión promedio suministrada a una carga.</p>
+                    <div class="math-block">
+                        V<sub>promedio</sub> = V<sub>max</sub> &bull; (T<sub>on</sub> / T) = V<sub>max</sub> &bull; D
+                    </div>
+                    <p>Donde D es el <strong>Duty Cycle (Ciclo de trabajo)</strong>, expresado de 0% a 100%.</p>
+                </div>
+                <div class="card">
+                    <h3>Ciclo de Trabajo y Tensión Promedio</h3>
+                    <table style="box-shadow: none;">
+                        <tr>
+                            <th>Duty Cycle (D)</th>
+                            <th>Estado de Conmutación</th>
+                            <th>Voltaje Promedio (V<sub>prom</sub>)</th>
+                        </tr>
+                        <tr>
+                            <td><strong>25%</strong></td>
+                            <td>Activo 1/4 del tiempo</td>
+                            <td>0.25 &bull; V<sub>max</sub></td>
+                        </tr>
+                        <tr>
+                            <td><strong>50%</strong></td>
+                            <td>Activo la mitad del tiempo</td>
+                            <td>0.50 &bull; V<sub>max</sub></td>
+                        </tr>
+                        <tr>
+                            <td><strong>90%</strong></td>
+                            <td>Casi totalmente activo</td>
+                            <td>0.90 &bull; V<sub>max</sub></td>
+                        </tr>
+                    </table>
+                    <div class="callout success" style="margin-top: 15px;">
+                        <h4>Aplicación típica:</h4>
+                        <p>Control de velocidad en motores de corriente continua (DC) y control de intensidad lumínica (Dimming).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Rectificar es obtener una sola polaridad</h2><div class="g2"><div class="visual"><svg viewBox="0 0 760 270"><text class="label" x="30" y="50">Vin AC</text><path class="wire" d="M80 95 H200"/><polygon points="200,45 200,145 310,95" fill="#fff" stroke="#075fa8" stroke-width="4"/><line class="comp" x1="320" y1="40" x2="320" y2="150"/><path class="wire" d="M320 95 H460"/><path class="comp" d="M460 95 l18 -25 25 50 25 -50 25 50 18 -25"/><path class="wire" d="M570 95 H680 V220 H80 V95"/><text class="label" x="455" y="55">Carga</text></svg></div><div><h3>Media onda</h3><p>El diodo conduce durante una alternancia y bloquea la otra.</p><ul><li>La salida es pulsante.</li><li>Se utiliza solo media señal.</li><li>Un condensador puede suavizarla.</li></ul></div></div><div class="visual"><svg viewBox="0 0 900 210"><text class="label" x="20" y="45">Entrada</text><path class="wave" d="M120 60 C170 5 220 5 270 60 S370 115 420 60 S520 5 570 60 S670 115 720 60 S820 5 870 60"/><text class="label" x="20" y="160">Salida</text><path class="hot" d="M120 170 C170 115 220 115 270 170 M420 170 C470 115 520 115 570 170 M720 170 C770 115 820 115 870 170"/></svg></div></section>
+        <!-- Slide 14: Inversión de Giro: El Puente H -->
+        <section class="slide">
+            <h2>Inversión de Giro: El Puente H <span class="slide-subtitle">Control bidireccional</span></h2>
+            <div class="grid-1-2">
+                <div class="card accent">
+                    <h3>Configuración de 4 Cuadrantes</h3>
+                    <p>Permite alternar la polaridad de un motor DC utilizando 4 transistores (Q1, Q2, Q3, Q4) que actúan como interruptores lógicos.</p>
+                    <table style="box-shadow: none; margin-top: 10px; font-size: 0.85rem;">
+                        <tr>
+                            <th>Q1</th>
+                            <th>Q2</th>
+                            <th>Q3</th>
+                            <th>Q4</th>
+                            <th>Comportamiento del Motor</th>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--green)">ON</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td style="color:var(--green)">ON</td>
+                            <td>Giro Directo (A)</td>
+                        </tr>
+                        <tr>
+                            <td>OFF</td>
+                            <td style="color:var(--accent)">ON</td>
+                            <td style="color:var(--accent)">ON</td>
+                            <td>OFF</td>
+                            <td>Giro Inverso (B)</td>
+                        </tr>
+                        <tr>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>OFF</td>
+                            <td>Inercia / Parada libre</td>
+                        </tr>
+                    </table>
+                    <div class="callout important" style="margin-top: 10px; padding: 12px;">
+                        <h4>¡Advertencia Shoot-Through!</h4>
+                        <p>Si Q1 y Q2 (o Q3 y Q4) se encienden al mismo tiempo, se produce un cortocircuito directo entre la fuente y tierra, destruyendo los transistores.</p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Power rails -->
+                        <line x1="250" y1="20" x2="250" y2="60" stroke="#d9272e" stroke-width="3" />
+                        <text x="220" y="15" font-family="sans-serif" font-size="14" font-weight="bold" fill="#d9272e">VCC (+24V)</text>
+                        
+                        <line x1="120" y1="60" x2="380" y2="60" stroke="#14202a" stroke-width="3" />
+                        
+                        <!-- Transistor Q1 & Q2 branches -->
+                        <line x1="120" y1="60" x2="120" y2="100" stroke="#14202a" stroke-width="3" />
+                        <line x1="120" y1="140" x2="120" y2="210" stroke="#14202a" stroke-width="3" />
+                        <line x1="120" y1="250" x2="120" y2="290" stroke="#14202a" stroke-width="3" />
+                        
+                        <!-- Transistor Q3 & Q4 branches -->
+                        <line x1="380" y1="60" x2="380" y2="100" stroke="#14202a" stroke-width="3" />
+                        <line x1="380" y1="140" x2="380" y2="210" stroke="#14202a" stroke-width="3" />
+                        <line x1="380" y1="250" x2="380" y2="290" stroke="#14202a" stroke-width="3" />
+                        
+                        <!-- Switches Q1, Q2, Q3, Q4 -->
+                        <circle cx="120" cy="100" r="4" fill="#14202a" />
+                        <line x1="120" y1="100" x2="105" y2="135" stroke="#d9272e" stroke-width="3" />
+                        <circle cx="120" cy="140" r="4" fill="#14202a" />
+                        <text x="80" y="120" font-family="sans-serif" font-size="12" font-weight="bold">Q1</text>
+                        
+                        <circle cx="120" cy="210" r="4" fill="#14202a" />
+                        <line x1="120" y1="210" x2="105" y2="245" stroke="#14202a" stroke-width="3" />
+                        <circle cx="120" cy="250" r="4" fill="#14202a" />
+                        <text x="80" y="230" font-family="sans-serif" font-size="12" font-weight="bold">Q2</text>
+                        
+                        <circle cx="380" cy="100" r="4" fill="#14202a" />
+                        <line x1="380" y1="100" x2="365" y2="135" stroke="#14202a" stroke-width="3" />
+                        <circle cx="380" cy="140" r="4" fill="#14202a" />
+                        <text x="395" y="120" font-family="sans-serif" font-size="12" font-weight="bold">Q3</text>
+                        
+                        <circle cx="380" cy="210" r="4" fill="#14202a" />
+                        <line x1="380" y1="210" x2="365" y2="245" stroke="#14202a" stroke-width="3" />
+                        <circle cx="380" cy="250" r="4" fill="#14202a" />
+                        <text x="395" y="230" font-family="sans-serif" font-size="12" font-weight="bold">Q4</text>
+                        
+                        <!-- Motor in center -->
+                        <line x1="120" y1="175" x2="200" y2="175" stroke="#14202a" stroke-width="3" />
+                        <line x1="300" y1="175" x2="380" y2="175" stroke="#14202a" stroke-width="3" />
+                        
+                        <circle cx="250" cy="175" r="40" fill="#eef2f5" stroke="#176da0" stroke-width="4" />
+                        <text x="238" y="182" font-family="sans-serif" font-size="20" font-weight="bold" fill="#176da0">M</text>
+                        
+                        <!-- GND connection -->
+                        <line x1="120" y1="290" x2="380" y2="290" stroke="#14202a" stroke-width="3" />
+                        <line x1="250" y1="290" x2="250" y2="310" stroke="#14202a" stroke-width="3" />
+                        <line x1="230" y1="310" x2="270" y2="310" stroke="#14202a" stroke-width="4" />
+                        <line x1="240" y1="318" x2="260" y2="318" stroke="#14202a" stroke-width="3" />
+                        <line x1="245" y1="326" x2="255" y2="326" stroke="#14202a" stroke-width="2" />
+                        
+                        <!-- Current Path Indicator (Direct Rotation) -->
+                        <path d="M 250,45 L 120,45 L 120,80 M 120,150 L 120,175 L 195,175" fill="none" stroke="#d9272e" stroke-width="2.5" stroke-dasharray="4,2" />
+                        <path d="M 305,175 L 380,175 L 380,200 M 380,260 L 380,290 L 250,290" fill="none" stroke="#d9272e" stroke-width="2.5" stroke-dasharray="4,2" />
+                        <text x="135" y="165" font-family="sans-serif" font-size="11" font-weight="bold" fill="#d9272e">Sentido Giro</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Otros diodos resuelven otras tareas</h2><div class="g4"><div class="card red"><h3>Rectificador</h3><p>Fuentes y protección.</p></div><div class="card"><h3>LED</h3><p>Indicador luminoso.</p></div><div class="card green"><h3>Zener</h3><p>Referencia o limitación.</p></div><div class="card amber"><h3>Schottky</h3><p>Baja caída y rapidez.</p></div></div><div class="task"><h3>Para seleccionar</h3><p>Considera tensión inversa, corriente directa, caída, velocidad, potencia, encapsulado y temperatura.</p></div></section>
+        <!-- Slide 15: El Amplificador Operacional (Op-Amp) -->
+        <section class="slide">
+            <h2>El Amplificador Operacional <span class="slide-subtitle">Símbolo y reglas básicas</span></h2>
+            <div class="grid-2-1">
+                <div class="card">
+                    <h3>¿Qué es un Op-Amp?</h3>
+                    <p>Es un amplificador diferencial de acoplamiento directo, de muy alta ganancia, alta impedancia de entrada y baja impedancia de salida.</p>
+                    <div class="callout success" style="margin-top: 15px;">
+                        <h4>Las Reglas de Oro para Análisis Ideal:</h4>
+                        <p>
+                            1. **Tensión Diferencial Cero:** En lazo cerrado con realimentación negativa, la diferencia de voltaje entre las entradas es cero (V<sub>+</sub> = V<sub>-</sub>).<br>
+                            2. **Corriente de Entrada Cero:** Debido a la impedancia de entrada infinita, no circula corriente hacia los terminales de entrada (I<sub>+</sub> = 0, I<sub>-</sub> = 0).
+                        </p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Op-Amp Triangle -->
+                        <polygon points="80,50 80,200 220,125" fill="none" stroke="#14202a" stroke-width="4" />
+                        
+                        <!-- Inputs -->
+                        <line x1="30" y1="90" x2="80" y2="90" stroke="#14202a" stroke-width="3" />
+                        <line x1="30" y1="160" x2="80" y2="160" stroke="#14202a" stroke-width="3" />
+                        
+                        <!-- Symbols -->
+                        <text x="90" y="100" font-family="sans-serif" font-size="20" font-weight="bold" fill="#d9272e">-</text> <!-- Inverting -->
+                        <text x="90" y="165" font-family="sans-serif" font-size="20" font-weight="bold" fill="#176da0">+</text> <!-- Non-inverting -->
+                        <text x="40" y="80" font-family="sans-serif" font-size="12" font-weight="bold">Inversora (V-)</text>
+                        <text x="40" y="190" font-family="sans-serif" font-size="12" font-weight="bold">No Inversora (V+)</text>
+                        
+                        <!-- Output -->
+                        <line x1="220" y1="125" x2="270" y2="125" stroke="#14202a" stroke-width="3" />
+                        <text x="250" y="110" font-family="sans-serif" font-size="13" font-weight="bold">Vout</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El diodo flyback protege frente a una bobina</h2><div class="g2"><div class="visual"><svg viewBox="0 0 760 420"><text class="label" x="65" y="45">+12 V</text><path class="hot" d="M100 60 V120 H300"/><rect x="300" y="90" width="170" height="70" fill="#fff" stroke="#075fa8" stroke-width="4"/><text class="label" x="340" y="133">Bobina</text><path class="wire" d="M385 160 V240"/><circle cx="385" cy="275" r="34" fill="#fff" stroke="#075fa8" stroke-width="4"/><text class="label" x="375" y="283">Q</text><path class="wire" d="M385 309 V365 H100"/><path class="wire" d="M300 125 H245 V225"/><polygon points="215,225 275,225 245,170" fill="#fff" stroke="#d71920" stroke-width="4"/><line class="hot" x1="205" y1="160" x2="285" y2="160"/><path class="wire" d="M245 160 V60"/><text class="label" x="110" y="255">Flyback</text></svg></div><div><p>Al cortar corriente, la bobina intenta mantenerla y puede crear una sobretensión.</p><div class="call ok"><strong>El diodo ofrece un camino temporal</strong> para descargar la energía.</div><div class="call danger"><strong>En operación normal queda polarizado en inversa.</strong></div></div></div></section>
+        <!-- Slide 16: Comparador y Schmitt Trigger -->
+        <section class="slide">
+            <h2>Comparador vs Schmitt Trigger <span class="slide-subtitle">Acondicionamiento de señales con ruido</span></h2>
+            <div class="grid-1-2">
+                <div class="card accent">
+                    <h3>El Problema del Ruido</h3>
+                    <p>Un comparador simple con un único umbral cambia su salida repetidamente ante transiciones lentas o ruidosas. En automatización, esto genera falsos conteos o activación destructiva de actuadores (chattering).</p>
+                    <div class="callout important" style="margin-top: 15px;">
+                        <h4>Schmitt Trigger (Histéresis):</h4>
+                        <p>Establece **dos umbrales distintos**: uno superior (V<sub>TH</sub>) para activar y uno inferior (V<sub>TL</sub>) para desactivar. El ruido dentro del rango de histéresis es completamente ignorado, garantizando una salida digital estable y limpia.</p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background grid -->
+                        <line x1="50" y1="50" x2="550" y2="50" stroke="#eee" />
+                        <line x1="50" y1="175" x2="550" y2="175" stroke="#eee" />
+                        <line x1="50" y1="300" x2="550" y2="300" stroke="#eee" />
+                        
+                        <!-- Signals Axes -->
+                        <line x1="50" y1="175" x2="560" y2="175" stroke="#14202a" stroke-width="2" />
+                        
+                        <!-- Noisy Input Signal -->
+                        <path d="M 50 250 L 100 240 L 150 260 L 200 160 L 220 180 L 240 155 L 260 165 L 280 140 L 320 80 L 370 100 L 420 90 L 470 180 L 490 165 L 510 190 L 530 180 L 550 260" fill="none" stroke="#176da0" stroke-width="3" />
+                        <text x="60" y="280" font-family="sans-serif" font-size="13" font-weight="bold" fill="#176da0">Entrada Ruidosa</text>
+                        
+                        <!-- Schmitt thresholds -->
+                        <line x1="50" y1="130" x2="550" y2="130" stroke="#d9272e" stroke-dasharray="6,4" stroke-width="2" />
+                        <text x="450" y="120" font-family="sans-serif" font-size="12" font-weight="bold" fill="#d9272e">Umbral Superior (V<sub>TH</sub>)</text>
+                        
+                        <line x1="50" y1="210" x2="550" y2="210" stroke="#16845b" stroke-dasharray="6,4" stroke-width="2" />
+                        <text x="450" y="230" font-family="sans-serif" font-size="12" font-weight="bold" fill="#16845b">Umbral Inferior (V<sub>TL</sub>)</text>
+                        
+                        <!-- Clean output block visualization -->
+                        <path d="M 50 320 L 280 320 L 280 290 L 470 290 L 470 320 L 550 320" fill="none" stroke="#e4a11b" stroke-width="4.5" />
+                        <text x="290" y="280" font-family="sans-serif" font-size="13" font-weight="bold" fill="#e4a11b">Salida Schmitt Limpia</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El transistor deja que una señal pequeña controle una carga</h2><div class="g2"><div class="card red"><h3>BJT</h3><p>Base, colector y emisor. Una corriente de base controla una corriente mayor.</p><span class="tag">NPN / PNP</span></div><div class="card"><h3>MOSFET</h3><p>Gate, drain y source. La tensión gate-source controla la conducción.</p><span class="tag">Canal N / P</span></div></div><div class="flow"><div class="node">Control</div><div class="arrow">→</div><div class="node">Transistor</div><div class="arrow">→</div><div class="node">Relé o motor</div></div><div class="call"><strong>Usos:</strong> amplificación y conmutación como interruptor electrónico.</div></section>
+        <!-- Slide 17: Configuraciones Básicas del Op-Amp -->
+        <section class="slide">
+            <h2>Configuraciones del Amplificador Operacional <span class="slide-subtitle">Inversor y No Inversor</span></h2>
+            <div class="grid-2">
+                <div class="card accent">
+                    <h3>Amplificador Inversor</h3>
+                    <p>La tensión de entrada se aplica en la entrada inversora. La salida tiene signo opuesto y ganancia definida por el cociente de las resistencias:</p>
+                    <div class="math-block">
+                        V<sub>out</sub> = - ( R<sub>f</sub> / R<sub>in</sub> ) &bull; V<sub>in</sub>
+                    </div>
+                    <div style="height: 180px; text-align: center; display: flex; justify-content: center; align-items: center; background: white; border: 1px solid var(--border); border-radius: 6px;">
+                        <!-- Correct Spacious Inverting Op-Amp -->
+                        <svg viewBox="0 0 350 200" xmlns="http://www.w3.org/2000/svg" style="max-height: 160px; width: 100%;">
+                            <!-- Op-Amp Triangle -->
+                            <polygon points="150,60 150,160 250,110" fill="none" stroke="#14202a" stroke-width="3" />
+                            <text x="160" y="90" font-family="sans-serif" font-size="20" font-weight="bold" fill="#d9272e">-</text>
+                            <text x="160" y="140" font-family="sans-serif" font-size="18" font-weight="bold" fill="#176da0">+</text>
+                            
+                            <!-- Inverting Input Wire -->
+                            <circle cx="30" cy="80" r="4" fill="#14202a" />
+                            <text x="30" y="70" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">V<sub>in</sub></text>
+                            <line x1="30" y1="80" x2="60" y2="80" stroke="#14202a" stroke-width="2.5" />
+                            
+                            <!-- Rin Resistor -->
+                            <rect x="60" y="70" width="40" height="20" fill="white" stroke="#14202a" stroke-width="2.5" />
+                            <text x="80" y="62" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">R<sub>in</sub></text>
+                            <line x1="100" y1="80" x2="150" y2="80" stroke="#14202a" stroke-width="2.5" />
+                            
+                            <!-- Feedback Loop Branch Node -->
+                            <circle cx="120" cy="80" r="4" fill="#14202a" />
+                            <line x1="120" y1="80" x2="120" y2="30" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="120" y1="30" x2="160" y2="30" stroke="#14202a" stroke-width="2.5" />
+                            
+                            <!-- Rf Resistor -->
+                            <rect x="160" y="20" width="40" height="20" fill="white" stroke="#14202a" stroke-width="2.5" />
+                            <text x="180" y="12" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">R<sub>f</sub></text>
+                            <line x1="200" y1="30" x2="270" y2="30" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="270" y1="30" x2="270" y2="110" stroke="#14202a" stroke-width="2.5" />
+                            
+                            <!-- Output Connection -->
+                            <line x1="250" y1="110" x2="300" y2="110" stroke="#14202a" stroke-width="2.5" />
+                            <circle cx="300" cy="110" r="4" fill="#14202a" />
+                            <text x="310" y="114" font-family="sans-serif" font-size="11" font-weight="bold">V<sub>out</sub></text>
+                            <circle cx="270" cy="110" r="4" fill="#14202a" />
+                            
+                            <!-- Non-inverting input to Ground -->
+                            <line x1="115" y1="140" x2="150" y2="140" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="115" y1="140" x2="115" y2="160" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="100" y1="160" x2="130" y2="160" stroke="#14202a" stroke-width="3" />
+                            <line x1="105" y1="166" x2="125" y2="166" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="110" y1="172" x2="120" y2="172" stroke="#14202a" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="card green">
+                    <h3>Amplificador No Inversor</h3>
+                    <p>La tensión de entrada se aplica directamente a la entrada no inversora. La salida conserva la fase y su ganancia siempre es mayor o igual a 1:</p>
+                    <div class="math-block">
+                        V<sub>out</sub> = ( 1 + R<sub>f</sub> / R<sub>1</sub> ) &bull; V<sub>in</sub>
+                    </div>
+                    <div style="height: 180px; text-align: center; display: flex; justify-content: center; align-items: center; background: white; border: 1px solid var(--border); border-radius: 6px;">
+                        <!-- Correct Spacious Non-Inverting Op-Amp -->
+                        <svg viewBox="0 0 350 200" xmlns="http://www.w3.org/2000/svg" style="max-height: 160px; width: 100%;">
+                            <!-- Op-Amp Triangle -->
+                            <polygon points="150,60 150,160 250,110" fill="none" stroke="#14202a" stroke-width="3" />
+                            <text x="160" y="90" font-family="sans-serif" font-size="20" font-weight="bold" fill="#d9272e">-</text>
+                            <text x="160" y="140" font-family="sans-serif" font-size="18" font-weight="bold" fill="#176da0">+</text>
+                            
+                            <!-- Non-Inverting Input -->
+                            <circle cx="30" cy="140" r="4" fill="#14202a" />
+                            <text x="30" y="130" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">V<sub>in</sub></text>
+                            <line x1="30" y1="140" x2="150" y2="140" stroke="#14202a" stroke-width="2.5" />
+                            
+                            <!-- Inverting Input feedback node wire -->
+                            <line x1="100" y1="80" x2="150" y2="80" stroke="#14202a" stroke-width="2.5" />
+                            <circle cx="120" cy="80" r="4" fill="#14202a" />
+                            
+                            <!-- Feedback Loop (Rf) -->
+                            <line x1="120" y1="80" x2="120" y2="30" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="120" y1="30" x2="160" y2="30" stroke="#14202a" stroke-width="2.5" />
+                            <rect x="160" y="20" width="40" height="20" fill="white" stroke="#14202a" stroke-width="2.5" />
+                            <text x="180" y="12" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">R<sub>f</sub></text>
+                            <line x1="200" y1="30" x2="270" y2="30" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="270" y1="30" x2="270" y2="110" stroke="#14202a" stroke-width="2.5" />
+                            
+                            <!-- Output connection -->
+                            <line x1="250" y1="110" x2="300" y2="110" stroke="#14202a" stroke-width="2.5" />
+                            <circle cx="300" cy="110" r="4" fill="#14202a" />
+                            <text x="310" y="114" font-family="sans-serif" font-size="11" font-weight="bold">V<sub>out</sub></text>
+                            <circle cx="270" cy="110" r="4" fill="#14202a" />
+                            
+                            <!-- R1 Resistor to GND from feedback node -->
+                            <line x1="120" y1="80" x2="100" y2="80" stroke="#14202a" stroke-width="2.5" />
+                            <rect x="60" y="70" width="40" height="20" fill="white" stroke="#14202a" stroke-width="2.5" />
+                            <text x="80" y="62" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">R<sub>1</sub></text>
+                            <line x1="60" y1="80" x2="35" y2="80" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="35" y1="80" x2="35" y2="100" stroke="#14202a" stroke-width="2.5" />
+                            <!-- GND symbol -->
+                            <line x1="20" y1="100" x2="50" y2="100" stroke="#14202a" stroke-width="3" />
+                            <line x1="25" y1="106" x2="45" y2="106" stroke="#14202a" stroke-width="2.5" />
+                            <line x1="30" y1="112" x2="40" y2="112" stroke="#14202a" stroke-width="1.5" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Un BJT NPN puede manejar un relé</h2><div class="g2"><div class="visual"><svg viewBox="0 0 780 480"><text class="label" x="65" y="45">+12 V</text><path class="hot" d="M100 60 V115 H365"/><rect x="300" y="115" width="160" height="65" fill="#fff" stroke="#075fa8" stroke-width="4"/><text class="label" x="330" y="155">Bobina</text><path class="wire" d="M380 180 V260"/><circle cx="380" cy="300" r="48" fill="#fff" stroke="#075fa8" stroke-width="4"/><text class="label" x="365" y="308">Q1</text><path class="wire" d="M380 348 V410"/><path class="wire" d="M80 300 H190"/><path class="comp" d="M190 300 l18 -20 25 40 25 -40 25 40 18 -20 H332"/><text class="label" x="210" y="365">RB</text><text class="label" x="45" y="280">Control</text><path class="wire" d="M300 145 H245 V215"/><polygon points="220,215 270,215 245,170" fill="#fff" stroke="#d71920" stroke-width="4"/><line class="hot" x1="210" y1="160" x2="280" y2="160"/><path class="wire" d="M245 160 V60"/></svg></div><div><ol><li>El control entrega una señal.</li><li>RB limita la corriente de base.</li><li>Q1 entra en saturación.</li><li>Circula corriente por la bobina.</li><li>El relé cambia de estado.</li></ol><div class="call warn"><strong>Verificar:</strong> corriente de bobina, corriente de base, límites y disipación.</div></div></div></section>
+        <!-- Slide 18: Amplificador de Instrumentación -->
+        <section class="slide">
+            <h2>Amplificador de Instrumentación <span class="slide-subtitle">Señales industriales débiles</span></h2>
+            <div class="grid-2-1">
+                <div class="card accent">
+                    <h3>Acondicionamiento de Alta Precisión</h3>
+                    <p>Diseño basado en 3 Amplificadores Operacionales que resuelve las limitaciones de los amplificadores diferenciales comunes.</p>
+                    <ul>
+                        <li><strong>Alta Impedancia de Entrada:</strong> Los buffers de entrada evitan cargar eléctricamente los sensores débiles.</li>
+                        <li><strong>Rechazo en Modo Común (CMRR):</strong> Cancela el ruido que afecta a ambos cables de señal de campo al mismo tiempo (ej: inducción magnética por motores cercanos).</li>
+                    </ul>
+                    <div class="callout success" style="margin-top: 15px;">
+                        <h4>Aplicación por excelencia:</h4>
+                        <p>Acondicionamiento de sensores tipo puente Wheatstone (Celdas de carga para pesaje industrial, sensores de presión extensométricos).</p>
+                    </div>
+                </div>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Input Buffers -->
+                        <polygon points="60,30 60,90 120,60" fill="none" stroke="#14202a" stroke-width="2.5" />
+                        <polygon points="60,190 60,250 120,220" fill="none" stroke="#14202a" stroke-width="2.5" />
+                        
+                        <!-- Diff Op-Amp -->
+                        <polygon points="200,110 200,170 260,140" fill="none" stroke="#14202a" stroke-width="2.5" />
+                        
+                        <!-- Input lines -->
+                        <line x1="15" y1="45" x2="60" y2="45" stroke="#14202a" stroke-width="2" />
+                        <line x1="15" y1="235" x2="60" y2="235" stroke="#14202a" stroke-width="2" />
+                        <text x="15" y="32" font-family="sans-serif" font-size="10" font-weight="bold">V1 (+)</text>
+                        <text x="15" y="222" font-family="sans-serif" font-size="10" font-weight="bold">V2 (-)</text>
+                        
+                        <!-- Gain resistor Rg between buffers feedback loop -->
+                        <line x1="90" y1="75" x2="90" y2="205" stroke="#14202a" stroke-width="2" />
+                        <rect x="75" y="125" width="30" height="30" fill="white" stroke="#176da0" stroke-width="2.5" />
+                        <text x="83" y="145" font-family="sans-serif" font-size="11" font-weight="bold" fill="#176da0">Rg</text>
+                        
+                        <!-- Connections to final stage -->
+                        <line x1="120" y1="60" x2="160" y2="60" stroke="#14202a" stroke-width="2" />
+                        <line x1="160" y1="60" x2="160" y2="125" stroke="#14202a" stroke-width="2" />
+                        <line x1="160" y1="125" x2="200" y2="125" stroke="#14202a" stroke-width="2" />
+                        
+                        <line x1="120" y1="220" x2="160" y2="220" stroke="#14202a" stroke-width="2" />
+                        <line x1="160" y1="220" x2="160" y2="155" stroke="#14202a" stroke-width="2" />
+                        <line x1="160" y1="155" x2="200" y2="155" stroke="#14202a" stroke-width="2" />
+                        
+                        <!-- Output -->
+                        <line x1="260" y1="140" x2="300" y2="140" stroke="#14202a" stroke-width="2.5" />
+                        <text x="270" y="130" font-family="sans-serif" font-size="11" font-weight="bold">Vout</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El PWM regula la energía media entregada al motor</h2><div class="g2"><div><div class="formula">Ciclo de trabajo = ton / período × 100 %</div><div class="visual"><svg viewBox="0 0 700 190"><path class="wave" d="M20 160 V35 H120 V160 H220 V35 H320 V160 H420 V35 H520 V160 H670"/><text class="note" x="30" y="25">ON</text><text class="note" x="30" y="180">OFF</text></svg></div></div><div class="card green"><h3>Elegir MOSFET</h3><ul><li>Tensión drain-source.</li><li>Corriente y disipación.</li><li>RDS(on) a la tensión de gate real.</li><li>Carga de gate.</li><li>Protección inductiva.</li></ul><div class="call danger"><strong>No asumir</strong> que cualquier MOSFET conduce bien con 3,3 V o 5 V.</div></div></div></section>
+        <!-- Slide 19: Armado y Diagnóstico de Circuitos -->
+        <section class="slide">
+            <h2>Armado y Diagnóstico Seguro <span class="slide-subtitle">Normas de laboratorio</span></h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Buenas Prácticas en Protoboard</h3>
+                    <ul>
+                        <li><strong>Distribución de Energía:</strong> Define barras de alimentación fijas para positivo (Rojo) y común/tierra (Azul/Negro).</li>
+                        <li><strong>Componentes Ordenados:</strong> Corta las terminales sobrantes para evitar falsos contactos y cortocircuitos por cruce de cables.</li>
+                        <li><strong>Desconexión para Cambios:</strong> Modifica las conexiones del circuito **únicamente** con la fuente de poder apagada.</li>
+                    </ul>
+                </div>
+                <div class="card accent">
+                    <h3>Pasos para Diagnóstico de Fallas</h3>
+                    <ol>
+                        <li style="margin-bottom: 10px;"><strong>Inspección Visual:</strong> Verificar que las polaridades de diodos y condensadores electrolíticos sean correctas, y buscar sobrecalentamiento.</li>
+                        <li style="margin-bottom: 10px;"><strong>Verificación de Fuente:</strong> Medir el voltaje de alimentación directo en los terminales de los circuitos integrados (Op-Amps).</li>
+                        <li style="margin-bottom: 10px;"><strong>Seguimiento de Señal:</strong> Inyectar estímulo conocido a la entrada y contrastar teóricamente con la salida usando osciloscopio o multímetro.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El puente H invierte el sentido de un motor</h2><div class="g2"><div class="visual"><svg viewBox="0 0 700 500"><text class="label" x="310" y="40">+V</text><path class="hot" d="M350 55 V90 M170 90 H530 M170 90 V150 M530 90 V150"/><rect x="120" y="150" width="100" height="70" fill="#fff" stroke="#075fa8" stroke-width="4"/><rect x="480" y="150" width="100" height="70" fill="#fff" stroke="#075fa8" stroke-width="4"/><rect x="120" y="340" width="100" height="70" fill="#fff" stroke="#075fa8" stroke-width="4"/><rect x="480" y="340" width="100" height="70" fill="#fff" stroke="#075fa8" stroke-width="4"/><text class="label" x="148" y="193">Q1</text><text class="label" x="508" y="193">Q2</text><text class="label" x="148" y="383">Q3</text><text class="label" x="508" y="383">Q4</text><path class="wire" d="M170 220 V275 H285 M415 275 H530 V220 M170 275 V340 M530 275 V340 M170 410 V450 H530 V410"/><circle cx="350" cy="275" r="65" fill="#fff" stroke="#d71920" stroke-width="5"/><text class="label" x="325" y="283">Motor</text></svg></div><div><table><tr><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Estado</th></tr><tr><td>ON</td><td>OFF</td><td>OFF</td><td>ON</td><td>Giro A</td></tr><tr><td>OFF</td><td>ON</td><td>ON</td><td>OFF</td><td>Giro B</td></tr><tr><td>OFF</td><td>OFF</td><td>OFF</td><td>OFF</td><td>Libre</td></tr></table><div class="call danger"><strong>Nunca actives los dos transistores de una misma rama:</strong> provoca cortocircuito entre +V y 0 V.</div></div></div></section>
+        <!-- Slide 20: Actividad Práctica 1: Puente H -->
+        <section class="slide">
+            <h2>Actividad Práctica 1 <span class="slide-subtitle">Driver de motor con Puente H</span></h2>
+            <div class="grid-2-1">
+                <div class="card accent">
+                    <h3>Guía de Ejecución</h3>
+                    <p><strong>Descripción:</strong> Montar sobre protoboard un circuito Puente H con transistores bipolares para controlar la dirección de rotación de un motor de 12 VDC.</p>
+                    <ul>
+                        <li><strong>Componentes:</strong> 2 transistores NPN, 2 transistores PNP, 4 diodos 1N4007, resistencias de base y un motor DC.</li>
+                        <li><strong>Pasos Clave:</strong>
+                            1. Cablear la fuente de poder común para lógica y motor.<br>
+                            2. Colocar los transistores y las resistencias de protección de base.<br>
+                            3. Conectar los diodos volantes en paralelo inverso a cada transistor.<br>
+                            4. Comprobar los voltajes en el motor para cada combinación lógica de control.
+                        </li>
+                    </ul>
+                </div>
+                <div class="card green">
+                    <h3>Evidencias Requeridas</h3>
+                    <ul>
+                        <li style="margin-bottom: 8px;">Esquema eléctrico completo del circuito armado con el número de parte de los transistores.</li>
+                        <li style="margin-bottom: 8px;">Tabla de verdad medida empíricamente (voltajes de salida en el motor).</li>
+                        <li style="margin-bottom: 8px;">Mediciones del consumo de corriente de base y colector.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>Actividad 1: montar un driver puente H</h2><div class="g2"><div><div class="card red"><h3>Sin energía</h3><ul><li>Interpretar el esquema.</li><li>Revisar polaridad y pinout.</li><li>Inspeccionar conexiones.</li><li>Medir continuidad y cortos.</li></ul></div><div class="card green"><h3>Con energía</h3><ul><li>Limitar corriente.</li><li>Probar un estado por vez.</li><li>Medir tensiones.</li><li>Registrar dirección y fallas.</li></ul></div></div><div class="placeholder"><strong>REEMPLAZAR POR DRAW.IO</strong><span>Esquema definitivo del puente H del laboratorio, con valores, conectores y puntos de medición.</span></div></div></section>
+        <!-- Slide 21: Actividad Práctica 2: Acondicionador 4-20mA -->
+        <section class="slide">
+            <h2>Actividad Práctica 2 <span class="slide-subtitle">Acondicionador Voltaje a Corriente (4-20mA)</span></h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Acondicionamiento Industrial</h3>
+                    <p><strong>Objetivo:</strong> Diseñar y construir un circuito acondicionador de señales utilizando amplificadores operacionales que convierta un rango de voltaje de entrada (0-5V) a una salida de lazo de corriente industrial (4-20mA).</p>
+                    <div class="callout warning" style="margin-top: 15px;">
+                        <h4>¿Por qué corriente?</h4>
+                        <p>La corriente no es afectada por caídas de tensión en cables largos y permite diagnosticar cables rotos (0 mA es falla, 4 mA es lectura cero).</p>
+                    </div>
+                </div>
+                <div class="card accent">
+                    <h3>Tareas de Medición y Ajuste</h3>
+                    <ul>
+                        <li>Configurar el Op-Amp como fuente de corriente controlada por tensión (Convertidor V-I).</li>
+                        <li>Verificar linealidad del lazo colocando resistencias de carga variables en la salida (simulando distancia de cableado).</li>
+                        <li>Registrar precisión y error en porcentaje.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El amplificador operacional compara dos entradas</h2><div class="g2"><div class="visual"><svg viewBox="0 0 700 390"><polygon points="230,70 230,320 520,195" fill="#fff" stroke="#075fa8" stroke-width="5"/><line class="wire" x1="80" y1="135" x2="230" y2="135"/><line class="wire" x1="80" y1="255" x2="230" y2="255"/><line class="hot" x1="520" y1="195" x2="650" y2="195"/><text class="label" x="185" y="130">−</text><text class="label" x="185" y="265">+</text><text class="label" x="80" y="105">Inversora</text><text class="label" x="80" y="300">No inversora</text><text class="label" x="550" y="170">Salida</text></svg></div><div><p>Amplifica la diferencia entre sus entradas.</p><div class="formula">Vout ≈ A · (V+ − V−)</div><p>La realimentación permite controlar su ganancia y comportamiento.</p><div class="call warn"><strong>La salida está limitada</strong> por la alimentación y el modelo utilizado.</div></div></div></section>
+        <!-- Slide 22: Rúbrica de Evaluación Sumativa -->
+        <section class="slide">
+            <h2>Rúbrica de Evaluación Sumativa <span class="slide-subtitle">Evaluación de desempeño</span></h2>
+            <table>
+                <tr>
+                    <th>Criterio de Evaluación</th>
+                    <th>Logro Esperado (Puntaje Máximo)</th>
+                    <th>Ponderación</th>
+                </tr>
+                <tr>
+                    <td><strong>Identificación y Selección</strong></td>
+                    <td>Selecciona componentes adecuados y explica sus características técnicas usando datasheet.</td>
+                    <td>25%</td>
+                </tr>
+                <tr>
+                    <td><strong>Montaje de Circuitos</strong></td>
+                    <td>Monta el circuito de forma ordenada y segura en protoboard de acuerdo al diagrama esquemático.</td>
+                    <td>35%</td>
+                </tr>
+                <tr>
+                    <td><strong>Diagnóstico y Reparación</strong></td>
+                    <td>Utiliza multímetro y osciloscopio para verificar parámetros y localizar fallas inducidas.</td>
+                    <td>30%</td>
+                </tr>
+                <tr>
+                    <td><strong>Seguridad y Documentación</strong></td>
+                    <td>Cumple normas de seguridad de laboratorio y documenta la experiencia con rigurosidad técnica.</td>
+                    <td>10%</td>
+                </tr>
+            </table>
+        </section>
 
-<section class="slide"><h2>Como comparador convierte una medida en una decisión</h2><div class="g2"><div class="visual"><svg viewBox="0 0 760 430"><polygon points="300,95 300,335 560,215" fill="#fff" stroke="#075fa8" stroke-width="5"/><line class="wire" x1="100" y1="150" x2="300" y2="150"/><line class="wire" x1="100" y1="280" x2="300" y2="280"/><line class="hot" x1="560" y1="215" x2="680" y2="215"/><text class="label" x="245" y="145">−</text><text class="label" x="245" y="290">+</text><text class="label" x="105" y="120">Vref</text><text class="label" x="105" y="320">Sensor</text><text class="label" x="590" y="185">Estado</text></svg></div><div><ul><li>Temperatura sobre un límite.</li><li>Nivel alto o bajo.</li><li>Luz suficiente.</li><li>Presión fuera de rango.</li></ul><div class="call"><strong>Sin histéresis</strong>, el ruido cerca del umbral puede producir conmutaciones repetidas.</div></div></div></section>
+        <!-- Slide 23: Cierre y Autoevaluación -->
+        <section class="slide">
+            <h2>Cierre de Unidad <span class="slide-subtitle">Autoevaluación final</span></h2>
+            <div class="grid-2">
+                <div class="card accent">
+                    <h3>Preguntas de Repaso</h3>
+                    <ol>
+                        <li style="margin-bottom: 10px;">¿Por qué no podemos prescindir de un diodo volante en un circuito con carga inductiva (bobina)?</li>
+                        <li style="margin-bottom: 10px;">¿Qué diferencia conceptual hay entre el valor pico y el valor RMS de una señal senoidal?</li>
+                        <li style="margin-bottom: 10px;">¿Qué peligro eléctrico existe al alternar comandos en un Puente H y cómo se previene?</li>
+                        <li style="margin-bottom: 10px;">¿En qué escenario industrial es obligatorio usar un Schmitt Trigger en lugar de un comparador simple?</li>
+                    </ol>
+                </div>
+                <div class="card green">
+                    <h3>Conclusiones Clave</h3>
+                    <ul>
+                        <li style="margin-bottom: 8px;">Los componentes semiconductores (diodos, transistores, amplificadores operacionales) estructuran las etapas físicas de control analógico.</li>
+                        <li style="margin-bottom: 8px;">El acondicionamiento físico de señales previene problemas de lectura lógica digital en el PLC.</li>
+                        <li style="margin-bottom: 8px;">El diagnóstico estructurado ahorra tiempo de parada de planta y evita el reemplazo innecesario de componentes costosos.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-<section class="slide"><h2>El amplificador inversor cambia signo y escala</h2><div class="g2"><div class="visual"><svg viewBox="0 0 820 430"><polygon points="370,90 370,340 630,215" fill="#fff" stroke="#075fa8" stroke-width="5"/><text class="label" x="325" y="155">−</text><text class="label" x="325" y="290">+</text><path class="wire" d="M70 150 H180"/><path class="comp" d="M180 150 l18 -22 28 44 28 -44 28 44 28 -22 H370"/><text class="label" x="225" y="115">Rin</text><path class="wire" d="M370 280 H300 V380"/><path class="wire" d="M630 215 H730 M650 215 V60 H560"/><path class="comp" d="M560 60 l-18 -22 -28 44 -28 -44 -28 44 -28 -22 H370 V150"/><text class="label" x="465" y="35">Rf</text></svg></div><div><div class="formula">Av = −Rf / Rin</div><p>El signo negativo indica inversión.</p><div class="task"><h3>Ejemplo</h3><p>Rin = 10 kΩ, Rf = 20 kΩ y Vin = 1 V → Vout ideal = −2 V, si la alimentación lo permite.</p></div></div></div></section>
+        <!-- Progress bar and navigation links -->
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </main>
 
-<section class="slide"><h2>El no inversor conserva la polaridad</h2><div class="g2"><div><div class="formula">Av = 1 + Rf / Rg</div><p>La entrada se aplica al terminal no inversor. Presenta alta impedancia de entrada.</p><div class="task"><h3>Ejemplo</h3><p>Rf = 30 kΩ y Rg = 10 kΩ → ganancia ideal = 4.</p></div></div><div class="visual"><svg viewBox="0 0 820 430"><polygon points="300,90 300,340 560,215" fill="#fff" stroke="#075fa8" stroke-width="5"/><text class="label" x="255" y="155">−</text><text class="label" x="255" y="290">+</text><path class="hot" d="M70 280 H300"/><path class="wire" d="M560 215 H700 M590 215 V65 H515"/><path class="comp" d="M515 65 l-18 -22 -28 44 -28 -44 -28 44 -28 -22 H300 V150"/><text class="label" x="420" y="40">Rf</text><path class="comp" d="M300 150 H250 l-18 22 -28 -44 -28 44 -28 -44 -18 22 V350"/><text class="label" x="160" y="215">Rg</text></svg></div></div></section>
+    <footer>
+        <button id="btn-prev">← Anterior</button>
+        <button id="btn-home">Inicio</button>
+        <button id="btn-full">Pantalla Completa</button>
+        <button id="btn-next">Siguiente →</button>
+    </footer>
 
-<section class="slide"><h2>El amplificador de instrumentación recupera señales pequeñas</h2><div class="g2"><div><p>Muchos transductores entregan pequeñas diferencias de tensión en ambientes con ruido.</p><ul><li>Alta impedancia de entrada.</li><li>Ganancia precisa.</li><li>Rechazo de señales comunes.</li><li>Salida adecuada para adquisición.</li></ul><div class="call ok"><strong>Aplicaciones:</strong> celdas de carga, puentes de Wheatstone y presión.</div></div><div class="placeholder"><strong>DIAGRAMA PENDIENTE</strong><span>Amplificador de instrumentación de tres operacionales o integrado seleccionado.</span></div></div></section>
+    <script>
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const counter = document.getElementById('slide-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnHome = document.getElementById('btn-home');
+        const btnFull = document.getElementById('btn-full');
+        
+        let currentSlideIndex = 0;
 
-<section class="slide"><h2>Acondicionar es preparar una señal</h2><div class="flow"><div class="node">Transductor</div><div class="arrow">→</div><div class="node">Amplificar</div><div class="arrow">→</div><div class="node">Filtrar</div><div class="arrow">→</div><div class="node">Adaptar rango</div><div class="arrow">→</div><div class="node">PLC / ADC</div></div><div class="g3"><div class="card"><h3>Ganancia</h3><p>Aumenta una señal pequeña.</p></div><div class="card green"><h3>Filtrado</h3><p>Reduce ruido.</p></div><div class="card amber"><h3>Conversión</h3><p>Cambia tensión/corriente u offset.</p></div></div><div class="call"><strong>Objetivo:</strong> aprovechar el rango sin saturar y conservar información útil.</div></section>
+        function updateSlideView(index) {
+            currentSlideIndex = Math.max(0, Math.min(slides.length - 1, index));
+            
+            // Show/hide slides
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentSlideIndex);
+            });
+            
+            // Scroll reset
+            slides[currentSlideIndex].scrollTop = 0;
+            
+            // Update counter and progress bar
+            counter.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+            progressBar.style.width = `${((currentSlideIndex + 1) / slides.length) * 100}%`;
+            
+            // Toggle buttons disabled states
+            btnPrev.disabled = currentSlideIndex === 0;
+            btnNext.disabled = currentSlideIndex === slides.length - 1;
+        }
 
-<section class="slide"><h2>Actividad 2: acondicionador para 4–20 mA</h2><div class="g2"><div><ol><li>Interpretar cada etapa.</li><li>Montar en la placa indicada.</li><li>Inspeccionar y medir sin energía.</li><li>Energizar con límites seguros.</li><li>Ajustar cero y span.</li><li>Comprobar varios puntos del rango.</li></ol><div class="call warn"><strong>No basta medir 4 y 20 mA:</strong> verifica puntos intermedios y linealidad.</div></div><div class="placeholder"><strong>REEMPLAZAR POR ESQUEMA REAL</strong><span>Conversor 4–20 mA, valores, alimentación, ajustes y bornes del laboratorio.</span></div></div></section>
+        // Navigation Handlers
+        btnPrev.addEventListener('click', () => updateSlideView(currentSlideIndex - 1));
+        btnNext.addEventListener('click', () => updateSlideView(currentSlideIndex + 1));
+        btnHome.addEventListener('click', () => updateSlideView(0));
+        
+        btnFull.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error al intentar activar pantalla completa: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
 
-<section class="slide"><h2>La protoboard conecta grupos de orificios</h2><div class="g2"><div class="visual"><svg viewBox="0 0 820 430"><rect x="40" y="35" width="740" height="350" rx="20" fill="#fff" stroke="#96a2ad" stroke-width="4"/><line x1="80" y1="85" x2="740" y2="85" stroke="#d71920" stroke-width="5"/><line x1="80" y1="115" x2="740" y2="115" stroke="#075fa8" stroke-width="5"/><rect x="80" y="155" width="660" height="75" fill="#eef2f5"/><rect x="80" y="270" width="660" height="75" fill="#eef2f5"/><line x1="80" y1="250" x2="740" y2="250" stroke="#18222d" stroke-width="3" stroke-dasharray="10 8"/><text class="label" x="300" y="245">Canal central</text><text class="note" x="90" y="70">Riel positivo</text><text class="note" x="90" y="140">Riel negativo</text></svg></div><div><ul><li>Cinco orificios suelen estar unidos.</li><li>El canal central separa ambos lados.</li><li>Los rieles pueden estar interrumpidos.</li><li>Verifica continuidad real.</li><li>Evita cableado largo y desordenado.</li></ul><div class="call danger"><strong>No modificar con energía</strong> salvo procedimiento autorizado.</div></div></div></section>
+        // Keyboard Navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                updateSlideView(currentSlideIndex + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                updateSlideView(currentSlideIndex - 1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                updateSlideView(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                updateSlideView(slides.length - 1);
+            }
+        });
 
-<section class="slide"><h2>Antes de energizar: inspeccionar y medir</h2><div class="g2"><div class="card red"><h3>Visual</h3><ul><li>□ Valor y componente correctos.</li><li>□ Polaridad y pinout.</li><li>□ Sin cables sueltos.</li><li>□ Sin soldaduras frías o cortos.</li><li>□ Alimentación correcta.</li></ul></div><div class="card green"><h3>Sin energía</h3><ul><li>□ Continuidad crítica.</li><li>□ Sin corto entre rieles.</li><li>□ Resistencias verificadas.</li><li>□ Aislamiento correcto.</li><li>□ Ajustes en posición inicial.</li></ul></div></div><div class="call ok"><strong>Buena práctica:</strong> revisión cruzada antes de conectar la fuente.</div></section>
-
-<section class="slide"><h2>Energizar también es un procedimiento</h2><div class="flow"><div class="node">1<br>OFF</div><div class="arrow">→</div><div class="node">2<br>Fijar tensión</div><div class="arrow">→</div><div class="node">3<br>Limitar corriente</div><div class="arrow">→</div><div class="node">4<br>Conectar</div><div class="arrow">→</div><div class="node">5<br>Observar</div></div><div class="g2"><div class="card amber"><h3>Detener si hay</h3><ul><li>Consumo excesivo.</li><li>Calentamiento rápido.</li><li>Olor, humo o ruido.</li><li>Tensión colapsada.</li></ul></div><div class="card"><h3>Registrar</h3><ul><li>Punto y magnitud.</li><li>Valor esperado y real.</li><li>Condición de prueba.</li><li>Conclusión.</li></ul></div></div></section>
-
-<section class="slide"><h2>El osciloscopio muestra tensión versus tiempo</h2><div class="g2"><div><ul><li><strong>Volt/div:</strong> escala vertical.</li><li><strong>Time/div:</strong> escala horizontal.</li><li><strong>Trigger:</strong> estabiliza.</li><li><strong>Acoplamiento:</strong> DC o AC.</li><li><strong>Sonda:</strong> ×1/×10 y compensación.</li></ul><div class="call danger"><strong>Atención:</strong> la masa de un osciloscopio de banco suele estar unida a tierra de protección.</div></div><div class="placeholder"><strong>FOTOGRAFÍA PENDIENTE</strong><span>Osciloscopio real, conexión de sonda y señal PWM.</span></div></div></section>
-
-<section class="slide"><h2>Diagnosticar no es cambiar piezas al azar</h2><div class="flow"><div class="node">Síntoma</div><div class="arrow">→</div><div class="node">Hipótesis</div><div class="arrow">→</div><div class="node">Medición</div><div class="arrow">→</div><div class="node">Evidencia</div><div class="arrow">→</div><div class="node">Decisión</div></div><div class="g3"><div class="card red"><h3>Confirmar</h3><p>Reproducir y definir qué debería ocurrir.</p></div><div class="card"><h3>Dividir</h3><p>Separar fuente, entrada, proceso y salida.</p></div><div class="card green"><h3>Comparar</h3><p>Esperado, medido y límite técnico.</p></div></div><div class="call"><strong>Una medición requiere una expectativa:</strong> qué valor esperábamos y por qué.</div></section>
-
-<section class="slide"><h2>Las fallas dejan patrones observables</h2><table><tr><th>Síntoma</th><th>Hipótesis</th><th>Primera comprobación</th></tr><tr><td>No enciende</td><td>Fuente, polaridad, fusible, circuito abierto</td><td>Medir alimentación en entrada</td></tr><tr><td>Consumo alto</td><td>Corto, componente invertido, carga dañada</td><td>Resistencia entre rieles sin energía</td></tr><tr><td>Salida fija</td><td>Entrada ausente, saturación, realimentación</td><td>Medir entradas y alimentación</td></tr><tr><td>Señal ruidosa</td><td>Masa, fuente, cables, desacoplo</td><td>Observar alimentación</td></tr><tr><td>Falla con carga</td><td>Driver insuficiente, caída, protección</td><td>Medir V e I con carga</td></tr></table><div class="call warn"><strong>Son hipótesis, no diagnósticos.</strong> La medición decide.</div></section>
-
-<section class="slide"><h2>Seguridad: controlar energía antes de tocar</h2><div class="g3"><div class="card red"><h3>Persona</h3><ul><li>Área seca y ordenada.</li><li>EPP indicado.</li><li>Sin joyas.</li><li>Conocer desconexión.</li></ul></div><div class="card"><h3>Equipo</h3><ul><li>Límite de corriente.</li><li>Puntas en buen estado.</li><li>Rangos adecuados.</li><li>Descargar condensadores.</li></ul></div><div class="card green"><h3>Proceso</h3><ul><li>Esquema disponible.</li><li>Revisión previa.</li><li>Un cambio a la vez.</li><li>Registrar.</li></ul></div></div><div class="call danger"><strong>La baja tensión reduce riesgos, pero no elimina quemaduras, cortocircuitos ni daño.</strong></div></section>
-
-<section class="slide"><h2>Práctica guiada: del esquema a la evidencia</h2><div class="g4"><div class="card red"><h3>1. Interpretar</h3><p>Fuente, señal, carga y protección.</p></div><div class="card"><h3>2. Predecir</h3><p>Valores y puntos de prueba.</p></div><div class="card green"><h3>3. Construir</h3><p>Montar y verificar.</p></div><div class="card amber"><h3>4. Comprobar</h3><p>Medir y documentar.</p></div></div><div class="task"><h3>Producto</h3><p>Esquema anotado, fotografías, tabla de mediciones, explicación y diagnóstico de una falla introducida.</p></div></section>
-
-<section class="slide"><h2>Ejercicio 1: indicador LED de 12 V</h2><div class="g2"><div><p>Diseñar un indicador con LED rojo y corriente objetivo de 10 mA.</p><ol><li>Estimar caída directa.</li><li>Calcular resistencia.</li><li>Elegir valor comercial.</li><li>Calcular potencia.</li><li>Ubicar mediciones de V e I.</li></ol></div><div><div class="formula">R = (Vfuente − Vf_LED) / I</div><div class="placeholder"><strong>TRABAJO DEL ESTUDIANTE</strong><span>Esquema, cálculos, selección y puntos de medición.</span></div></div></div></section>
-
-<section class="slide"><h2>Ejercicio 2: relé desde una señal lógica</h2><div class="g2"><div><ul><li>Control: 5 V y corriente limitada.</li><li>Relé: bobina de 12 V.</li><li>Corriente: según datasheet.</li><li>BJT NPN disponible.</li></ul><ol><li>Elegir Q1.</li><li>Calcular RB.</li><li>Elegir flyback.</li><li>Definir mediciones.</li></ol></div><div class="placeholder"><strong>DESARROLLO EN CLASE</strong><span>Completar driver, referencias, valores y tabla.</span></div></div></section>
-
-<section class="slide"><h2>Ejercicio 3: alarma sobre 3 V</h2><div class="g2"><div><p>Un sensor entrega 0–5 V. La alarma debe activarse sobre 3 V.</p><ol><li>Identificar Vin y Vref.</li><li>Elegir entradas del AO.</li><li>Predecir la salida.</li><li>Analizar ruido cerca de 3 V.</li><li>Proponer mejora.</li></ol></div><div class="visual"><svg viewBox="0 0 700 390"><polygon points="270,75 270,325 530,200" fill="#fff" stroke="#075fa8" stroke-width="5"/><line class="wire" x1="80" y1="135" x2="270" y2="135"/><line class="wire" x1="80" y1="265" x2="270" y2="265"/><line class="hot" x1="530" y1="200" x2="650" y2="200"/><text class="label" x="225" y="130">−</text><text class="label" x="225" y="275">+</text><text class="label" x="575" y="175">Alarma</text><text class="note" x="75" y="365">¿Dónde conectas 3 V y el sensor?</text></svg></div></div></section>
-
-<section class="slide"><h2>Comprobación antes de la evaluación</h2><div class="g2"><ol><li>¿Diferencia entre voltaje y corriente?</li><li>¿Por qué voltímetro en paralelo?</li><li>¿Qué marca la banda del diodo?</li><li>¿Para qué sirve el flyback?</li><li>¿Qué riesgo existe en el puente H?</li></ol><ol start="6"><li>¿BJT y MOSFET?</li><li>¿Qué hace un comparador?</li><li>¿Qué significa saturación?</li><li>¿Qué revisar antes de energizar?</li><li>¿Cómo diagnosticar con evidencia?</li></ol></div><div class="call ok"><strong>Si puedes explicar, anticipar y medir, has comprendido.</strong></div></section>
-
-<section class="slide"><h2>Evaluación: construir, medir y explicar</h2><div class="g3"><div class="card red"><h3>Preparación</h3><p>Esquema, selección, cálculos, seguridad y plan.</p></div><div class="card"><h3>Implementación</h3><p>Montaje, verificación y operación controlada.</p></div><div class="card green"><h3>Evidencia</h3><p>Mediciones, diagnóstico y explicación.</p></div></div><table><tr><th>Criterio</th><th>Evidencia</th></tr><tr><td>1.1.1</td><td>Relaciona con automatización.</td></tr><tr><td>1.1.2</td><td>Justifica componentes y datasheet.</td></tr><tr><td>1.1.3</td><td>Construye con seguridad.</td></tr><tr><td>1.1.4</td><td>Comprueba con y sin energía.</td></tr></table></section>
-
-<section class="slide"><div class="hero"><div><div class="eyebrow">Cierre de Unidad 1</div><h1>Un circuito confiable se comprende antes de energizar</h1><p class="lead">Electrónica aplicada = modelo + datasheet + montaje + medición + seguridad + diagnóstico.</p><div class="flow"><div class="node">Explicar</div><div class="arrow">→</div><div class="node">Predecir</div><div class="arrow">→</div><div class="node">Medir</div><div class="arrow">→</div><div class="node">Decidir</div></div><div class="call danger"><strong>Cambiar piezas sin evidencia no es diagnóstico.</strong></div></div><div class="unit"><strong>✓</strong><span>Diodos · Transistores · AO<br>Montaje · Medición · Diagnóstico</span></div></div></section>
-
-<div class="progress" id="progress"></div>
-</main>
-<footer><button id="prev">← Anterior</button><button id="overview">Índice</button><button id="next">Siguiente →</button></footer>
-<script>
-const slides=[...document.querySelectorAll(".slide")],count=document.getElementById("count"),progress=document.getElementById("progress"),prev=document.getElementById("prev"),next=document.getElementById("next");let current=0;
-function show(n){current=Math.max(0,Math.min(n,slides.length-1));slides.forEach(function(s,i){s.classList.toggle("active",i===current)});slides[current].scrollTop=0;count.textContent=(current+1)+" / "+slides.length;progress.style.width=(((current+1)/slides.length)*100)+"%";prev.disabled=current===0;next.disabled=current===slides.length-1;location.hash="slide-"+(current+1)}
-prev.onclick=function(){show(current-1)};next.onclick=function(){show(current+1)};document.getElementById("overview").onclick=function(){const n=prompt("Ir a diapositiva (1–"+slides.length+")",current+1);if(n!==null&&!Number.isNaN(Number(n)))show(Number(n)-1)};
-document.addEventListener("keydown",function(e){if(["ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();show(current+1)}if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();show(current-1)}if(e.key==="Home")show(0);if(e.key==="End")show(slides.length-1)});
-let touchX=0;document.addEventListener("touchstart",function(e){touchX=e.changedTouches[0].screenX},{passive:true});document.addEventListener("touchend",function(e){const d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>60)show(current+(d<0?1:-1))},{passive:true});
-const hash=Number((location.hash.match(/slide-(\d+)/)||[])[1]);show(hash?hash-1:0);
-</script></body></html>
+        // Initialize presentation
+        updateSlideView(0);
+    </script>
+</body>
+</html>
