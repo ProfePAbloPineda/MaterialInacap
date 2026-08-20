@@ -491,7 +491,7 @@
                         <p>¿Cómo seleccionar, conectar y diagnosticar circuitos electrónicos analógicos para que actúen como la interfaz confiable entre sensores y sistemas de control en la industria?</p>
                     </div>
                 </div>
-                <div class="hero-image" style="background-image: url('../assets/electronica_hero.jpg');"></div>
+                <div class="hero-image" style="background-image: url('electronica_hero.jpg');"></div>
             </div>
         </section>
 
@@ -867,7 +867,7 @@
         <!-- Slide 13: Control de Potencia con PWM -->
         <section class="slide">
             <h2>Control de Potencia con PWM <span class="slide-subtitle">Modulación de tensión promedio</span></h2>
-            <div class="grid-2">
+            <div class="grid-3">
                 <div class="card accent">
                     <h3>¿Qué es PWM?</h3>
                     <p>Modulación por Ancho de Pulso (Pulse Width Modulation). Consiste en variar el tiempo de encendido respecto al período total para modificar el valor de la tensión promedio suministrada a una carga.</p>
@@ -904,6 +904,9 @@
                         <h4>Aplicación típica:</h4>
                         <p>Control de velocidad en motores de corriente continua (DC) y control de intensidad lumínica (Dimming).</p>
                     </div>
+                </div>
+                <div class="diagram-container">
+                    <img src="11.png" alt="Señal PWM y Ciclo de Trabajo" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
             </div>
         </section>
@@ -950,64 +953,13 @@
                         <p>Si Q1 y Q2 (o Q3 y Q4) se encienden al mismo tiempo, se produce un cortocircuito directo entre la fuente y tierra, destruyendo los transistores.</p>
                     </div>
                 </div>
-                <div class="diagram-container">
-                    <svg viewBox="0 0 500 350" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Power rails -->
-                        <line x1="250" y1="20" x2="250" y2="60" stroke="#d9272e" stroke-width="3" />
-                        <text x="220" y="15" font-family="sans-serif" font-size="14" font-weight="bold" fill="#d9272e">VCC (+24V)</text>
-                        
-                        <line x1="120" y1="60" x2="380" y2="60" stroke="#14202a" stroke-width="3" />
-                        
-                        <!-- Transistor Q1 & Q2 branches -->
-                        <line x1="120" y1="60" x2="120" y2="100" stroke="#14202a" stroke-width="3" />
-                        <line x1="120" y1="140" x2="120" y2="210" stroke="#14202a" stroke-width="3" />
-                        <line x1="120" y1="250" x2="120" y2="290" stroke="#14202a" stroke-width="3" />
-                        
-                        <!-- Transistor Q3 & Q4 branches -->
-                        <line x1="380" y1="60" x2="380" y2="100" stroke="#14202a" stroke-width="3" />
-                        <line x1="380" y1="140" x2="380" y2="210" stroke="#14202a" stroke-width="3" />
-                        <line x1="380" y1="250" x2="380" y2="290" stroke="#14202a" stroke-width="3" />
-                        
-                        <!-- Switches Q1, Q2, Q3, Q4 -->
-                        <circle cx="120" cy="100" r="4" fill="#14202a" />
-                        <line x1="120" y1="100" x2="105" y2="135" stroke="#d9272e" stroke-width="3" />
-                        <circle cx="120" cy="140" r="4" fill="#14202a" />
-                        <text x="80" y="120" font-family="sans-serif" font-size="12" font-weight="bold">Q1</text>
-                        
-                        <circle cx="120" cy="210" r="4" fill="#14202a" />
-                        <line x1="120" y1="210" x2="105" y2="245" stroke="#14202a" stroke-width="3" />
-                        <circle cx="120" cy="250" r="4" fill="#14202a" />
-                        <text x="80" y="230" font-family="sans-serif" font-size="12" font-weight="bold">Q2</text>
-                        
-                        <circle cx="380" cy="100" r="4" fill="#14202a" />
-                        <line x1="380" y1="100" x2="365" y2="135" stroke="#14202a" stroke-width="3" />
-                        <circle cx="380" cy="140" r="4" fill="#14202a" />
-                        <text x="395" y="120" font-family="sans-serif" font-size="12" font-weight="bold">Q3</text>
-                        
-                        <circle cx="380" cy="210" r="4" fill="#14202a" />
-                        <line x1="380" y1="210" x2="365" y2="245" stroke="#14202a" stroke-width="3" />
-                        <circle cx="380" cy="250" r="4" fill="#14202a" />
-                        <text x="395" y="230" font-family="sans-serif" font-size="12" font-weight="bold">Q4</text>
-                        
-                        <!-- Motor in center -->
-                        <line x1="120" y1="175" x2="200" y2="175" stroke="#14202a" stroke-width="3" />
-                        <line x1="300" y1="175" x2="380" y2="175" stroke="#14202a" stroke-width="3" />
-                        
-                        <circle cx="250" cy="175" r="40" fill="#eef2f5" stroke="#176da0" stroke-width="4" />
-                        <text x="238" y="182" font-family="sans-serif" font-size="20" font-weight="bold" fill="#176da0">M</text>
-                        
-                        <!-- GND connection -->
-                        <line x1="120" y1="290" x2="380" y2="290" stroke="#14202a" stroke-width="3" />
-                        <line x1="250" y1="290" x2="250" y2="310" stroke="#14202a" stroke-width="3" />
-                        <line x1="230" y1="310" x2="270" y2="310" stroke="#14202a" stroke-width="4" />
-                        <line x1="240" y1="318" x2="260" y2="318" stroke="#14202a" stroke-width="3" />
-                        <line x1="245" y1="326" x2="255" y2="326" stroke="#14202a" stroke-width="2" />
-                        
-                        <!-- Current Path Indicator (Direct Rotation) -->
-                        <path d="M 250,45 L 120,45 L 120,80 M 120,150 L 120,175 L 195,175" fill="none" stroke="#d9272e" stroke-width="2.5" stroke-dasharray="4,2" />
-                        <path d="M 305,175 L 380,175 L 380,200 M 380,260 L 380,290 L 250,290" fill="none" stroke="#d9272e" stroke-width="2.5" stroke-dasharray="4,2" />
-                        <text x="135" y="165" font-family="sans-serif" font-size="11" font-weight="bold" fill="#d9272e">Sentido Giro</text>
-                    </svg>
+                <div class="diagram-container" style="padding: 14px; overflow: hidden;">
+                    <figure style="width: 100%; margin: 0; text-align: center;">
+                        <img src="12.png" alt="Puente H con interruptores y transistores" style="display: block; width: 100%; max-height: 430px; object-fit: contain; border-radius: 6px;">
+                        <figcaption style="margin-top: 8px; color: var(--muted); font-size: 0.82rem; font-style: italic;">
+                            Puente H: estados de conmutación, implementación con transistores y cálculos relevantes.
+                        </figcaption>
+                    </figure>
                 </div>
             </div>
         </section>
@@ -1027,25 +979,13 @@
                         </p>
                     </div>
                 </div>
-                <div class="diagram-container">
-                    <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Op-Amp Triangle -->
-                        <polygon points="80,50 80,200 220,125" fill="none" stroke="#14202a" stroke-width="4" />
-                        
-                        <!-- Inputs -->
-                        <line x1="30" y1="90" x2="80" y2="90" stroke="#14202a" stroke-width="3" />
-                        <line x1="30" y1="160" x2="80" y2="160" stroke="#14202a" stroke-width="3" />
-                        
-                        <!-- Symbols -->
-                        <text x="90" y="100" font-family="sans-serif" font-size="20" font-weight="bold" fill="#d9272e">-</text> <!-- Inverting -->
-                        <text x="90" y="165" font-family="sans-serif" font-size="20" font-weight="bold" fill="#176da0">+</text> <!-- Non-inverting -->
-                        <text x="40" y="80" font-family="sans-serif" font-size="12" font-weight="bold">Inversora (V-)</text>
-                        <text x="40" y="190" font-family="sans-serif" font-size="12" font-weight="bold">No Inversora (V+)</text>
-                        
-                        <!-- Output -->
-                        <line x1="220" y1="125" x2="270" y2="125" stroke="#14202a" stroke-width="3" />
-                        <text x="250" y="110" font-family="sans-serif" font-size="13" font-weight="bold">Vout</text>
-                    </svg>
+                <div class="diagram-container" style="padding: 14px; overflow: hidden;">
+                    <figure style="width: 100%; margin: 0; text-align: center;">
+                        <img src="13.png" alt="Amplificador operacional LM358 usado como comparador con salida a transistor NPN" style="display: block; width: 100%; max-height: 430px; object-fit: contain; border-radius: 6px;">
+                        <figcaption style="margin-top: 8px; color: var(--muted); font-size: 0.82rem; font-style: italic;">
+                            LM358: símbolo, encapsulado y circuito comparador con salida a transistor NPN.
+                        </figcaption>
+                    </figure>
                 </div>
             </div>
         </section>
