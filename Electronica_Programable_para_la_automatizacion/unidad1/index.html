@@ -385,6 +385,44 @@
             max-height: 380px;
         }
 
+        .opamp-split-source .grid-2 {
+            display: none;
+        }
+
+        .instrumentation-image-slide .grid-2-1 {
+            display: none;
+        }
+
+        .opamp-feature {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: var(--shadow);
+            height: calc(100vh - 245px);
+            min-height: 430px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .opamp-feature img {
+            display: block;
+            width: 100%;
+            height: calc(100% - 30px);
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        .opamp-feature figcaption {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-style: italic;
+            text-align: center;
+        }
+
         /* Barra de progreso de lectura */
         .progress-bar-container {
             position: absolute;
@@ -1032,8 +1070,8 @@
         </section>
 
         <!-- Slide 17: Configuraciones Básicas del Op-Amp -->
-        <section class="slide">
-            <h2>Configuraciones del Amplificador Operacional <span class="slide-subtitle">Inversor y No Inversor</span></h2>
+        <section class="slide opamp-split-source">
+            <h2>Amplificador Operacional Inversor <span class="slide-subtitle">Salida con inversión de fase</span></h2>
             <div class="grid-2">
                 <div class="card accent">
                     <h3>Amplificador Inversor</h3>
@@ -1136,10 +1174,23 @@
                     </div>
                 </div>
             </div>
+            <figure class="opamp-feature">
+                <img src="14.png" alt="Amplificador inversor con LM358, circuito y cálculos desarrollados">
+                <figcaption>Amplificador inversor con LM358: conexión, ganancia, referencia y formas de onda.</figcaption>
+            </figure>
+        </section>
+
+        <!-- Slide nueva: Amplificador Operacional No Inversor -->
+        <section class="slide">
+            <h2>Amplificador Operacional No Inversor <span class="slide-subtitle">Salida en fase con la entrada</span></h2>
+            <figure class="opamp-feature">
+                <img src="16.png" alt="Amplificador no inversor con LM358, circuito y cálculos desarrollados">
+                <figcaption>Amplificador no inversor con LM358: ganancia positiva y salida sin inversión de fase.</figcaption>
+            </figure>
         </section>
 
         <!-- Slide 18: Amplificador de Instrumentación -->
-        <section class="slide">
+        <section class="slide instrumentation-image-slide">
             <h2>Amplificador de Instrumentación <span class="slide-subtitle">Señales industriales débiles</span></h2>
             <div class="grid-2-1">
                 <div class="card accent">
@@ -1189,6 +1240,10 @@
                     </svg>
                 </div>
             </div>
+            <figure class="opamp-feature">
+                <img src="15.png" alt="Amplificador de instrumentación con tres amplificadores operacionales">
+                <figcaption>Amplificador de instrumentación: alta impedancia de entrada, ganancia diferencial y rechazo de modo común.</figcaption>
+            </figure>
         </section>
 
         <!-- Slide 19: Armado y Diagnóstico de Circuitos -->
