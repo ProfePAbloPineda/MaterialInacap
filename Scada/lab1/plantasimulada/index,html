@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Guía INACAP para integrar por primera vez ISPSoft Simulator, COMMGR, KEPServerEX y una escena entregada de Factory I/O.">
+<title>Laboratorio 01B · Integración Factory I/O y KEPServerEX</title>
+<style>
+:root{--r:#d71920;--ink:#18222d;--blue:#075fa8;--green:#087f5b;--amber:#b45309;--paper:#f4f6f8;--line:#d5dce3;--muted:#596775;--soft-blue:#e9f2f9;--soft-green:#e8f6ef;--soft-amber:#fff3d9;--soft-red:#fdebec;--white:#fff}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#202a33;color:var(--ink);font-family:Arial,"Segoe UI",sans-serif;overflow:hidden}
+header{height:70px;background:var(--white);border-bottom:5px solid var(--r);display:flex;align-items:center;justify-content:space-between;padding:0 3vw;gap:20px}.brand{display:flex;gap:16px;align-items:center;min-width:0}.logo{font-size:1.55rem;font-weight:900;color:var(--r)}.course{border-left:1px solid var(--line);padding-left:16px;color:#54616e;font-size:.88rem;line-height:1.3}.counter{white-space:nowrap}
+main{height:calc(100vh - 128px);background:var(--paper);position:relative}.slide{display:none;height:100%;overflow:auto;padding:4vh 6vw 5vh}.slide.active{display:block;animation:enter .25s}@keyframes enter{from{opacity:.3;transform:translateX(10px)}}
+h1{font-size:clamp(2.25rem,4vw,4.15rem);line-height:1.02;margin:.15em 0 .35em}h2{font-size:clamp(1.75rem,3vw,2.75rem);border-left:9px solid var(--r);padding-left:18px;margin:0 0 .7em}h3{font-size:1.25rem;color:var(--blue);margin:.1em 0 .5em}p,li{font-size:clamp(1rem,1.3vw,1.2rem);line-height:1.43}.lead{font-size:clamp(1.22rem,2vw,1.75rem);color:#52606d}.small{font-size:.92rem;color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.5fr .6fr;gap:5vw;align-items:center;min-height:75%}.eyebrow{color:var(--r);font-weight:800;text-transform:uppercase;letter-spacing:1.4px}.unit{background:var(--ink);color:var(--white);padding:30px;border-top:8px solid var(--r)}.unit strong{display:block;font-size:4rem}.unit span{line-height:1.5}
+.g2,.g3,.g4{display:grid;gap:22px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:var(--white);border:1px solid var(--line);padding:22px;border-top:6px solid var(--blue);box-shadow:0 5px 15px #14202a10}.red{border-top-color:var(--r)!important}.green{border-top-color:var(--green)!important}.amber{border-top-color:var(--amber)!important}
+.call{background:var(--soft-blue);border-left:7px solid var(--blue);padding:17px 21px;margin:18px 0}.call.warn{background:var(--soft-amber);border-color:var(--amber)}.call.ok{background:var(--soft-green);border-color:var(--green)}.call.danger{background:var(--soft-red);border-color:var(--r)}.task{background:var(--white);border:2px solid var(--r);padding:19px;margin:16px 0}.task h3{color:var(--r)}
+.checklist{list-style:none;padding-left:0}.checklist li{margin:.48em 0}.checklist li::before{content:"□";font-weight:900;color:var(--r);margin-right:.55em}.mono{font-family:Consolas,"Courier New",monospace}.path{background:#101820;color:var(--white);padding:14px 18px;font:700 clamp(1rem,1.5vw,1.25rem)/1.45 Consolas,monospace;text-align:center;margin:14px 0;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;background:var(--white);font-size:1rem}th{background:var(--ink);color:var(--white);text-align:left}th,td{border:1px solid var(--line);padding:11px 13px;vertical-align:top}tbody tr:nth-child(even){background:#f8fafb}.tight th,.tight td{padding:8px 10px;font-size:.93rem}
+.flow{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap;margin:24px 0}.node{background:var(--white);border:3px solid var(--blue);padding:14px 18px;min-width:120px;text-align:center;font-weight:700}.node.red-node{border-color:var(--r)}.node.green-node{border-color:var(--green)}.round{border-radius:28px}.arrow{font-size:2rem;color:var(--r);font-weight:900}
+.step{display:grid;grid-template-columns:58px 1fr;gap:16px;align-items:start;margin:14px 0;background:var(--white);border:1px solid var(--line);padding:15px}.step-num{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--r);color:var(--white);font-size:1.4rem;font-weight:900}.step p{margin:.25em 0}
+.photo{background:#fff;border:1px solid var(--line);padding:10px;margin:14px 0;text-align:center}.photo img{display:block;width:100%;height:auto;max-height:56vh;object-fit:contain}.photo figcaption{font-size:.86rem;color:var(--muted);margin-top:8px}.shot{background:#fff;border:2px solid var(--line);padding:12px;margin:14px 0}.shot img{display:block;width:100%;max-height:48vh;object-fit:contain}.shot .fallback{display:none;background:repeating-linear-gradient(135deg,#fff,#fff 12px,#f4f6f8 12px,#f4f6f8 24px);border:3px dashed #96a2ad;min-height:180px;padding:24px;text-align:center;align-items:center;justify-content:center;flex-direction:column}.shot.missing img{display:none}.shot.missing .fallback{display:flex}
+.placeholder{background:repeating-linear-gradient(135deg,#fff,#fff 12px,#f4f6f8 12px,#f4f6f8 24px);border:3px dashed #96a2ad;padding:26px;text-align:center;margin:18px 0;min-height:150px;display:flex;flex-direction:column;justify-content:center;gap:8px}.placeholder strong{color:var(--r);font-size:1.2rem}.placeholder code{display:block;background:#101820;color:#fff;padding:9px;margin:7px auto 0;max-width:100%;font-size:.85rem;overflow-wrap:anywhere}.placeholder.compact{min-height:110px;padding:18px}
+.signal-out{color:var(--blue);font-weight:800}.signal-in{color:var(--green);font-weight:800}.quality{display:inline-flex;align-items:center;gap:7px;font-weight:800}.dot{width:13px;height:13px;border-radius:50%;display:inline-block}.dot.good{background:var(--green)}.dot.bad{background:var(--r)}.dot.uncertain{background:var(--amber)}.evidence{border-left:6px solid var(--green);background:#fff;padding:14px 18px;margin:14px 0}.source{font-size:.8rem;color:#6b7580;border-top:1px solid var(--line);padding-top:10px;margin-top:18px}.progress{position:absolute;bottom:0;height:5px;background:var(--r);transition:.2s}
+.ladder{background:#fff;border:1px solid var(--line);padding:16px 18px;margin:14px 0}.rung{display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:stretch;border-bottom:1px dashed #b7c0c8;padding:10px 0}.rung:last-child{border-bottom:0}.net{background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:900;min-height:54px}.logic{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:54px;border-left:5px solid var(--blue);border-right:5px solid var(--blue);padding:7px 12px;position:relative}.logic::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:#8a96a1;z-index:0}.contact,.coil{background:#fff;border:2px solid var(--blue);padding:8px 12px;font:700 .95rem Consolas,monospace;position:relative;z-index:1}.coil{border-color:var(--green);border-radius:22px}.comment{color:var(--muted);font-size:.86rem;font-style:italic;position:relative;z-index:1;background:#fff;padding:4px}
+footer{height:58px;background:var(--white);border-top:1px solid var(--line);display:flex;justify-content:center;align-items:center;gap:12px}button{border:0;border-radius:3px;background:var(--ink);color:var(--white);padding:10px 18px;font-size:1rem;font-weight:700;cursor:pointer}button:hover{background:var(--r)}button:disabled{background:#aab2ba}.index-panel{position:fixed;inset:0;background:#101820d9;display:none;z-index:20;padding:5vh 7vw;overflow:auto}.index-panel.open{display:block}.index-box{max-width:1100px;margin:auto;background:#fff;padding:26px;border-top:8px solid var(--r)}.index-head{display:flex;justify-content:space-between;align-items:center;gap:20px}.index-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.index-item{text-align:left;background:#f2f5f7;color:var(--ink);border-left:5px solid var(--blue);padding:11px}.index-item:hover{background:var(--soft-red)}
+@media(max-width:980px){body{overflow:auto}header{height:auto;padding:12px}.course{font-size:.76rem}.unit{display:none}main{height:auto}.slide{min-height:calc(100vh - 115px)}.hero,.g2,.g3,.g4{grid-template-columns:1fr}.index-grid{grid-template-columns:1fr}}
+@media print{@page{size:A4 landscape;margin:11mm}body{overflow:visible;background:#fff}header,footer,.index-panel{display:none!important}main{height:auto}.slide{display:block!important;height:auto;min-height:180mm;page-break-after:always;padding:7mm 9mm;overflow:visible}.card{box-shadow:none}p,li{font-size:10.5pt}h1{font-size:28pt}h2{font-size:22pt}.placeholder{min-height:95px}.progress{display:none}.source{font-size:8pt}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">INACAP</div><div class="course">PLATAFORMA SCADA · GUÍA DE LABORATORIO 01B<br>ISPSoft Simulator · COMMGR · KEPServerEX · Factory I/O</div></div>
+  <strong class="counter" id="count">1 / 1</strong>
+</header>
+<main>
+
+<section class="slide active" data-title="Portada">
+  <div class="hero"><div><div class="eyebrow">Primera experiencia de integración</div><h1>PLC simulado, servidor OPC y Factory I/O</h1><p class="lead">Enlazar por primera vez cuatro aplicaciones para ejecutar una secuencia automática de tres cilindros.</p><div class="call"><strong>Recorrido:</strong> ISPSoft Simulator → COMMGR → KEPServerEX → Factory I/O.</div></div><div class="unit"><strong>01B</strong><span>Guía práctica<br>Estación simulada<br>Integración verificable</span></div></div>
+</section>
+
+<section class="slide" data-title="Alcance de la experiencia">
+  <h2>¿Qué se construye y qué se entrega?</h2>
+  <div class="g2">
+    <div class="card red"><h3>Se entrega listo</h3><ul class="checklist"><li>Programa Ladder de la secuencia.</li><li>Escena de tres cilindros en Factory I/O.</li><li>Tabla de direcciones Modbus Delta.</li><li>Nombres y direcciones de los tags.</li></ul></div>
+    <div class="card green"><h3>Trabajo de la dupla</h3><ul class="checklist"><li>Crear y enlazar el simulador DVP-SE.</li><li>Configurar el servidor OPC.</li><li>Crear exactamente los tags indicados.</li><li>Conectar la escena entregada.</li><li>Validar y diagnosticar el recorrido de los datos.</li></ul></div>
+  </div>
+  <div class="call danger"><strong>Importante:</strong> diseñar o modificar la planta de Factory I/O no es objetivo de esta asignatura. La escena se utiliza como proceso virtual ya preparado para concentrarse en la integración SCADA.</div>
+</section>
+
+<section class="slide" data-title="Organización del curso">
+  <h2>Actividad paralela y rotación</h2>
+  <div class="g2"><div class="card"><h3>Esta sesión · 6 duplas</h3><p>Doce estudiantes desarrollan esta guía con PLC simulado y Factory I/O, mientras las otras seis duplas trabajan con las maquetas físicas y su guía correspondiente.</p></div><div class="card green"><h3>Próxima sesión</h3><p>Las duplas cambian de actividad. Cada grupo debe dejar sus archivos, puertos y evidencias claramente identificados para completar la ruta pendiente.</p></div></div>
+  <div class="evidence"><strong>Identificación de la dupla:</strong> integrantes ____________________ · PC N.º ____ · driver COMMGR ____________________ · puerto __________</div>
+</section>
+
+<section class="slide" data-title="Objetivo y producto">
+  <h2>Objetivo de aprendizaje</h2>
+  <p class="lead">Comprender y comprobar cómo una variable viaja entre el programa Ladder, la memoria del PLC simulado, Modbus ASCII, KEPServerEX y Factory I/O.</p>
+  <div class="g3"><div class="card red"><h3>Configurar</h3><p>Driver Simulator SE, canal, dispositivo y tags.</p></div><div class="card"><h3>Enlazar</h3><p>Las cuatro aplicaciones respetando puertos, nombres, direcciones y sentido de las señales.</p></div><div class="card green"><h3>Validar</h3><p>Value, Quality, Timestamp, sensores, etapas y movimiento de los cilindros.</p></div></div>
+  <div class="call ok"><strong>Producto final:</strong> secuencia A+ → B+ → A− → B− → C+ → C− ejecutándose en la escena entregada y respaldada con evidencias.</div>
+</section>
+
+<section class="slide" data-title="Proceso virtual entregado">
+  <h2>Reconocer el proceso antes de conectarlo</h2>
+  <div class="g2"><div><div class="card red"><h3>Problema de automatización</h3><p>Una celda utiliza tres cilindros de doble efecto. Cada movimiento debe llegar a su sensor final antes de habilitar el paso siguiente.</p></div><div class="flow"><div class="node round">A+</div><div class="arrow">→</div><div class="node round">B+</div><div class="arrow">→</div><div class="node round">A−</div><div class="arrow">→</div><div class="node round">B−</div><div class="arrow">→</div><div class="node round">C+</div><div class="arrow">→</div><div class="node round">C−</div></div><div class="call warn"><strong>No edites la escena:</strong> abre el archivo entregado y conserva sus actuadores, sensores, pulsadores y nombres.</div></div><figure class="photo"><img src="fabrica1.PNG" alt="Escena entregada de tres cilindros en Factory I/O"><figcaption>La planta virtual se entrega construida y configurada para esta experiencia.</figcaption></figure></div>
+</section>
+
+<section class="slide" data-title="Señales de Factory I/O">
+  <h2>Las señales disponibles en la escena</h2>
+  <div class="g2"><figure class="photo"><img src="fabrica.PNG" alt="Lista de señales A Ax B Bx C Cx S1 a S6 Start y Stop en Factory I/O"><figcaption>Panel de señales de la escena entregada.</figcaption></figure><div><div class="card"><h3>Actuadores</h3><p><span class="signal-out">A, Ax, B, Bx, C y Cx</span> reciben desde el PLC las órdenes de avance y retroceso.</p></div><div class="card green"><h3>Sensores</h3><p><span class="signal-in">S1, S2, S3, S4, S5 y S6</span> informan al PLC las posiciones de los cilindros.</p></div><div class="card red"><h3>Órdenes</h3><p><span class="signal-in">Start Button 0</span> y <span class="signal-in">Stop Button 0</span> escriben las órdenes START y STOP.</p></div></div></div>
+</section>
+
+<section class="slide" data-title="Arquitectura completa">
+  <h2>Cuatro aplicaciones, una cadena de comunicación</h2>
+  <div class="flow"><div class="node">ISPSoft<br><span class="small">Ladder y PLC simulado</span></div><div class="arrow">⇄</div><div class="node">COMMGR<br><span class="small">Publica un puerto local</span></div><div class="arrow">⇄</div><div class="node red-node">KEPServerEX<br><span class="small">Servidor OPC</span></div><div class="arrow">⇄</div><div class="node green-node">Factory I/O<br><span class="small">Cliente OPC y planta</span></div></div>
+  <div class="g3"><div class="card"><h3>COMMGR</h3><p>Permite que otras aplicaciones accedan al simulador Delta mediante un puerto TCP local.</p></div><div class="card red"><h3>KEPServerEX</h3><p>Lee y escribe memorias Delta usando Modbus ASCII, y las publica como tags OPC.</p></div><div class="card green"><h3>Factory I/O</h3><p>Lee las órdenes de movimiento y escribe sensores y pulsadores mediante esos tags.</p></div></div>
+  <div class="call"><strong>Dirección local:</strong> <span class="mono">127.0.0.1</span> significa “este mismo computador”. El puerto identifica el servicio creado por COMMGR.</div>
+</section>
+
+<section class="slide" data-title="Recorrido de un dato">
+  <h2>Ejemplo: ¿cómo avanza el cilindro A?</h2>
+  <div class="flow"><div class="node">M0 activo</div><div class="arrow">→</div><div class="node">Y0</div><div class="arrow">→</div><div class="node red-node">001281</div><div class="arrow">→</div><div class="node">SE.PLC.A</div><div class="arrow">→</div><div class="node green-node">A en Factory I/O</div></div>
+  <div class="call ok"><strong>Retorno:</strong> cuando A termina de avanzar, Factory I/O activa S2 → tag <span class="mono">SE.PLC.S2</span> → dirección <span class="mono">002060</span> → memoria M11 → el Ladder pasa de M0 a M1.</div>
+  <div class="task"><h3>Pregunta</h3><p>Si A se mueve pero la secuencia no pasa a B+, ¿conviene revisar primero el tag A o el retorno S2? Justifica.</p></div>
+</section>
+
+<section class="slide" data-title="Programa Ladder entregado">
+  <h2>El programa se entrega: hay que comprenderlo</h2>
+  <div class="g3"><div class="card red"><h3>Marcha</h3><p>M16 corresponde a START, M17 a STOP y M100 conserva la marcha general.</p></div><div class="card"><h3>Etapas</h3><p>M0 a M5 representan los seis movimientos. Cada etapa ordena una salida.</p></div><div class="card green"><h3>Transiciones</h3><p>Los sensores S1 a S6 confirman posiciones y permiten cambiar a la etapa siguiente.</p></div></div>
+  <table class="tight"><tr><th>Etapa</th><th>Salida</th><th>Movimiento</th><th>Sensor que permite avanzar</th></tr><tr><td>M0</td><td>Y0</td><td>A+</td><td>S2 · M11</td></tr><tr><td>M1</td><td>Y2</td><td>B+</td><td>S4 · M13</td></tr><tr><td>M2</td><td>Y1</td><td>A−</td><td>S1 · M10</td></tr><tr><td>M3</td><td>Y3</td><td>B−</td><td>S3 · M12</td></tr><tr><td>M4</td><td>Y4</td><td>C+</td><td>S6 · M15</td></tr><tr><td>M5</td><td>Y5</td><td>C−</td><td>S5 · M14</td></tr></table>
+</section>
+
+<section class="slide" data-title="Diseño del programa">
+  <h2>Patrón usado para diseñar la secuencia</h2>
+  <div class="ladder"><div class="rung"><div class="net">INICIO</div><div class="logic"><span class="contact">START</span><span class="contact">/STOP</span><span class="coil">M100</span><span class="comment">Habilita la marcha general.</span></div></div><div class="rung"><div class="net">ETAPA</div><div class="logic"><span class="contact">M100</span><span class="contact">Mx</span><span class="contact">Yx</span><span class="contact">Sensor final</span><span class="coil">RST Mx</span><span class="coil">SET Mx+1</span></div></div><div class="rung"><div class="net">SALIDA</div><div class="logic"><span class="contact">Mx</span><span class="coil">Yx</span><span class="comment">Convierte la etapa activa en movimiento.</span></div></div></div>
+  <div class="call"><strong>Idea central:</strong> el movimiento no cambia por tiempo. Cambia cuando el sensor confirma que el paso actual terminó.</div>
+  <div class="call warn"><strong>CONTADOR:</strong> C0 incrementa al finalizar la etapa C+, antes del retroceso C−. Esta ubicación se conserva porque pertenece al programa entregado.</div>
+</section>
+
+<section class="slide" data-title="Archivos entregados">
+  <h2>Preparar la carpeta de trabajo</h2>
+  <div class="g2"><div class="card red"><h3>Archivos obligatorios</h3><ul class="checklist"><li>Proyecto ISPSoft de la secuencia.</li><li>Escena Factory I/O entregada.</li><li><a href="programa.pdf" target="_blank">programa.pdf</a>.</li><li><a href="modbus-address-table-delta-plc.pdf" target="_blank">tabla Modbus Delta</a>.</li></ul></div><div class="card"><h3>Antes de abrirlos</h3><ul class="checklist"><li>Crea una carpeta con los nombres de la dupla.</li><li>Copia los archivos entregados.</li><li>No renombres las señales dentro de Factory I/O.</li><li>No modifiques el Ladder antes de probar la integración.</li><li>Guarda capturas y registro de errores en la misma carpeta.</li></ul></div></div>
+  <div class="call danger"><strong>Primera regla de integración:</strong> cambiar algo “para probar” sin registrar el cambio dificulta encontrar la causa real de una falla.</div>
+</section>
+
+<section class="slide" data-title="COMMGR · Crear driver">
+  <h2>Paso 1 · Crear el driver Simulator SE</h2>
+  <div class="g2"><div><ol><li>Abre <strong>COMMGR</strong>.</li><li>Agrega un driver nuevo.</li><li>Asigna un nombre identificable, por ejemplo <span class="mono">SIM_SE_DUPLA_01</span>.</li><li>Selecciona el modo <strong>Simulator</strong>.</li></ol><div class="call warn"><strong>No elijas un enlace físico:</strong> esta actividad no utiliza un PLC conectado al PC.</div></div><div class="shot"><img src="1.png" alt="Creación de driver en COMMGR" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 1.PNG</strong><span>COMMGR: creación de un driver nuevo.</span></div></div></div>
+</section>
+
+<section class="slide" data-title="COMMGR · Modelo DVP-SE">
+  <h2>Paso 2 · Seleccionar el simulador correcto</h2>
+  <div class="g2"><div class="shot"><img src="2.png" alt="Selección de Simulator SE en COMMGR" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 2.PNG</strong><span>COMMGR: selección de Simulator y DVP-SE.</span></div></div><div><div class="step"><div class="step-num">1</div><div><h3>Tipo</h3><p>Confirma <strong>Simulator</strong>.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Modelo</h3><p>Selecciona <strong>DVP-SE</strong>, igual que en el proyecto ISPSoft.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>Estado</h3><p>Guarda y deja el driver activo.</p></div></div><div class="call danger"><strong>La familia debe coincidir:</strong> ISPSoft y COMMGR deben trabajar con DVP-SE.</div></div></div>
+</section>
+
+<section class="slide" data-title="COMMGR · Puerto">
+  <h2>Paso 3 · Anotar el puerto asignado</h2>
+  <div class="g2"><div><div class="shot"><img src="3.png" alt="Puerto asignado por COMMGR" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 3.PNG</strong><span>Pantalla donde aparece el puerto.</span></div></div><div class="shot"><img src="4.png" alt="Driver activo en COMMGR" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 4.PNG</strong><span>Driver Simulator SE activo.</span></div></div></div><div><table><tr><th>Dato</th><th>Registro</th></tr><tr><td>Driver</td><td>______________________</td></tr><tr><td>Modelo</td><td>DVP-SE</td></tr><tr><td>Host</td><td>127.0.0.1</td></tr><tr><td>Puerto COMMGR</td><td style="font-size:1.5rem">__________</td></tr></table><div class="call danger"><strong>No cierres COMMGR:</strong> este puerto debe permanecer publicado durante toda la experiencia.</div><div class="call warn"><strong>No copies el puerto de otra dupla:</strong> KEPServerEX debe usar exactamente el número mostrado en este PC.</div></div></div>
+</section>
+
+<section class="slide" data-title="ISPSoft · Simulador">
+  <h2>Paso 4 · Enlazar ISPSoft y ejecutar el PLC simulado</h2>
+  <div class="g2"><div><ol><li>Abre Ispsoft y crea un proyecto.</li><li>En <strong>Communication Settings</strong>, selecciona el driver creado en COMMGR.</li><li>Inicia el simulador DVP-SE.</li><li>Descarga el programa al simulador.</li><li>Pasa a RUN y activa el monitoreo.</li></ol><div class="call ok"><strong>Comprobación:</strong> debes poder observar M0-M5, M10-M17, Y0-Y5 y C0 desde ISPSoft.</div></div><div><div class="shot"><img src="5.png" alt="Selección de driver COMMGR en ISPSoft" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 5.PNG</strong><span>ISPSoft: selección del driver COMMGR.</span></div></div><div class="shot"><img src="6.png" alt="PLC simulado en RUN" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 6.PNG</strong><span>ISPSoft Simulator en RUN.</span></div></div></div></div>
+</section>
+
+<section class="slide" data-title="Servidor OPC">
+  <h2>Antes de configurar: ¿qué hará KEPServerEX?</h2>
+  <div class="g3"><div class="card red"><h3>Adquirir</h3><p>Se comunica con el PLC simulado mediante Modbus Serial ASCII encapsulado en TCP.</p></div><div class="card"><h3>Organizar</h3><p>Presenta cada dirección como un tag con nombre, tipo y frecuencia de actualización.</p></div><div class="card green"><h3>Publicar</h3><p>Permite que Factory I/O navegue, lea y escriba las variables autorizadas mediante OPC.</p></div></div>
+  <div class="path">Canal.Dispositivo.Tag → SE.PLC.A</div>
+  <div class="call warn"><strong>OPC no reemplaza a Modbus:</strong> KEPServerEX funciona como traductor y organizador entre el protocolo del PLC y el cliente Factory I/O.</div>
+</section>
+
+<section class="slide" data-title="KEPServerEX · Canal">
+  <h2>Paso 5 · Crear el canal con el nombre exacto</h2>
+  <div class="g2"><div><div class="step"><div class="step-num">1</div><div><h3>New Channel</h3><p>Nombre obligatorio: <span class="mono">SE</span>.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Driver</h3><p>Selecciona <strong>Modbus Serial</strong>.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>COM ID</h3><p>Selecciona <strong>Ethernet Encapsulation</strong>.</p></div></div><div class="step"><div class="step-num">4</div><div><h3>Destino</h3><p>Host <span class="mono">127.0.0.1</span> y puerto anotado de COMMGR.</p></div></div></div><div><table class="tight"><tr><th>Campo</th><th>Valor</th></tr><tr><td>Channel Name</td><td><strong>SE</strong></td></tr><tr><td>Driver</td><td>Modbus Serial</td></tr><tr><td>COM ID</td><td>Ethernet Encapsulation</td></tr><tr><td>Host</td><td>127.0.0.1</td></tr><tr><td>Port</td><td>Puerto COMMGR: ______</td></tr><tr><td>Serial</td><td>9600 / 7 / Even / 1</td></tr></table><div class="shot"><img src="7.png" alt="Canal SE en KEPServerEX" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 7.PNG</strong><span>Canal SE con Ethernet Encapsulation.</span></div></div></div></div>
+</section>
+
+<section class="slide" data-title="KEPServerEX · Dispositivo">
+  <h2>Paso 6 · Crear el dispositivo PLC</h2>
+  <div class="g2"><div class="card red"><h3>Jerarquía obligatoria</h3><p>Clic derecho sobre <span class="mono">SE</span> → <strong>New Device</strong>. Usa exactamente:</p><div class="path">SE<br>└── PLC</div><p>Si el canal o el dispositivo cambia de nombre, cambia también la ruta de todos los items OPC.</p></div><div><table class="tight"><tr><th>Campo</th><th>Valor</th></tr><tr><td>Device Name</td><td><strong>PLC</strong></td></tr><tr><td>Model / Protocol</td><td>Modbus ASCII</td></tr><tr><td>Device ID / Unit ID</td><td>1</td></tr><tr><td>Scan mode</td><td>Respect client-specified scan rate</td></tr><tr><td>Simulation</td><td>Disabled / False</td></tr></table><div class="call danger"><strong>Simulation debe estar desactivada:</strong> aquí KEPServerEX debe consultar al simulador Delta real publicado por COMMGR, no generar datos internos.</div></div></div>
+  <div class="shot"><img src="8.png" alt="Dispositivo PLC en el canal SE" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA 8.PNG</strong><span>Dispositivo PLC con Modbus ASCII y Unit ID 1.</span></div></div>
+</section>
+
+<section class="slide" data-title="KEPServerEX · Tags patrón">
+  <h2>Paso 7 · Reproducir exactamente la lista de tags</h2>
+  <div class="g2"><div class="shot"><img src="kepserver-tags.png" alt="Lista patrón de tags en KEPServerEX" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>IMAGEN DE REFERENCIA: LISTA PATRÓN DE TAGS</strong><span>Aquí debe mostrarse la captura completa de KEPServerEX. El archivo debe llamarse <span class="mono">kepserver-tags.png</span> y estar en la misma carpeta que este HTML.</span></div></div><div><div class="card red"><h3>Coincidencia literal</h3><p>Respeta mayúsculas y minúsculas: <span class="mono">A</span> no es <span class="mono">a</span>; <span class="mono">Ax</span> no es <span class="mono">AX</span>; <span class="mono">START</span> no es <span class="mono">Inicio</span>.</p></div><div class="card"><h3>Ruta completa</h3><p>Factory I/O buscará items como:</p><div class="path">SE.PLC.A<br>SE.PLC.S2<br>SE.PLC.START</div></div><div class="call danger"><strong>No traduzcas ni “mejores” los nombres:</strong> la escena y su mapeo fueron preparados con esta convención.</div></div></div>
+</section>
+
+<section class="slide" data-title="Tabla exacta de tags">
+  <h2>Nombres, direcciones y tipos obligatorios</h2>
+  <table class="tight"><tr><th>Tag</th><th>Delta</th><th>Address</th><th>Data Type</th><th>Scan</th><th>Función</th></tr><tr><td><strong>A</strong></td><td>Y0</td><td>001281</td><td>Boolean</td><td>100 ms</td><td>A+</td></tr><tr><td><strong>Ax</strong></td><td>Y1</td><td>001282</td><td>Boolean</td><td>100 ms</td><td>A−</td></tr><tr><td><strong>B</strong></td><td>Y2</td><td>001283</td><td>Boolean</td><td>100 ms</td><td>B+</td></tr><tr><td><strong>Bx</strong></td><td>Y3</td><td>001284</td><td>Boolean</td><td>100 ms</td><td>B−</td></tr><tr><td><strong>C</strong></td><td>Y4</td><td>001285</td><td>Boolean</td><td>100 ms</td><td>C+</td></tr><tr><td><strong>Cx</strong></td><td>Y5</td><td>001286</td><td>Boolean</td><td>100 ms</td><td>C−</td></tr><tr><td><strong>S1</strong></td><td>M10</td><td>002059</td><td>Boolean</td><td>100 ms</td><td>A retraído</td></tr><tr><td><strong>S2</strong></td><td>M11</td><td>002060</td><td>Boolean</td><td>100 ms</td><td>A extendido</td></tr><tr><td><strong>S3</strong></td><td>M12</td><td>002061</td><td>Boolean</td><td>100 ms</td><td>B retraído</td></tr><tr><td><strong>S4</strong></td><td>M13</td><td>002062</td><td>Boolean</td><td>100 ms</td><td>B extendido</td></tr><tr><td><strong>S5</strong></td><td>M14</td><td>002063</td><td>Boolean</td><td>100 ms</td><td>C retraído</td></tr><tr><td><strong>S6</strong></td><td>M15</td><td>002064</td><td>Boolean</td><td>100 ms</td><td>C extendido</td></tr><tr><td><strong>START</strong></td><td>M16</td><td>002065</td><td>Boolean</td><td>100 ms</td><td>Inicio</td></tr><tr><td><strong>STOP</strong></td><td>M17</td><td>002066</td><td>Boolean</td><td>100 ms</td><td>Parada</td></tr><tr><td><strong>CONTADOR</strong></td><td>C0 word</td><td>403585</td><td>Word</td><td>100 ms</td><td>Conteo</td></tr></table>
+  <div class="call warn"><strong>Acceso:</strong> Factory I/O debe poder escribir S1-S6, START y STOP. A, Ax, B, Bx, C, Cx y CONTADOR se leen desde el PLC.</div>
+</section>
+
+<section class="slide" data-title="Crear y revisar tags">
+  <h2>Método seguro para crear los tags</h2>
+  <div class="g2"><div><div class="step"><div class="step-num">1</div><div><h3>Primer tag</h3><p>Crea <span class="mono">A</span>, dirección <span class="mono">001281</span>, Boolean, 100 ms.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Primera validación</h3><p>Aplica y confirma que no aparezca error de dirección.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>Completar por familias</h3><p>Actuadores → sensores → pulsadores → contador.</p></div></div><div class="step"><div class="step-num">4</div><div><h3>Comparar</h3><p>Revisa línea por línea contra la imagen patrón.</p></div></div></div><div class="card red"><h3>Lista de control</h3><ul class="checklist"><li>Canal: SE.</li><li>Dispositivo: PLC.</li><li>15 tags en total.</li><li>Nombres escritos literalmente.</li><li>Direcciones con seis dígitos.</li><li>Boolean salvo CONTADOR.</li><li>CONTADOR como Word.</li><li>Scan Rate de 100 ms.</li></ul></div></div>
+  <div class="evidence"><strong>Captura obligatoria:</strong> árbol <span class="mono">SE → PLC</span> y lista completa, equivalente a la imagen patrón.</div>
+</section>
+
+<section class="slide" data-title="OPC Quick Client">
+  <h2>Paso 8 · Validar KEPServerEX antes de abrir Factory I/O</h2>
+  <div class="g2"><div><ol><li>Abre <strong>OPC Quick Client</strong>.</li><li>Navega a <span class="mono">SE.PLC</span>.</li><li>Observa <strong>Value</strong>, <strong>Quality</strong> y <strong>Timestamp</strong>.</li><li>Prueba START y un sensor autorizado.</li><li>Comprueba el cambio simultáneo en ISPSoft.</li></ol><div class="call danger"><strong>No continúes con Quality Bad:</strong> Factory I/O no corregirá un problema anterior de COMMGR, canal, dispositivo o dirección.</div></div><div><table><tr><th>Indicador</th><th>Significado</th></tr><tr><td><span class="quality"><span class="dot good"></span>Good</span></td><td>Dato válido y actualizado.</td></tr><tr><td><span class="quality"><span class="dot bad"></span>Bad</span></td><td>No se obtuvo un dato válido.</td></tr><tr><td><span class="quality"><span class="dot uncertain"></span>Uncertain</span></td><td>El valor requiere revisión.</td></tr><tr><td>Timestamp</td><td>Momento de la última actualización.</td></tr></table><div class="shot"><img src="9.png" alt="Validación de tags en OPC Quick Client" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>IMAGEN 9.PNG</strong><span>SE.PLC con Value, Quality y Timestamp visibles. El archivo 9.png debe estar en la misma carpeta que el HTML.</span></div></div></div></div>
+</section>
+
+<section class="slide" data-title="Factory I/O · Abrir escena">
+  <h2>Paso 9 · Abrir la escena sin modificar la planta</h2>
+  <div class="g2"><figure class="photo"><img src="fabrica1.PNG" alt="Vista general de la escena Factory I/O"><figcaption>Archivo de simulación entregado por el docente.</figcaption></figure><div><ol><li>Abre el archivo entregado.</li><li>Comprueba que estén A, Ax, B, Bx, C, Cx, S1-S6, Start Button 0 y Stop Button 0.</li><li>No agregues ni elimines componentes.</li><li>No cambies nombres de señales.</li><li>Mantén la escena en STOP mientras conectas el driver.</li></ol><div class="call"><strong>Objetivo de este paso:</strong> reconocer entradas y salidas. El diseño 3D de la planta no será evaluado.</div></div></div>
+</section>
+
+<section class="slide" data-title="Factory I/O · Driver OPC">
+  <h2>Paso 10 · Conectar el cliente OPC</h2>
+  <div class="g2"><div><div class="step"><div class="step-num">1</div><div><h3>Drivers</h3><p>Abre la configuración de drivers de Factory I/O.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Cliente OPC</h3><p>Selecciona <strong>OPC Client DA</strong> o el cliente OPC disponible en la versión instalada.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>Servidor</h3><p>Selecciona KEPServerEX V6 y conecta.</p></div></div><div class="step"><div class="step-num">4</div><div><h3>Navegar</h3><p>Despliega <span class="mono">SE → PLC</span>. Deben aparecer los 15 tags.</p></div></div></div><div><div class="path">KEPServerEX V6<br>└── SE<br>&nbsp;&nbsp;&nbsp;&nbsp;└── PLC<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── A · Ax · B · Bx · C · Cx<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── S1 … S6<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── START · STOP · CONTADOR</div><div class="call warn"><strong>Si no aparece un tag:</strong> vuelve a KEPServerEX y revisa su nombre y ubicación. No crees una señal alternativa en Factory I/O.</div></div></div>
+</section>
+
+<section class="slide" data-title="Factory I/O · Mapeo">
+  <h2>Paso 11 · Asignar cada señal al item correcto</h2>
+  <table class="tight"><tr><th>Señal Factory I/O</th><th>Item OPC exacto</th><th>Dirección</th><th>Sentido</th></tr><tr><td>A</td><td>SE.PLC.A</td><td>001281</td><td class="signal-out">PLC → Factory I/O</td></tr><tr><td>Ax</td><td>SE.PLC.Ax</td><td>001282</td><td class="signal-out">PLC → Factory I/O</td></tr><tr><td>B / Bx</td><td>SE.PLC.B / SE.PLC.Bx</td><td>001283 / 001284</td><td class="signal-out">PLC → Factory I/O</td></tr><tr><td>C / Cx</td><td>SE.PLC.C / SE.PLC.Cx</td><td>001285 / 001286</td><td class="signal-out">PLC → Factory I/O</td></tr><tr><td>S1 … S6</td><td>SE.PLC.S1 … SE.PLC.S6</td><td>002059 … 002064</td><td class="signal-in">Factory I/O → PLC</td></tr><tr><td>Start Button 0</td><td>SE.PLC.START</td><td>002065</td><td class="signal-in">Factory I/O → PLC</td></tr><tr><td>Stop Button 0</td><td>SE.PLC.STOP</td><td>002066</td><td class="signal-in">Factory I/O → PLC</td></tr></table>
+  <div class="call danger"><strong>No inviertas el sentido:</strong> los cilindros reciben órdenes del PLC; los sensores y pulsadores entregan información al PLC.</div>
+  <div class="shot"><img src="10.png" alt="Mapeo OPC de Factory I/O con las 14 señales asignadas" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>IMAGEN 10.PNG</strong><span>Driver conectado y las 14 señales asignadas. El archivo 10.png debe estar en la misma carpeta que el HTML.</span></div></div>
+</section>
+
+<section class="slide" data-title="Orden de ejecución">
+  <h2>Paso 12 · Ejecutar en el orden correcto</h2>
+  <div class="flow"><div class="node round">1 · COMMGR activo</div><div class="arrow">→</div><div class="node round">2 · Simulator RUN</div><div class="arrow">→</div><div class="node round red-node">3 · KEPServer Good</div><div class="arrow">→</div><div class="node round">4 · Driver OPC conectado</div><div class="arrow">→</div><div class="node round green-node">5 · PLAY</div></div>
+  <div class="g2"><div class="card"><h3>Antes de PLAY</h3><ul class="checklist"><li>Driver COMMGR activo.</li><li>Puerto anotado y coincidente.</li><li>PLC simulado en RUN.</li><li>15 tags con Quality Good.</li><li>14 señales de proceso mapeadas.</li></ul></div><div class="card green"><h3>Durante la ejecución</h3><ul class="checklist"><li>Presiona Start Button 0.</li><li>Observa M0-M5 en ISPSoft.</li><li>Observa tags en Quick Client.</li><li>Comprueba los seis movimientos.</li><li>Verifica CONTADOR.</li></ul></div></div>
+</section>
+
+<section class="slide" data-title="Prueba de secuencia">
+  <h2>Comprobar movimiento por movimiento</h2>
+  <table class="tight"><tr><th>Paso</th><th>Etapa / salida</th><th>Movimiento esperado</th><th>Confirmación</th><th>Resultado</th></tr><tr><td>1</td><td>M0 / A</td><td>A+</td><td>S2 cambia a 1</td><td>□</td></tr><tr><td>2</td><td>M1 / B</td><td>B+</td><td>S4 cambia a 1</td><td>□</td></tr><tr><td>3</td><td>M2 / Ax</td><td>A−</td><td>S1 cambia a 1</td><td>□</td></tr><tr><td>4</td><td>M3 / Bx</td><td>B−</td><td>S3 cambia a 1</td><td>□</td></tr><tr><td>5</td><td>M4 / C</td><td>C+</td><td>S6 cambia a 1</td><td>□</td></tr><tr><td>6</td><td>M5 / Cx</td><td>C−</td><td>S5 cambia a 1 y vuelve a M0</td><td>□</td></tr></table>
+  <div class="call ok"><strong>Trazabilidad:</strong> para cada paso debe coincidir el contacto/etapa en ISPSoft, el Value del tag en KEPServerEX y el movimiento o sensor en Factory I/O.</div>
+</section>
+
+<section class="slide" data-title="Diagnóstico guiado">
+  <h2>Si no funciona, diagnostica por capas</h2>
+  <table><tr><th>Capa</th><th>Síntoma</th><th>Qué revisar</th></tr><tr><td>COMMGR</td><td>KEPServerEX no llega al simulador.</td><td>Driver activo, modelo DVP-SE y puerto anotado.</td></tr><tr><td>Canal SE</td><td>Todos los tags están Bad.</td><td>Modbus Serial, Ethernet Encapsulation, 127.0.0.1, puerto y formato serial.</td></tr><tr><td>Dispositivo PLC</td><td>No hay respuesta del equipo.</td><td>Modbus ASCII, Unit ID 1 y Simulation desactivada.</td></tr><tr><td>Tag</td><td>Solo un dato falla.</td><td>Nombre exacto, dirección de seis dígitos, tipo y acceso.</td></tr><tr><td>Factory I/O</td><td>El tag existe, pero no mueve o no retorna.</td><td>Item OPC asignado y sentido correcto.</td></tr><tr><td>Ladder</td><td>La etapa queda detenida.</td><td>Marcha M100, etapa activa, salida y sensor final esperado.</td></tr></table>
+  <div class="call danger"><strong>No cambies varias cosas a la vez:</strong> registra el síntoma, propone una causa, modifica un solo parámetro y vuelve a probar.</div>
+</section>
+
+<section class="slide" data-title="Pruebas de aceptación">
+  <h2>Pruebas finales de la integración</h2>
+  <table class="tight"><tr><th>N.º</th><th>Acción</th><th>Respuesta esperada</th><th>Resultado</th></tr><tr><td>1</td><td>Abrir Quick Client.</td><td>Los 15 tags muestran Quality Good.</td><td>□ Cumple □ No cumple</td></tr><tr><td>2</td><td>Presionar Start Button 0.</td><td>START/M16 recibe el pulso y comienza M0/A.</td><td>□ Cumple □ No cumple</td></tr><tr><td>3</td><td>Ejecutar un ciclo.</td><td>A+ → B+ → A− → B− → C+ → C−.</td><td>□ Cumple □ No cumple</td></tr><tr><td>4</td><td>Observar S1-S6.</td><td>Cambian en Factory I/O, KEPServerEX e ISPSoft.</td><td>□ Cumple □ No cumple</td></tr><tr><td>5</td><td>Observar CONTADOR.</td><td>Incrementa al finalizar C+.</td><td>□ Cumple □ No cumple</td></tr><tr><td>6</td><td>Presionar Stop Button 0.</td><td>STOP/M17 detiene la marcha general.</td><td>□ Cumple □ No cumple</td></tr><tr><td>7</td><td>Interrumpir COMMGR.</td><td>Quality deja de ser Good.</td><td>□ Cumple □ No cumple</td></tr><tr><td>8</td><td>Restablecer el enlace.</td><td>La comunicación y la actualización se recuperan.</td><td>□ Cumple □ No cumple</td></tr></table>
+</section>
+
+<section class="slide" data-title="Entregables y evaluación">
+  <h2>Entregables de la dupla</h2>
+  <div class="g2"><div><ul class="checklist"><li>Proyecto ISPSoft entregado, identificado.</li><li>Nombre del driver y puerto COMMGR registrado.</li><li>Proyecto KEPServerEX exportado.</li><li>Captura del canal SE y dispositivo PLC.</li><li>Captura de los 15 tags.</li><li>Captura OPC Quick Client con Quality Good.</li><li>Captura del mapeo en Factory I/O.</li><li>Tabla de pruebas y registro de una falla diagnosticada.</li></ul></div><div><table class="tight"><tr><th>Criterio</th><th>Peso</th></tr><tr><td>Explica la arquitectura y el recorrido del dato</td><td>15%</td></tr><tr><td>Configura COMMGR e identifica el puerto</td><td>15%</td></tr><tr><td>Configura canal SE y dispositivo PLC</td><td>15%</td></tr><tr><td>Crea exactamente los 15 tags</td><td>20%</td></tr><tr><td>Conecta y mapea Factory I/O</td><td>15%</td></tr><tr><td>Ejecuta y explica la secuencia</td><td>10%</td></tr><tr><td>Valida y diagnostica con evidencia</td><td>10%</td></tr><tr><th>Total</th><th>100%</th></tr></table></div></div>
+  <div class="call ok"><strong>Criterio de logro:</strong> la dupla puede rastrear una orden y un sensor a través de las cuatro aplicaciones, sin modificar la planta virtual entregada.</div>
+</section>
+
+<section class="slide" data-title="Cierre">
+  <div class="hero"><div><div class="eyebrow">Cierre del Laboratorio 01B</div><h1>Integrar es hacer coincidir cada capa</h1><p class="lead">Modelo, puerto, protocolo, canal, dispositivo, tag, dirección, tipo y sentido deben coincidir para que el proceso funcione.</p><div class="path">SE.PLC.A ↔ 001281 ↔ Y0 ↔ A+ en Factory I/O</div><div class="call danger"><strong>Si no puedes explicar este recorrido, la integración todavía no está terminada.</strong></div></div><div class="unit"><strong>✓</strong><span>COMMGR · Puerto<br>SE · PLC · Tags<br>Quality · Evidencia</span></div></div>
+  <p class="source">Material de apoyo: programa Ladder y escena Factory I/O entregados; tabla Modbus Delta; KEPServerEX V6; ISPSoft y COMMGR.</p>
+</section>
+
+<div class="progress" id="progress"></div>
+</main>
+<footer><button id="prev">← Anterior</button><button id="overview">Índice</button><button id="print">Imprimir / PDF</button><button id="next">Siguiente →</button></footer>
+<div class="index-panel" id="indexPanel" aria-hidden="true"><div class="index-box"><div class="index-head"><div><div class="eyebrow">Navegación</div><h2 style="margin:.2em 0">Índice de la guía</h2></div><button id="closeIndex">Cerrar ×</button></div><div class="index-grid" id="indexGrid"></div></div></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];const count=document.getElementById('count'),progress=document.getElementById('progress'),prev=document.getElementById('prev'),next=document.getElementById('next'),panel=document.getElementById('indexPanel'),grid=document.getElementById('indexGrid');let current=0;
+function show(n){current=Math.max(0,Math.min(n,slides.length-1));slides.forEach((s,i)=>s.classList.toggle('active',i===current));slides[current].scrollTop=0;count.textContent=(current+1)+' / '+slides.length;progress.style.width=(((current+1)/slides.length)*100)+'%';prev.disabled=current===0;next.disabled=current===slides.length-1;history.replaceState(null,'','#slide-'+(current+1))}
+slides.forEach((s,i)=>{const b=document.createElement('button');b.className='index-item';b.textContent=(i+1)+'. '+(s.dataset.title||'Sección');b.onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');show(i)};grid.appendChild(b)});
+prev.onclick=()=>show(current-1);next.onclick=()=>show(current+1);document.getElementById('overview').onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false')};document.getElementById('closeIndex').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};document.getElementById('print').onclick=()=>window.print();panel.addEventListener('click',e=>{if(e.target===panel)document.getElementById('closeIndex').click()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))document.getElementById('closeIndex').click();else if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(current+1)}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1)});let touchX=0;document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].screenX},{passive:true});document.addEventListener('touchend',e=>{const d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>60)show(current+(d<0?1:-1))},{passive:true});const hash=Number((location.hash.match(/slide-(\d+)/)||[])[1]);show(hash?hash-1:0);
+</script>
+</body>
+</html>
 
