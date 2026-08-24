@@ -1,1 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Guía de laboratorio INACAP para integrar un PLC Delta DVP-SE con KEPServerEX e Infilink mediante Modbus Serial ASCII y OPC.">
+<title>Laboratorio 01 · SCADA, OPC y Modbus ASCII</title>
+<style>
+:root{
+  --r:#d71920;--ink:#18222d;--blue:#075fa8;--green:#087f5b;--amber:#b45309;
+  --paper:#f4f6f8;--line:#d5dce3;--muted:#596775;--soft-blue:#e9f2f9;
+  --soft-green:#e8f6ef;--soft-amber:#fff3d9;--soft-red:#fdebec;--white:#fff;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#202a33;color:var(--ink);font-family:Arial,"Segoe UI",sans-serif;overflow:hidden}
+header{height:70px;background:var(--white);border-bottom:5px solid var(--r);display:flex;align-items:center;justify-content:space-between;padding:0 3vw;gap:20px}
+.brand{display:flex;gap:16px;align-items:center;min-width:0}.logo{font-size:1.55rem;font-weight:900;color:var(--r);letter-spacing:.3px}.course{border-left:1px solid var(--line);padding-left:16px;color:#54616e;font-size:.88rem;line-height:1.3}.counter{white-space:nowrap}
+main{height:calc(100vh - 128px);background:var(--paper);position:relative}.slide{display:none;height:100%;overflow:auto;padding:4vh 6vw 5vh}.slide.active{display:block;animation:enter .25s}@keyframes enter{from{opacity:.3;transform:translateX(10px)}}
+h1{font-size:clamp(2.25rem,4vw,4.15rem);line-height:1.02;margin:.15em 0 .35em}h2{font-size:clamp(1.75rem,3vw,2.75rem);border-left:9px solid var(--r);padding-left:18px;margin:0 0 .7em}h3{font-size:1.25rem;color:var(--blue);margin:.1em 0 .5em}h4{font-size:1.05rem;margin:.3em 0;color:var(--ink)}p,li{font-size:clamp(1rem,1.3vw,1.2rem);line-height:1.43}.lead{font-size:clamp(1.22rem,2vw,1.75rem);color:#52606d}.small{font-size:.92rem;color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.5fr .6fr;gap:5vw;align-items:center;min-height:75%}.eyebrow{color:var(--r);font-weight:800;text-transform:uppercase;letter-spacing:1.4px}.unit{background:var(--ink);color:var(--white);padding:30px;border-top:8px solid var(--r)}.unit strong{display:block;font-size:4rem}.unit span{line-height:1.5}
+.g2,.g3,.g4{display:grid;gap:22px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--white);border:1px solid var(--line);padding:22px;border-top:6px solid var(--blue);box-shadow:0 5px 15px #14202a10}.red{border-top-color:var(--r)!important}.green{border-top-color:var(--green)!important}.amber{border-top-color:var(--amber)!important}
+.call{background:var(--soft-blue);border-left:7px solid var(--blue);padding:17px 21px;margin:18px 0}.call.warn{background:var(--soft-amber);border-color:var(--amber)}.call.ok{background:var(--soft-green);border-color:var(--green)}.call.danger{background:var(--soft-red);border-color:var(--r)}
+.task{background:var(--white);border:2px solid var(--r);padding:19px;margin:16px 0}.task h3{color:var(--r)}.checklist{list-style:none;padding-left:0}.checklist li{margin:.48em 0}.checklist li::before{content:"□";font-weight:900;color:var(--r);margin-right:.55em}.tag{display:inline-block;background:var(--ink);color:var(--white);padding:5px 9px;margin:3px;font-weight:700}.mono{font-family:Consolas,"Courier New",monospace}.path{background:#101820;color:var(--white);padding:14px 18px;font:700 clamp(1rem,1.5vw,1.25rem)/1.45 Consolas,monospace;text-align:center;margin:14px 0;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;background:var(--white);font-size:1rem}th{background:var(--ink);color:var(--white);text-align:left}th,td{border:1px solid var(--line);padding:11px 13px;vertical-align:top}tbody tr:nth-child(even){background:#f8fafb}.tight th,.tight td{padding:8px 10px;font-size:.93rem}
+.flow{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap;margin:24px 0}.node{background:var(--white);border:3px solid var(--blue);padding:14px 18px;min-width:120px;text-align:center;font-weight:700}.node.red-node{border-color:var(--r)}.node.green-node{border-color:var(--green)}.round{border-radius:28px}.arrow{font-size:2rem;color:var(--r);font-weight:900}.sub{display:block;color:var(--muted);font-size:.8rem;font-weight:400;margin-top:4px}
+.architecture{display:grid;grid-template-columns:1fr auto 1.15fr auto 1fr;gap:14px;align-items:stretch;margin:22px 0}.arch-box{background:var(--white);border:2px solid var(--line);padding:19px;text-align:center;display:flex;flex-direction:column;justify-content:center}.arch-box.plc{border-top:7px solid var(--green)}.arch-box.kep{border-top:7px solid var(--r)}.arch-box.scada{border-top:7px solid var(--blue)}.arch-box strong{font-size:1.25rem}.arch-link{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:.88rem}.arch-link b{font-size:2rem;color:var(--r)}
+.hierarchy{max-width:900px;margin:12px auto}.level{background:var(--white);border-left:8px solid var(--blue);padding:13px 18px;margin:10px 0;box-shadow:0 3px 10px #14202a0b}.level:nth-child(2){margin-left:5%;border-color:var(--r)}.level:nth-child(3){margin-left:10%;border-color:var(--green)}.level:nth-child(4){margin-left:15%;border-color:var(--amber)}
+.step{display:grid;grid-template-columns:58px 1fr;gap:16px;align-items:start;margin:14px 0;background:var(--white);border:1px solid var(--line);padding:15px}.step-num{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--r);color:var(--white);font-size:1.4rem;font-weight:900}.step p{margin:.25em 0}
+.placeholder{background:repeating-linear-gradient(135deg,#fff,#fff 12px,#f4f6f8 12px,#f4f6f8 24px);border:3px dashed #96a2ad;padding:26px;text-align:center;margin:18px 0;min-height:170px;display:flex;flex-direction:column;justify-content:center;gap:8px}.placeholder strong{color:var(--r);font-size:1.2rem}.placeholder code{display:block;background:#101820;color:#fff;padding:9px;margin:7px auto 0;max-width:100%;font-size:.85rem;overflow-wrap:anywhere}.placeholder.compact{min-height:120px;padding:18px}
+.quality{display:inline-flex;align-items:center;gap:7px;font-weight:800}.dot{width:13px;height:13px;border-radius:50%;display:inline-block}.dot.good{background:var(--green)}.dot.bad{background:var(--r)}.dot.uncertain{background:var(--amber)}
+.evidence{border-left:6px solid var(--green);background:#fff;padding:14px 18px;margin:14px 0}.source{font-size:.8rem;color:#6b7580;border-top:1px solid var(--line);padding-top:10px;margin-top:18px}.progress{position:absolute;bottom:0;height:5px;background:var(--r);transition:.2s}
+.ladder{background:#fff;border:1px solid var(--line);padding:16px 18px;margin:14px 0}.rung{display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:stretch;border-bottom:1px dashed #b7c0c8;padding:10px 0}.rung:last-child{border-bottom:0}.net{background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:900;min-height:54px}.logic{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:54px;border-left:5px solid var(--blue);border-right:5px solid var(--blue);padding:7px 12px;position:relative}.logic::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:#8a96a1;z-index:0}.contact,.instruction,.coil{background:#fff;border:2px solid var(--blue);padding:8px 12px;font:700 .95rem Consolas,monospace;position:relative;z-index:1}.instruction{border-color:var(--r);min-width:190px;text-align:center}.coil{border-color:var(--green);border-radius:22px}.comment{color:var(--muted);font-size:.86rem;font-style:italic;position:relative;z-index:1;background:#fff;padding:4px}.formula-line{background:#101820;color:#fff;padding:12px 16px;font:700 1.05rem/1.4 Consolas,monospace;margin:10px 0;text-align:center}.first-time{counter-reset:firststep}.first-time .step-num::after{counter-increment:firststep;content:counter(firststep)}
+footer{height:58px;background:var(--white);border-top:1px solid var(--line);display:flex;justify-content:center;align-items:center;gap:12px}button{border:0;border-radius:3px;background:var(--ink);color:var(--white);padding:10px 18px;font-size:1rem;font-weight:700;cursor:pointer}button:hover{background:var(--r)}button:disabled{background:#aab2ba}.index-panel{position:fixed;inset:0;background:#101820d9;display:none;z-index:20;padding:5vh 7vw;overflow:auto}.index-panel.open{display:block}.index-box{max-width:1100px;margin:auto;background:#fff;padding:26px;border-top:8px solid var(--r)}.index-head{display:flex;justify-content:space-between;align-items:center;gap:20px}.index-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.index-item{text-align:left;background:#f2f5f7;color:var(--ink);border-left:5px solid var(--blue);padding:11px}.index-item:hover{background:var(--soft-red)}
+@media(max-width:980px){body{overflow:auto}header{height:auto;padding:12px}.course{font-size:.76rem}.unit{display:none}main{height:auto}.slide{min-height:calc(100vh - 115px)}.hero,.g2,.g3,.g4,.architecture{grid-template-columns:1fr}.arch-link{padding:2px}.arch-link b{transform:rotate(90deg)}.index-grid{grid-template-columns:1fr}.level:nth-child(n){margin-left:0}}
+@media print{@page{size:A4 landscape;margin:11mm}body{overflow:visible;background:#fff}header,footer,.index-panel{display:none!important}main{height:auto}.slide{display:block!important;height:auto;min-height:180mm;page-break-after:always;padding:7mm 9mm;overflow:visible}.card{box-shadow:none}p,li{font-size:10.5pt}h1{font-size:28pt}h2{font-size:22pt}.placeholder{min-height:95px}.progress{display:none}.source{font-size:8pt}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">INACAP</div>
+    <div class="course">PLATAFORMA SCADA · GUÍA DE LABORATORIO 01<br>PLC Delta DVP-SE · KEPServerEX · Infilink</div>
+  </div>
+  <strong class="counter" id="count">1 / 1</strong>
+</header>
+
+<main>
+<section class="slide active" data-title="Portada">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Primera experiencia · Comunicación industrial</div>
+      <h1>Integración SCADA mediante Modbus Serial ASCII y OPC</h1>
+      <p class="lead">Configurar el camino completo de los datos: desde la memoria del PLC hasta una pantalla SCADA.</p>
+      <div class="call"><strong>Recorrido:</strong> proceso → programa PLC → comunicación serial → servidor OPC → tags → cliente SCADA → validación.</div>
+    </div>
+    <div class="unit"><strong>01</strong><span>Guía práctica<br>Trabajo en laboratorio<br>Producto verificable</span></div>
+  </div>
+</section>
+
+<section class="slide" data-title="Propósito y producto">
+  <h2>¿Qué aprenderemos a hacer?</h2>
+  <div class="g2">
+    <div class="card red">
+      <h3>Propósito de la experiencia</h3>
+      <p>Integrar un PLC Delta DVP-SE con KEPServerEX mediante Modbus Serial ASCII y exponer sus variables a Infilink por medio de OPC.</p>
+    </div>
+    <div class="card">
+      <h3>Producto observable</h3>
+      <ul>
+        <li>Programa Ladder entregado, cargado y monitoreado.</li><li>Canal, dispositivo y tags creados.</li><li>Datos con calidad <strong>Good</strong> en OPC Quick Client.</li><li>Pantalla SCADA con lectura y escritura comprobadas.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="call ok"><strong>Meta real:</strong> no basta con “ver números”. Debes explicar de dónde sale cada dato, qué protocolo lo transporta y qué software lo publica.</div>
+  <p class="source">Alcance: primera experiencia de Comunicación Industrial / Plataforma SCADA. No incluye el módulo DVP04TC ni transmisores de temperatura.</p>
+</section>
+
+<section class="slide" data-title="Problema de proceso">
+  <h2>Problema: dosificación en un tanque de mezcla</h2>
+  <div class="g2">
+    <div>
+      <div class="card red"><h3>Contexto industrial</h3><p>Una estación supervisa el llenado y la descarga de un tanque de mezcla. El operador debe iniciar, detener, reiniciar y observar el avance del proceso desde una interfaz SCADA.</p></div>
+      <div class="call warn"><strong>Alcance de esta guía:</strong> se conserva el contexto del proceso, pero la instrumentación de temperatura queda fuera de esta primera experiencia.</div>
+    </div>
+    <img src="imagenes/01-proceso-dosificacion.jpg" alt="Proceso de dosificación del tanque" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+  </div>
+  <div class="task"><h3>Pregunta de entrada</h3><p>¿Qué variables deberá escribir el operador y cuáles deberá leer para saber si el ciclo funciona correctamente?</p></div>
+</section>
+
+<section class="slide" data-title="Programa Ladder entregado">
+  <h2>El programa Ladder forma parte del material entregado</h2>
+  <div class="g4">
+    <div class="card red"><h3>1 · Retención</h3><p>Bomba y válvula mantienen su estado hasta una nueva orden, una condición de término o una detención.</p></div>
+    <div class="card"><h3>2 · Temporización</h3><p>Un temporizador controla el tiempo de llenado y se reinicia al terminar el ciclo o al ejecutar RESET.</p></div>
+    <div class="card green"><h3>3 · Conteo</h3><p>Un contador registra ciclos completados y el programa expone el avance parcial del ciclo actual.</p></div>
+    <div class="card amber"><h3>4 · Conversión</h3><p>Una rutina aislada convierte un valor entero a flotante IEEE-754 para observarlo desde SCADA.</p></div>
+  </div>
+  <div class="call ok"><strong>En esta experiencia el programa sí se entrega:</strong> el estudiante no comienza programando desde cero. Debe identificar las redes, comprender qué memoria utiliza cada función, descargar el proyecto al PLC y monitorear su ejecución.</div>
+  <img src="imagenes/02-programa-ladder-completo.jpg" alt="Programa Ladder entregado para la experiencia" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Arquitectura completa">
+  <h2>El dato atraviesa tres sistemas</h2>
+  <div class="architecture">
+    <div class="arch-box plc"><strong>PLC Delta DVP-SE</strong><span class="sub">Controla el proceso y almacena variables</span><span class="tag">Servidor/esclavo Modbus</span></div>
+    <div class="arch-link"><span>USB–Serial · COMx<br>Modbus ASCII</span><b>⇄</b></div>
+    <div class="arch-box kep"><strong>KEPServerEX</strong><span class="sub">Lee/escribe el PLC y publica los datos</span><span class="tag">Cliente/maestro Modbus</span><span class="tag">Servidor OPC</span></div>
+    <div class="arch-link"><span>OPC DA o UA<br>según el cliente</span><b>⇄</b></div>
+    <div class="arch-box scada"><strong>Infilink</strong><span class="sub">Visualiza, registra y envía órdenes</span><span class="tag">Cliente OPC</span></div>
+  </div>
+  <div class="call"><strong>Idea central:</strong> Modbus mueve los datos entre el PLC y KEPServerEX. OPC entrega esos datos organizados desde KEPServerEX hacia el software SCADA.</div>
+  <img src="imagenes/03-arquitectura-fisica.jpg" alt="Arquitectura física del laboratorio" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Concepto de servidor OPC">
+  <h2>¿Qué significa “servidor OPC”?</h2>
+  <div class="g3">
+    <div class="card red"><h3>Adquiere</h3><p>El servidor usa un driver para comunicarse con equipos de campo mediante su protocolo: en esta guía, Modbus Serial ASCII.</p></div>
+    <div class="card"><h3>Normaliza</h3><p>Transforma direcciones y tipos de datos del equipo en variables con nombres comprensibles: los tags.</p></div>
+    <div class="card green"><h3>Publica</h3><p>Permite que clientes OPC —como un SCADA— naveguen, lean y, cuando corresponda, escriban esas variables.</p></div>
+  </div>
+  <div class="path">Canal.Dispositivo.Tag → Canal_Modbus_ASCII.PLC_Delta_SE.Bomba_Activa</div>
+  <div class="call warn"><strong>OPC no reemplaza a Modbus:</strong> KEPServerEX traduce y organiza la información entre el protocolo de campo y la aplicación supervisora.</div>
+</section>
+
+<section class="slide" data-title="Jerarquía de KEPServerEX">
+  <h2>Canal, dispositivo y tag no son lo mismo</h2>
+  <div class="hierarchy">
+    <div class="level"><strong>PROYECTO</strong> · Contiene la configuración completa del servidor.</div>
+    <div class="level"><strong>CANAL</strong> · Define el driver y el medio de comunicación compartido: puerto COM y parámetros seriales.</div>
+    <div class="level"><strong>DISPOSITIVO</strong> · Representa al PLC conectado al canal: modelo/protocolo, Unit ID, tiempos de respuesta y modo de escaneo.</div>
+    <div class="level"><strong>TAGS</strong> · Representan variables específicas: nombre, dirección, tipo de dato, acceso y frecuencia de actualización.</div>
+  </div>
+  <div class="call ok"><strong>Regla mental:</strong> un canal puede contener varios dispositivos; cada dispositivo puede contener muchos tags.</div>
+  <div class="task"><h3>Antes de abrir KEPServerEX</h3><p>Escribe el nombre que usarás para el canal, el dispositivo y tres tags. Evita espacios, tildes y nombres como <span class="mono">Tag1</span> o <span class="mono">PLC1</span> sin contexto.</p></div>
+</section>
+
+<section class="slide" data-title="Parámetros seriales">
+  <h2>Primero: confirmar el puerto y los parámetros</h2>
+  <div class="g2">
+    <div>
+      <div class="step"><div class="step-num">1</div><div><h3>Conecta el PLC</h3><p>Espera a que Windows reconozca el adaptador.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Identifica el COM</h3><p>Administrador de dispositivos → Puertos (COM y LPT). Registra el número exacto.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Compara ambos extremos</h3><p>PLC y KEPServerEX deben usar exactamente el mismo formato serial.</p></div></div>
+    </div>
+    <div>
+      <table><tr><th>Parámetro</th><th>Valor de trabajo</th></tr><tr><td>Puerto</td><td>COM____</td></tr><tr><td>Modo</td><td>Modbus ASCII</td></tr><tr><td>Velocidad</td><td>9600 bit/s</td></tr><tr><td>Bits de datos</td><td>8</td></tr><tr><td>Paridad</td><td>Even / Par</td></tr><tr><td>Bits de parada</td><td>1</td></tr><tr><td>Control de flujo</td><td>None / Ninguno</td></tr><tr><td>Dirección PLC</td><td>1</td></tr></table>
+      <div class="call warn"><strong>Una diferencia basta para fallar:</strong> COM incorrecto, RTU en lugar de ASCII, otra paridad o un Unit ID distinto impiden la comunicación.</div>
+    </div>
+  </div>
+  <img src="imagenes/05-puerto-com-asignado.jpg" alt="Puerto COM asignado al PLC" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Configuración COM1 en Ladder">
+  <h2>Las primeras redes configuran COM1 del PLC</h2>
+  <div class="ladder">
+    <div class="rung"><div class="net">N0</div><div class="logic"><span class="contact">M1002</span><span class="instruction">MOV H87 D1036</span><span class="comment">Escribe el formato 9600, 8, Even, 1 en COM1.</span></div></div>
+    <div class="rung"><div class="net">N1</div><div class="logic"><span class="contact">M1002</span><span class="coil">SET M1138</span><span class="comment">Ordena aplicar y conservar la configuración de COM1.</span></div></div>
+    <div class="rung"><div class="net">N2</div><div class="logic"><span class="contact">M1002</span><span class="coil">RST M1139</span><span class="comment">Mantiene COM1 en modo ASCII; M1139 activado seleccionaría RTU.</span></div></div>
+  </div>
+  <div class="g3">
+    <div class="card red"><h3>M1002</h3><p>Pulso de primer ciclo. Estas instrucciones se ejecutan una vez cuando el PLC pasa a RUN.</p></div>
+    <div class="card"><h3>D1036 + H87</h3><p>D1036 es el registro de formato de COM1. H87 codifica ASCII, 9600 bit/s, 8 bits, paridad par y 1 stop.</p></div>
+    <div class="card green"><h3>M1138 / M1139</h3><p>M1138 aplica la configuración. M1139 distingue RTU de ASCII; para esta experiencia debe permanecer OFF.</p></div>
+  </div>
+  <div class="call danger"><strong>Consecuencia práctica:</strong> KEPServerEX también debe configurarse en 9600, 8, Even, 1 y Modbus ASCII. Si se utiliza 7 bits o se activa M1139, ambos extremos dejan de coincidir.</div>
+</section>
+
+<section class="slide" data-title="Programa de proceso entregado">
+  <h2>Lectura guiada del programa Ladder entregado</h2>
+  <div class="ladder">
+    <div class="rung"><div class="net">N3</div><div class="logic"><span class="contact">M0 · START</span><span class="contact">/Y1</span><span class="coil">SET Y0</span><span class="comment">Inicia y retiene la bomba.</span></div></div>
+    <div class="rung"><div class="net">N4</div><div class="logic"><span class="contact">Y0</span><span class="instruction">TMR T0 K100</span><span class="comment">Temporiza el llenado: 10,0 s con base de 100 ms.</span></div></div>
+    <div class="rung"><div class="net">N5</div><div class="logic"><span class="contact">T0</span><span class="coil">RST Y0</span><span class="coil">SET Y1</span><span class="comment">Termina el llenado e inicia la descarga.</span></div></div>
+    <div class="rung"><div class="net">N6</div><div class="logic"><span class="contact">Y1</span><span class="instruction">TMR T1 K50</span><span class="comment">Mantiene la descarga durante 5,0 s.</span></div></div>
+    <div class="rung"><div class="net">N7</div><div class="logic"><span class="contact">T1</span><span class="instruction">CNT C0 K999</span><span class="coil">RST Y1</span><span class="comment">Cuenta el ciclo y cierra la descarga.</span></div></div>
+    <div class="rung"><div class="net">N8</div><div class="logic"><span class="contact">M1 · STOP</span><span class="coil">RST Y0</span><span class="coil">RST Y1</span><span class="comment">Detención del proceso.</span></div></div>
+    <div class="rung"><div class="net">N9</div><div class="logic"><span class="contact">M2 · RESET</span><span class="instruction">ZRST T0 T1</span><span class="coil">RST C0</span><span class="coil">RST Y0</span><span class="coil">RST Y1</span><span class="comment">Reinicia temporizadores, contador y salidas.</span></div></div>
+    <div class="rung"><div class="net">N10</div><div class="logic"><span class="contact">M1000</span><span class="instruction">FLT D10 D20</span><span class="comment">Convierte el entero D10 y guarda el flotante en D20-D21.</span></div></div>
+  </div>
+  <div class="call warn"><strong>Representación didáctica:</strong> la captura y el archivo ISPSoft entregados son la referencia definitiva. En el proyecto también se reinician los comandos momentáneos M0, M1 y M2 después de procesarlos.</div>
+</section>
+
+<section class="slide" data-title="Direcciones Modbus Delta">
+  <h2>Direcciones tomadas de la tabla Modbus de Delta</h2>
+  <div class="g2">
+    <div>
+      <table class="tight"><tr><th>Dispositivo</th><th>Base Modbus</th><th>Ejemplo</th></tr><tr><td>Y0</td><td>001281</td><td>Y1 = 001282</td></tr><tr><td>T0 · bit</td><td>001537</td><td>T1 · bit = 001538</td></tr><tr><td>T0 · palabra</td><td>401537</td><td>T1 · palabra = 401538</td></tr><tr><td>M0</td><td>002049</td><td>M2 = 002051</td></tr><tr><td>C0 · bit</td><td>003585</td><td>Estado de contador</td></tr><tr><td>C0 · palabra</td><td>403585</td><td>Valor acumulado</td></tr><tr><td>D0</td><td>404097</td><td>D20 = 404117</td></tr></table>
+    </div>
+    <div>
+      <div class="formula-line">M n = 002049 + n</div>
+      <div class="formula-line">T n (bit) = 001537 + n</div>
+      <div class="formula-line">T n (word) = 401537 + n</div>
+      <div class="formula-line">D n = 404097 + n</div>
+      <div class="call warn"><strong>Atención con X/Y:</strong> su numeración en Delta es octal. En esta guía solo usamos Y0 y Y1, cuyas direcciones ya están calculadas.</div>
+    </div>
+  </div>
+  <p class="source">Fuente: <em>Modbus address table of Delta DVP series PLC</em>, documento proporcionado para la experiencia.</p>
+</section>
+
+<section class="slide" data-title="Mapa de variables PLC">
+  <h2>Mapa de intercambio que utilizará la experiencia</h2>
+  <table class="tight">
+    <tr><th>Tag OPC</th><th>Dispositivo PLC</th><th>Dirección KEPServerEX</th><th>Tipo</th><th>Acceso</th></tr>
+    <tr><td>Cmd_Start</td><td>M0</td><td>002049</td><td>Boolean</td><td>Read/Write</td></tr>
+    <tr><td>Cmd_Stop</td><td>M1</td><td>002050</td><td>Boolean</td><td>Read/Write</td></tr>
+    <tr><td>Cmd_Reset</td><td>M2</td><td>002051</td><td>Boolean</td><td>Read/Write</td></tr>
+    <tr><td>Bomba_Activa</td><td>Y0</td><td>001281</td><td>Boolean</td><td>Read Only</td></tr>
+    <tr><td>Valvula_Activa</td><td>Y1</td><td>001282</td><td>Boolean</td><td>Read Only</td></tr>
+    <tr><td>Llenado_Finalizado</td><td>T0 · bit</td><td>001537</td><td>Boolean</td><td>Read Only</td></tr>
+    <tr><td>Tiempo_Llenado</td><td>T0 · palabra</td><td>401537</td><td>Word</td><td>Read Only</td></tr>
+    <tr><td>Tiempo_Descarga</td><td>T1 · palabra</td><td>401538</td><td>Word</td><td>Read Only</td></tr>
+    <tr><td>Contador_Completo</td><td>C0 · bit</td><td>003585</td><td>Boolean</td><td>Read Only</td></tr>
+    <tr><td>Ciclos_Totales</td><td>C0 · palabra</td><td>403585</td><td>Word</td><td>Read Only</td></tr>
+    <tr><td>Entero_Prueba</td><td>D10</td><td>404107</td><td>Short</td><td>Read/Write</td></tr>
+    <tr><td>Valor_Float</td><td>D20-D21</td><td>404117</td><td>Float</td><td>Read Only</td></tr>
+  </table>
+  <div class="call"><strong>Lectura de la dirección:</strong> no es el número escrito en el dispositivo PLC. KEPServerEX necesita la dirección decimal Modbus equivalente que aparece en la tabla de Delta.</div>
+</section>
+
+<section class="slide" data-title="Crear el canal">
+  <h2>KEPServerEX · Paso 1: crear el canal</h2>
+  <div class="g2">
+    <div>
+      <div class="step"><div class="step-num">1</div><div><h3>New Channel</h3><p>Nombre sugerido: <span class="mono">Canal_Modbus_ASCII</span>.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Driver</h3><p>Selecciona <strong>Modbus Serial</strong>. No elijas Modbus Ethernet.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Puerto y formato</h3><p>Selecciona el COM registrado y configura 9600, 8, Even, 1, sin control de flujo.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div><h3>Diagnóstico</h3><p>Habilita diagnóstico durante la puesta en marcha y finaliza el asistente.</p></div></div>
+    </div>
+    <div>
+      <table class="tight"><tr><th>Campo</th><th>Configuración</th><th>¿Por qué?</th></tr><tr><td>Name</td><td>Canal_Modbus_ASCII</td><td>Identifica el enlace compartido.</td></tr><tr><td>Driver</td><td>Modbus Serial</td><td>Interpreta las tramas del PLC.</td></tr><tr><td>COM ID</td><td>COM____</td><td>Selecciona el puerto físico/virtual.</td></tr><tr><td>Baud / Data / Parity / Stop</td><td>9600 / 8 / Even / 1</td><td>Debe coincidir con el PLC y con H87.</td></tr><tr><td>Flow Control</td><td>None</td><td>Configuración de esta experiencia.</td></tr></table>
+      <img src="imagenes/06-kepserver-canal.png" alt="Canal Modbus Serial en KEPServerEX" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Crear el dispositivo">
+  <h2>KEPServerEX · Paso 2: crear el dispositivo</h2>
+  <div class="g2">
+    <div class="card red"><h3>El dispositivo representa al PLC</h3><p>Haz clic derecho sobre <span class="mono">Canal_Modbus_ASCII</span> → <strong>New Device</strong>. Nombre sugerido: <span class="mono">PLC_Delta_SE</span>.</p><div class="path">Canal_Modbus_ASCII<br>└── PLC_Delta_SE</div></div>
+    <div>
+      <table class="tight"><tr><th>Campo</th><th>Valor de trabajo</th></tr><tr><td>Model / Protocol</td><td>Modbus ASCII</td></tr><tr><td>Device ID / Unit ID</td><td>1</td></tr><tr><td>Scan mode</td><td>Respect client-specified scan rate</td></tr><tr><td>Timeout / retries</td><td>Valores iniciales del asistente; ajustar solo con evidencia</td></tr><tr><td>Simulation</td><td>Disabled / False</td></tr></table>
+      <div class="call danger"><strong>Comprobación crítica:</strong> si Simulation está activa, KEPServerEX puede mostrar datos “Good” sin consultar el PLC real.</div>
+    </div>
+  </div>
+  <img src="imagenes/07-kepserver-dispositivo.JPG" alt="Dispositivo PLC Delta en KEPServerEX" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Crear los tags">
+  <h2>KEPServerEX · Paso 3: crear el primer tag</h2>
+  <div class="g2">
+    <div>
+      <div class="step"><div class="step-num">1</div><div><h3>Selecciona el dispositivo</h3><p>Clic derecho sobre <span class="mono">PLC_Delta_SE</span> → <strong>New Tag</strong>.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Completa Name y Address</h3><p><span class="mono">Name: Cmd_Start</span><br><span class="mono">Address: 002049</span></p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Define el comportamiento</h3><p><span class="mono">Data Type: Boolean</span><br><span class="mono">Client Access: Read/Write</span><br><span class="mono">Scan Rate: 500 ms</span></p></div></div>
+      <div class="step"><div class="step-num">4</div><div><h3>Aplica y verifica</h3><p>Presiona <strong>Apply</strong>. Confirma que el tag aparezca debajo del dispositivo sin indicador de dirección inválida.</p></div></div>
+    </div>
+    <div>
+      <div class="card red"><h3>Anatomía del tag</h3><p><strong>Name</strong> es el nombre que verá Infilink. <strong>Address</strong> es la dirección Modbus. <strong>Data Type</strong> define cómo interpretar los bits. <strong>Client Access</strong> limita lectura o escritura.</p></div>
+      <div class="call warn"><strong>No confundas:</strong> M0 es el nombre dentro del PLC; 002049 es la dirección que se escribe en KEPServerEX.</div>
+      <img src="imagenes/08-kepserver-primer-tag.JPG" alt="Creación del tag Cmd_Start" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Completar los tags">
+  <h2>KEPServerEX · Paso 4: completar la base de tags</h2>
+  <table class="tight">
+    <tr><th>Name</th><th>Address</th><th>Data Type</th><th>Client Access</th><th>Scan</th></tr>
+    <tr><td>Cmd_Start</td><td>002049</td><td>Boolean</td><td>Read/Write</td><td>500 ms</td></tr>
+    <tr><td>Cmd_Stop</td><td>002050</td><td>Boolean</td><td>Read/Write</td><td>500 ms</td></tr>
+    <tr><td>Cmd_Reset</td><td>002051</td><td>Boolean</td><td>Read/Write</td><td>500 ms</td></tr>
+    <tr><td>Bomba_Activa</td><td>001281</td><td>Boolean</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Valvula_Activa</td><td>001282</td><td>Boolean</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Llenado_Finalizado</td><td>001537</td><td>Boolean</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Tiempo_Llenado</td><td>401537</td><td>Word</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Tiempo_Descarga</td><td>401538</td><td>Word</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Contador_Completo</td><td>003585</td><td>Boolean</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Ciclos_Totales</td><td>403585</td><td>Word</td><td>Read Only</td><td>500 ms</td></tr>
+    <tr><td>Entero_Prueba</td><td>404107</td><td>Short</td><td>Read/Write</td><td>500 ms</td></tr>
+    <tr><td>Valor_Float</td><td>404117</td><td>Float</td><td>Read Only</td><td>500 ms</td></tr>
+  </table>
+  <div class="call"><strong>Prueba del flotante:</strong> escribe un entero conocido en Entero_Prueba. Si Valor_Float no coincide, revisa el tipo de dato y el orden de palabras del dispositivo antes de modificar direcciones.</div>
+  <img src="imagenes/09-kepserver-tags-completos.jpg" alt="Base de tags completa en KEPServerEX" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Validar con OPC Quick Client">
+  <h2>Validar el servidor antes de diseñar el SCADA</h2>
+  <div class="g2">
+    <div>
+      <div class="step"><div class="step-num">1</div><div><h3>Abrir OPC Quick Client</h3><p>Navega por el canal y el dispositivo.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Observar tres evidencias</h3><p><strong>Value</strong>, <strong>Quality</strong> y <strong>Timestamp</strong>.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Forzar cambios reales</h3><p>Acciona el programa o escribe una orden autorizada y confirma que el valor cambia.</p></div></div>
+    </div>
+    <div>
+      <table><tr><th>Indicador</th><th>Interpretación</th></tr><tr><td><span class="quality"><span class="dot good"></span>Good</span></td><td>El servidor obtuvo un valor válido.</td></tr><tr><td><span class="quality"><span class="dot bad"></span>Bad</span></td><td>Hay un problema de dirección, dispositivo, canal o comunicación.</td></tr><tr><td><span class="quality"><span class="dot uncertain"></span>Uncertain</span></td><td>El valor existe, pero su confiabilidad requiere revisión.</td></tr><tr><td>Timestamp</td><td>Permite comprobar cuándo se actualizó el dato.</td></tr></table>
+      <div class="call warn"><strong>No continúes a Infilink si los tags no funcionan aquí.</strong> Primero valida la adquisición en el servidor OPC.</div>
+    </div>
+  </div>
+  <img src="imagenes/08-opc-quick-client.jpg" alt="Tags validados en OPC Quick Client" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Diagnóstico guiado">
+  <h2>Si aparece Bad, diagnostica por capas</h2>
+  <table>
+    <tr><th>Capa</th><th>Pregunta</th><th>Comprobación</th></tr>
+    <tr><td>Física</td><td>¿El PLC y el adaptador están conectados?</td><td>Alimentación, cable, LED y Administrador de dispositivos.</td></tr>
+    <tr><td>Puerto</td><td>¿El COM existe y está libre?</td><td>Cerrar ISPSoft/WPLSoft u otra aplicación que lo esté usando.</td></tr>
+    <tr><td>Canal</td><td>¿Los parámetros seriales coinciden?</td><td>COM, 9600, 8, Even, 1, None y modo ASCII.</td></tr>
+    <tr><td>Dispositivo</td><td>¿KEPServerEX consulta al PLC correcto?</td><td>Unit ID = 1, modelo ASCII y simulación desactivada.</td></tr>
+    <tr><td>Tag</td><td>¿Dirección y tipo son correctos?</td><td>Revisar tabla Modbus, seis dígitos, tipo y orden de palabras.</td></tr>
+    <tr><td>Programa</td><td>¿La memoria realmente cambia?</td><td>Monitorear el registro o bit en ISPSoft/WPLSoft, sin ocupar simultáneamente el COM.</td></tr>
+  </table>
+  <div class="call danger"><strong>No cambies varias cosas a la vez.</strong> Registra la hipótesis, modifica un parámetro, prueba y anota el resultado.</div>
+  <div class="evidence"><strong>Registro mínimo de falla:</strong> síntoma → hipótesis → prueba → resultado → decisión.</div>
+</section>
+
+<section class="slide" data-title="Conectar Infilink">
+  <h2>Infilink · Paso 1: crear y guardar el proyecto</h2>
+  <div class="g2">
+    <div>
+      <div class="step"><div class="step-num">1</div><div><h3>Abrir Infilink-HMI</h3><p>Trabaja en modo de diseño, no en Runtime.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Crear un proyecto nuevo</h3><p>Usa <strong>File → New Project</strong> o la opción equivalente de la versión instalada.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Nombrar y guardar</h3><p>Nombre sugerido: <span class="mono">LAB01_SCADA_MODBUS</span>. Guarda en una carpeta propia antes de crear tags.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div><h3>Crear la ventana principal</h3><p>Nombre: <span class="mono">Proceso_Dosificacion</span>. Define un tamaño coherente con el monitor del laboratorio.</p></div></div>
+    </div>
+    <div>
+      <img src="imagenes/11-infilink-proyecto-nuevo.jpg" alt="Creación del proyecto en Infilink" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+      <div class="call warn"><strong>Primera buena práctica:</strong> guarda el proyecto antes de configurar comunicaciones y vuelve a guardar después de cada etapa importante.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Crear Tag Group en Infilink">
+  <h2>Infilink · Paso 2: crear el grupo OPC</h2>
+  <div class="g2">
+    <div>
+      <div class="step"><div class="step-num">1</div><div><h3>Abrir Tags Group</h3><p>Presiona el icono <strong>Tags Group</strong>. Aparecerán los grupos y tags de sistema.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div><h3>Crear un grupo</h3><p>Selecciona <strong>New Group</strong>. Nombre sugerido: <span class="mono">OPC_Proceso</span>.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div><h3>Seleccionar Program ID</h3><p>Presiona el botón <strong>…</strong> del campo Program ID y elige el servidor KEPServerEX instalado.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div><h3>Confirmar el servidor</h3><p>Acepta y comprueba que <span class="mono">OPC_Proceso</span> aparezca dentro de Tags Group.</p></div></div>
+    </div>
+    <div>
+      <div class="card red"><h3>¿Qué se acaba de crear?</h3><p>Un grupo de tags de Infilink asociado a un servidor OPC. Todavía no contiene las variables del proceso; solo define de qué servidor se obtendrán.</p></div>
+      <img src="imagenes/12-infilink-tag-group.jpg" alt="Tag Group OPC en Infilink" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+      <div class="call danger"><strong>Si KEPServerEX no aparece:</strong> verifica que esté instalado, que su Runtime esté iniciado y que Infilink y KEPServerEX se ejecuten en el mismo entorno de Windows para esta primera práctica.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Importar tags en Infilink">
+  <h2>Infilink · Paso 3: buscar y agregar los tags</h2>
+  <div class="g2">
+    <div>
+      <ol>
+        <li>Selecciona el grupo <span class="mono">OPC_Proceso</span>.</li>
+        <li>Presiona <strong>New Tag</strong>.</li>
+        <li>En el campo del item OPC, presiona el botón <strong>…</strong>.</li>
+        <li>En Tag Browser despliega <span class="mono">Canal_Modbus_ASCII → PLC_Delta_SE</span>.</li>
+        <li>Selecciona un tag, confírmalo y revisa el tipo de dato detectado.</li>
+        <li>Repite hasta incorporar todas las variables del mapa.</li>
+      </ol>
+      <div class="path">KEPServerEX → Canal_Modbus_ASCII → PLC_Delta_SE → Cmd_Start</div>
+    </div>
+    <div>
+      <table class="tight"><tr><th>En KEPServerEX</th><th>En Infilink</th></tr><tr><td>Boolean</td><td>Discreto / Boolean</td></tr><tr><td>Word o Short</td><td>Entero compatible</td></tr><tr><td>Float</td><td>Real / Floating point</td></tr></table>
+      <div class="call warn"><strong>Comprueba el tipo:</strong> importar el item correcto con un tipo incompatible puede producir valores erróneos aunque la conexión OPC exista.</div>
+      <img src="imagenes/13-infilink-tag-browser.jpg" alt="Exploración de tags OPC desde Infilink" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="Primera prueba en Infilink">
+  <h2>Infilink · Paso 4: probar un tag antes de diseñar todo</h2>
+  <div class="g3">
+    <div class="card red"><h3>1 · Valor numérico</h3><p>Inserta un objeto de texto/valor y enlázalo a <span class="mono">Ciclos_Totales</span>. Debe mostrar el contenido de C0.</p></div>
+    <div class="card"><h3>2 · Indicador</h3><p>Inserta un círculo o lámpara y configura animación de color con <span class="mono">Bomba_Activa</span>.</p></div>
+    <div class="card green"><h3>3 · Orden momentánea</h3><p>Inserta un botón START que escriba True al presionar y vuelva a False al soltar, enlazado a <span class="mono">Cmd_Start</span>.</p></div>
+  </div>
+  <div class="flow"><div class="node round">Guardar</div><div class="arrow">→</div><div class="node round">KEPServer Runtime</div><div class="arrow">→</div><div class="node round red-node">Infilink Runtime</div><div class="arrow">→</div><div class="node round green-node">Comprobar</div></div>
+  <div class="call"><strong>Prueba mínima:</strong> primero haz funcionar un Boolean y un valor numérico. Cuando ambos respondan correctamente, continúa con la pantalla completa.</div>
+  <img src="imagenes/14-infilink-prueba-inicial.jpg" alt="Primera prueba de tags en Infilink Runtime" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+</section>
+
+<section class="slide" data-title="Pantalla SCADA">
+  <h2>Diseñar una pantalla funcional y comprobable</h2>
+  <div class="g3">
+    <div class="card red"><h3>Órdenes</h3><ul><li>START</li><li>STOP</li><li>RESET</li></ul><p>Enlazadas solo a tags de comando con permiso de escritura.</p></div>
+    <div class="card"><h3>Estados</h3><ul><li>Bomba</li><li>Válvula</li><li>Temporizador</li><li>Contador</li></ul><p>Color y texto deben indicar claramente ON/OFF.</p></div>
+    <div class="card green"><h3>Valores</h3><ul><li>Tiempo de llenado</li><li>Tiempo de descarga</li><li>Ciclos totales</li><li>Entero y valor flotante</li></ul><p>Incluye unidad o significado.</p></div>
+  </div>
+  <img src="imagenes/15-pantalla-scada.jpg" alt="Pantalla SCADA del proceso" style="max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); display: block; margin: auto;">
+  <div class="call warn"><strong>Evita:</strong> elementos decorativos sin función, colores sin significado, botones sin confirmación visual y escritura directa sobre tags de estado.</div>
+</section>
+
+<section class="slide" data-title="Pruebas de aceptación">
+  <h2>Pruebas de aceptación del sistema</h2>
+  <table class="tight">
+    <tr><th>N.º</th><th>Acción</th><th>Respuesta esperada</th><th>Resultado</th></tr>
+    <tr><td>1</td><td>Activar START desde SCADA.</td><td>El PLC recibe la orden y activa la secuencia.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>2</td><td>Observar Bomba_Activa.</td><td>OPC Quick Client e Infilink muestran el mismo estado.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>3</td><td>Esperar el tiempo programado.</td><td>Tiempo_Llenado cambia y Llenado_Finalizado se activa.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>4</td><td>Completar un ciclo.</td><td>Ciclos_Totales aumenta una unidad.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>5</td><td>Activar STOP.</td><td>El proceso se detiene según la lógica definida.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>6</td><td>Activar RESET.</td><td>Se reinician los elementos definidos por el programa.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>7</td><td>Modificar el entero de prueba.</td><td>Valor_Float muestra la conversión esperada.</td><td>□ Cumple □ No cumple</td></tr>
+    <tr><td>8</td><td>Desconectar temporalmente el enlace.</td><td>La calidad deja de ser Good y el SCADA evidencia la pérdida.</td><td>□ Cumple □ No cumple</td></tr>
+  </table>
+  <div class="evidence"><strong>La validación debe demostrar:</strong> lectura, escritura, actualización, pérdida de comunicación y recuperación.</div>
+</section>
+
+<section class="slide" data-title="Entregables y evaluación">
+  <h2>Entregables y evaluación</h2>
+  <div class="g2">
+    <div>
+      <h3>Archivos y evidencias</h3>
+      <ul class="checklist"><li>Copia identificada del programa Ladder entregado.</li><li>Proyecto KEPServerEX exportado.</li><li>Proyecto Infilink.</li><li>Mapa de variables comprobado.</li><li>Capturas de canal, dispositivo, tags y OPC Quick Client.</li><li>Capturas del Tag Group, Tag Browser y primera prueba Infilink.</li><li>Tabla de pruebas de aceptación.</li></ul>
+    </div>
+    <div>
+      <table class="tight"><tr><th>Criterio</th><th>Peso</th></tr><tr><td>Explica arquitectura Modbus-OPC-SCADA</td><td>10%</td></tr><tr><td>Interpreta el Ladder y la configuración COM1</td><td>10%</td></tr><tr><td>Configura correctamente el canal</td><td>15%</td></tr><tr><td>Configura dispositivo y Unit ID</td><td>10%</td></tr><tr><td>Crea tags con direcciones Delta correctas</td><td>20%</td></tr><tr><td>Crea Tag Group e importa tags en Infilink</td><td>15%</td></tr><tr><td>Implementa la pantalla y las pruebas</td><td>10%</td></tr><tr><td>Valida y diagnostica con evidencia</td><td>10%</td></tr><tr><th>Total</th><th>100%</th></tr></table>
+    </div>
+  </div>
+  <div class="call ok"><strong>Criterio de logro:</strong> todos los tags esenciales presentan calidad Good, cambian de acuerdo con el proceso y pueden rastrearse desde el programa PLC hasta el objeto SCADA.</div>
+</section>
+
+<section class="slide" data-title="Cierre">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Cierre del Laboratorio 01</div>
+      <h1>Un SCADA confiable comienza con datos trazables</h1>
+      <p class="lead">Cada objeto de la pantalla debe conducir a un tag, una dirección, una memoria del PLC y una función real del proceso.</p>
+      <div class="flow"><div class="node round">Programa PLC</div><div class="arrow">→</div><div class="node round">Modbus</div><div class="arrow">→</div><div class="node round red-node">Servidor OPC</div><div class="arrow">→</div><div class="node round green-node">SCADA</div></div>
+      <div class="call danger"><strong>Si no puedes explicar el recorrido del dato, la integración todavía no está terminada.</strong></div>
+    </div>
+    <div class="unit"><strong>✓</strong><span>Canal · Dispositivo · Tags<br>Quality · Timestamp · Evidencia</span></div>
+  </div>
+  <p class="source">Referencias de apoyo: guía original del laboratorio; tabla de direcciones Modbus Delta proporcionada; documentación de KEPServerEX/Modbus Serial; manual de programación Delta DVP-ES2/EX2/SS2/SA2/SX2/SE; documentación de Infilink-HMI.</p>
+</section>
+
+<div class="progress" id="progress"></div>
+</main>
+
+<footer>
+  <button id="prev">← Anterior</button>
+  <button id="overview">Índice</button>
+  <button id="print">Imprimir / PDF</button>
+  <button id="next">Siguiente →</button>
+</footer>
+
+<div class="index-panel" id="indexPanel" aria-hidden="true">
+  <div class="index-box">
+    <div class="index-head"><div><div class="eyebrow">Navegación</div><h2 style="margin:.2em 0">Índice de la guía</h2></div><button id="closeIndex">Cerrar ×</button></div>
+    <div class="index-grid" id="indexGrid"></div>
+  </div>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const count=document.getElementById('count'),progress=document.getElementById('progress');
+const prev=document.getElementById('prev'),next=document.getElementById('next');
+const panel=document.getElementById('indexPanel'),grid=document.getElementById('indexGrid');
+let current=0;
+function show(n){
+  current=Math.max(0,Math.min(n,slides.length-1));
+  slides.forEach((s,i)=>s.classList.toggle('active',i===current));
+  slides[current].scrollTop=0;
+  count.textContent=(current+1)+' / '+slides.length;
+  progress.style.width=(((current+1)/slides.length)*100)+'%';
+  prev.disabled=current===0;next.disabled=current===slides.length-1;
+  history.replaceState(null,'','#slide-'+(current+1));
+}
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='index-item';
+  b.textContent=(i+1)+'. '+(s.dataset.title||'Sección');
+  b.onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');show(i)};
+  grid.appendChild(b);
+});
+prev.onclick=()=>show(current-1);next.onclick=()=>show(current+1);
+document.getElementById('overview').onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false')};
+document.getElementById('closeIndex').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};
+document.getElementById('print').onclick=()=>window.print();
+panel.addEventListener('click',e=>{if(e.target===panel)document.getElementById('closeIndex').click()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&panel.classList.contains('open'))document.getElementById('closeIndex').click();
+  else if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(current+1)}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+});
+let touchX=0;document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].screenX},{passive:true});
+document.addEventListener('touchend',e=>{const d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>60)show(current+(d<0?1:-1))},{passive:true});
+const hash=Number((location.hash.match(/slide-(\d+)/)||[])[1]);show(hash?hash-1:0);
+</script>
+</body>
+</html>
 
