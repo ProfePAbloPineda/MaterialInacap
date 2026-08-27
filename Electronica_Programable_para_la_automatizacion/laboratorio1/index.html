@@ -1,1 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Práctica 1 INACAP: repaso de Ley de Ohm, circuitos resistivos y medición paso a paso con multímetro.">
+<title>Práctica 1 · Medición de circuitos resistivos · INACAP</title>
+<style>
+:root{--r:#d71920;--ink:#18222d;--blue:#075fa8;--green:#087f5b;--amber:#b45309;--paper:#f4f6f8;--line:#d5dce3;--muted:#596775;--soft-blue:#e9f2f9;--soft-green:#e8f6ef;--soft-amber:#fff3d9;--soft-red:#fdebec;--white:#fff}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:#202a33;color:var(--ink);font-family:Arial,"Segoe UI",sans-serif;overflow:hidden}
+header{height:70px;background:#fff;border-bottom:5px solid var(--r);display:flex;align-items:center;justify-content:space-between;padding:0 3vw;gap:20px}.brand{display:flex;gap:16px;align-items:center;min-width:0}.logo{font-size:1.55rem;font-weight:900;color:var(--r)}.course{border-left:1px solid var(--line);padding-left:16px;color:#54616e;font-size:.88rem;line-height:1.3}.counter{white-space:nowrap}
+main{height:calc(100vh - 128px);background:var(--paper);position:relative}.slide{display:none;height:100%;overflow:auto;padding:4vh 6vw 5vh}.slide.active{display:block;animation:enter .25s}@keyframes enter{from{opacity:.3;transform:translateX(10px)}}
+h1{font-size:clamp(2.25rem,4vw,4.15rem);line-height:1.02;margin:.15em 0 .35em}h2{font-size:clamp(1.75rem,3vw,2.75rem);border-left:9px solid var(--r);padding-left:18px;margin:0 0 .7em}h3{font-size:1.25rem;color:var(--blue);margin:.1em 0 .5em}h4{margin:.3em 0;color:var(--ink)}p,li{font-size:clamp(1rem,1.3vw,1.18rem);line-height:1.43}.lead{font-size:clamp(1.22rem,2vw,1.75rem);color:#52606d}.small{font-size:.9rem;color:var(--muted)}
+.hero{display:grid;grid-template-columns:1.5fr .6fr;gap:5vw;align-items:center;min-height:75%}.eyebrow{color:var(--r);font-weight:800;text-transform:uppercase;letter-spacing:1.4px}.unit{background:var(--ink);color:#fff;padding:30px;border-top:8px solid var(--r)}.unit strong{display:block;font-size:4rem}.unit span{line-height:1.5}
+.g2,.g3,.g4{display:grid;gap:22px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:#fff;border:1px solid var(--line);padding:22px;border-top:6px solid var(--blue);box-shadow:0 5px 15px #14202a10}.red{border-top-color:var(--r)!important}.green{border-top-color:var(--green)!important}.amber{border-top-color:var(--amber)!important}
+.call{background:var(--soft-blue);border-left:7px solid var(--blue);padding:17px 21px;margin:18px 0}.call.warn{background:var(--soft-amber);border-color:var(--amber)}.call.ok{background:var(--soft-green);border-color:var(--green)}.call.danger{background:var(--soft-red);border-color:var(--r)}.task{background:#fff;border:2px solid var(--r);padding:19px;margin:16px 0}.task h3{color:var(--r)}
+.checklist{list-style:none;padding-left:0}.checklist li{margin:.48em 0}.checklist li::before{content:"□";font-weight:900;color:var(--r);margin-right:.55em}.mono{font-family:Consolas,"Courier New",monospace}.formula{background:#101820;color:#fff;padding:14px 18px;font:700 clamp(1rem,1.5vw,1.25rem)/1.45 Consolas,monospace;text-align:center;margin:14px 0}.path{background:#101820;color:#fff;padding:14px 18px;font:700 1.05rem/1.45 Consolas,monospace;text-align:center;margin:14px 0}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:1rem}th{background:var(--ink);color:#fff;text-align:left}th,td{border:1px solid var(--line);padding:10px 12px;vertical-align:top}tbody tr:nth-child(even){background:#f8fafb}.tight th,.tight td{padding:7px 9px;font-size:.9rem}.blank{height:34px;min-width:85px}
+.step{display:grid;grid-template-columns:58px 1fr;gap:16px;align-items:start;margin:13px 0;background:#fff;border:1px solid var(--line);padding:14px}.step-num{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--r);color:#fff;font-size:1.4rem;font-weight:900}.step p{margin:.25em 0}.meter{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:18px 0}.meter-box{background:#fff;border:3px solid var(--blue);padding:18px;text-align:center}.meter-box strong{display:block;font-size:1.15rem}.meter-arrow{font-size:2rem;color:var(--r);font-weight:900}.lead-black{color:#111;font-weight:900}.lead-red{color:var(--r);font-weight:900}
+.photo{background:#fff;border:1px solid var(--line);padding:10px;margin:14px 0;text-align:center}.photo img{display:block;width:100%;height:auto;max-height:50vh;object-fit:contain}.photo figcaption{font-size:.86rem;color:var(--muted);margin-top:8px}.shot{background:#fff;border:2px solid var(--line);padding:12px;margin:14px 0}.shot img{display:block;width:100%;max-height:46vh;object-fit:contain}.shot .fallback{display:none;background:repeating-linear-gradient(135deg,#fff,#fff 12px,#f4f6f8 12px,#f4f6f8 24px);border:3px dashed #96a2ad;min-height:220px;padding:24px;text-align:center;align-items:center;justify-content:center;flex-direction:column}.shot.missing img{display:none}.shot.missing .fallback{display:flex}
+.band{display:inline-block;width:18px;height:42px;margin:0 3px;border:1px solid #333;vertical-align:middle}.b-black{background:#111}.b-brown{background:#6b3e26}.b-red{background:#d71920}.b-orange{background:#ef7d00}.b-yellow{background:#f5d000}.b-green{background:#168547}.b-blue{background:#1769aa}.b-violet{background:#7f3f98}.b-gray{background:#888}.b-white{background:#fff}.b-gold{background:#c9a227}.resistor-demo{display:flex;align-items:center;justify-content:center;gap:5px;background:#ead9b7;border:2px solid #7b6548;border-radius:25px;padding:7px 22px;width:max-content;max-width:100%;margin:12px auto}.evidence{border-left:6px solid var(--green);background:#fff;padding:14px 18px;margin:14px 0}.source{font-size:.8rem;color:#6b7580;border-top:1px solid var(--line);padding-top:10px;margin-top:18px}.progress{position:absolute;bottom:0;height:5px;background:var(--r);transition:.2s}
+footer{height:58px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;align-items:center;gap:12px}button{border:0;border-radius:3px;background:var(--ink);color:#fff;padding:10px 18px;font-size:1rem;font-weight:700;cursor:pointer}button:hover{background:var(--r)}button:disabled{background:#aab2ba}.index-panel{position:fixed;inset:0;background:#101820d9;display:none;z-index:20;padding:5vh 7vw;overflow:auto}.index-panel.open{display:block}.index-box{max-width:1100px;margin:auto;background:#fff;padding:26px;border-top:8px solid var(--r)}.index-head{display:flex;justify-content:space-between;align-items:center;gap:20px}.index-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.index-item{text-align:left;background:#f2f5f7;color:var(--ink);border-left:5px solid var(--blue);padding:11px}.index-item:hover{background:var(--soft-red)}
+@media(max-width:980px){body{overflow:auto}header{height:auto;padding:12px}.course{font-size:.76rem}.unit{display:none}main{height:auto}.slide{min-height:calc(100vh - 115px)}.hero,.g2,.g3,.g4,.meter{grid-template-columns:1fr}.meter-arrow{transform:rotate(90deg);text-align:center}.index-grid{grid-template-columns:1fr}}
+@media print{@page{size:A4 landscape;margin:11mm}body{overflow:visible;background:#fff}header,footer,.index-panel{display:none!important}main{height:auto}.slide{display:block!important;height:auto;min-height:180mm;page-break-after:always;padding:7mm 9mm;overflow:visible}.card{box-shadow:none}p,li{font-size:10.5pt}h1{font-size:28pt}h2{font-size:22pt}.progress{display:none}.source{font-size:8pt}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">INACAP</div><div class="course">ELECTRÓNICA APLICADA A LA AUTOMATIZACIÓN<br>PRÁCTICA 1 · MEDICIONES EN CIRCUITOS RESISTIVOS</div></div><strong class="counter" id="count">1 / 1</strong></header>
+<main>
+
+<section class="slide active" data-title="Portada">
+  <div class="hero"><div><div class="eyebrow">Guía de laboratorio · Práctica 1</div><h1>Medición de circuitos resistivos</h1><p class="lead">Repaso de Ley de Ohm, asociaciones serie, paralelo y mixtas, con énfasis en el uso correcto del multímetro.</p><div class="call"><strong>Secuencia de trabajo:</strong> identificar → calcular → montar → medir → comparar → explicar.</div></div><div class="unit"><strong>01</strong><span>Trabajo paso a paso<br>Fuente DC de 12 V<br>Multímetro digital</span></div></div>
+</section>
+
+<section class="slide" data-title="Propósito">
+  <h2>Propósito de la práctica</h2>
+  <div class="g2"><div class="card red"><h3>Objetivo general</h3><p>Verificar experimentalmente la Ley de Ohm y las leyes de Kirchhoff mediante el montaje y la medición segura de circuitos resistivos alimentados con corriente continua.</p></div><div class="card"><h3>Producto observable</h3><p>Tres circuitos correctamente montados, tablas con valores teóricos y medidos, comprobaciones de corriente y voltaje, y análisis de diferencias.</p></div></div>
+  <div class="g3"><div class="card"><h3>Voltaje</h3><p>Medir diferencias de potencial conectando el multímetro en paralelo.</p></div><div class="card green"><h3>Corriente</h3><p>Medir circulación de corriente abriendo el circuito e insertando el instrumento en serie.</p></div><div class="card amber"><h3>Resistencia</h3><p>Medir componentes y equivalentes con el circuito completamente desenergizado.</p></div></div>
+</section>
+
+<section class="slide" data-title="Resultados de aprendizaje">
+  <h2>Al finalizar podrás…</h2>
+  <div class="g2"><ul class="checklist"><li>Interpretar el código de colores de resistencias de cuatro bandas.</li><li>Comprobar el valor de una resistencia con el multímetro.</li><li>Configurar correctamente terminales, función y rango.</li><li>Medir voltaje DC en paralelo.</li><li>Medir corriente DC insertando el instrumento en serie.</li></ul><ul class="checklist"><li>Determinar resistencia equivalente.</li><li>Comprobar la Ley de Ohm.</li><li>Verificar KVL en una malla.</li><li>Verificar KCL en un nodo.</li><li>Calcular error porcentual y explicar diferencias.</li></ul></div>
+  <div class="call ok"><strong>Énfasis:</strong> no basta con obtener un número. Debes explicar qué estás midiendo, dónde conectaste las puntas y por qué esa conexión es correcta.</div>
+</section>
+
+<section class="slide" data-title="Seguridad">
+  <h2>Seguridad antes de comenzar</h2>
+  <div class="g2"><div class="card red"><h3>Fuente de alimentación</h3><ul class="checklist"><li>Apagar antes de montar o modificar.</li><li>Ajustar 12,00 V sin carga.</li><li>Configurar límite de corriente inicial en 0,12 A.</li><li>Confirmar polaridad positiva y negativa.</li><li>Energizar solo después de la revisión docente.</li></ul></div><div class="card amber"><h3>Multímetro</h3><ul class="checklist"><li>Inspeccionar puntas y aislación.</li><li>Punta negra siempre en COM.</li><li>Usar VΩ para voltaje y resistencia.</li><li>Usar entrada A/mA solo para corriente.</li><li>Devolver la punta roja a VΩ al finalizar.</li></ul></div></div>
+  <div class="call danger"><strong>Prohibido:</strong> conectar el multímetro en modo corriente directamente entre +12 V y 0 V. Esa conexión equivale prácticamente a un cortocircuito y puede quemar el fusible del instrumento.</div>
+</section>
+
+<section class="slide" data-title="Materiales">
+  <h2>Materiales y potencias mínimas</h2>
+  <div class="g2"><div><table><tr><th>Equipo</th><th>Cantidad</th></tr><tr><td>Multímetro digital con fusible operativo</td><td>1</td></tr><tr><td>Fuente DC regulable 0–15 V</td><td>1</td></tr><tr><td>Protoboard</td><td>1</td></tr><tr><td>Cables para protoboard</td><td>Según montaje</td></tr></table></div><div><table><tr><th>Resistencia</th><th>Potencia mínima para esta guía</th><th>Cantidad</th></tr><tr><td>220 Ω</td><td><strong>1 W</strong></td><td>1</td></tr><tr><td>470 Ω</td><td><strong>½ W</strong></td><td>2</td></tr><tr><td>1 kΩ</td><td>¼ W</td><td>1</td></tr></table></div></div>
+  <div class="call warn"><strong>Corrección de seguridad:</strong> en el circuito paralelo, 220 Ω conectada a 12 V disipa aproximadamente 0,655 W y 470 Ω disipa 0,306 W. Por eso no deben utilizarse resistencias de ¼ W para esas dos ramas.</div>
+</section>
+
+<section class="slide" data-title="Conceptos esenciales">
+  <h2>Datos teóricos que usarás</h2>
+  <div class="g3"><div class="card red"><h3>Ley de Ohm</h3><div class="formula">V = I·R<br>I = V/R<br>R = V/I</div><p>V en voltios, I en amperios y R en ohmios.</p></div><div class="card"><h3>Potencia</h3><div class="formula">P = V·I<br>P = I²·R<br>P = V²/R</div><p>Permite comprobar si la resistencia soporta la energía disipada.</p></div><div class="card green"><h3>Error porcentual</h3><div class="formula">|Medido − Teórico|<br>──────────── ×100 %<br>|Teórico|</div><p>Usa valor absoluto para informar la magnitud de la diferencia.</p></div></div>
+  <div class="call"><strong>Prefijos:</strong> 1 kΩ = 1000 Ω · 1 mA = 0,001 A · 1 W = 1000 mW.</div>
+</section>
+
+<section class="slide" data-title="Código de colores">
+  <h2>Código de colores de resistencias</h2>
+  <div class="g2"><div><div class="shot"><img src="codigo_colores_resistencias.png" alt="Código de colores de resistencias" onerror="this.parentElement.classList.add('missing')"><div class="fallback"><strong>ESPACIO PARA CÓDIGO DE COLORES</strong><span>Inserta aquí una imagen llamada <span class="mono">codigo_colores_resistencias.png</span>.</span></div></div><div class="call"><strong>Resistencia de cuatro bandas:</strong> 1.ª cifra · 2.ª cifra · multiplicador · tolerancia.</div></div><div><table class="tight"><tr><th>Color</th><th>Dígito</th><th>Multiplicador</th></tr><tr><td>Negro</td><td>0</td><td>×1</td></tr><tr><td>Café</td><td>1</td><td>×10</td></tr><tr><td>Rojo</td><td>2</td><td>×100</td></tr><tr><td>Naranjo</td><td>3</td><td>×1 k</td></tr><tr><td>Amarillo</td><td>4</td><td>×10 k</td></tr><tr><td>Verde</td><td>5</td><td>×100 k</td></tr><tr><td>Azul</td><td>6</td><td>×1 M</td></tr><tr><td>Violeta</td><td>7</td><td>×10 M</td></tr><tr><td>Gris</td><td>8</td><td>×100 M</td></tr><tr><td>Blanco</td><td>9</td><td>×1 G</td></tr></table><p class="small">Tolerancia habitual: dorado ±5 % · plateado ±10 % · café ±1 % · rojo ±2 %.</p></div></div>
+</section>
+
+<section class="slide" data-title="Colores de trabajo">
+  <h2>Resistencias utilizadas en la práctica</h2>
+  <table><tr><th>Valor</th><th>Bandas para ±5 %</th><th>Intervalo aceptable</th></tr><tr><td><strong>220 Ω</strong></td><td><span class="band b-red"></span><span class="band b-red"></span><span class="band b-brown"></span><span class="band b-gold"></span> Rojo · rojo · café · dorado</td><td>209 Ω a 231 Ω</td></tr><tr><td><strong>470 Ω</strong></td><td><span class="band b-yellow"></span><span class="band b-violet"></span><span class="band b-brown"></span><span class="band b-gold"></span> Amarillo · violeta · café · dorado</td><td>446,5 Ω a 493,5 Ω</td></tr><tr><td><strong>1 kΩ</strong></td><td><span class="band b-brown"></span><span class="band b-black"></span><span class="band b-red"></span><span class="band b-gold"></span> Café · negro · rojo · dorado</td><td>950 Ω a 1050 Ω</td></tr></table>
+  <div class="task"><h3>Actividad previa</h3><p>Selecciona los componentes sin usar primero el multímetro. Registra el valor interpretado por colores y después compruébalo midiendo.</p></div>
+</section>
+
+<section class="slide" data-title="Registro de resistencias">
+  <h2>Paso 1 · Identificar y medir cada resistencia</h2>
+  <div class="g2"><div><div class="step"><div class="step-num">1</div><div><h3>Desenergizar</h3><p>La resistencia debe estar fuera del circuito o con una terminal levantada.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Conectar puntas</h3><p>Negra en <strong>COM</strong>; roja en <strong>VΩ</strong>.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>Seleccionar Ω</h3><p>Usa autorango o un rango superior al valor esperado.</p></div></div><div class="step"><div class="step-num">4</div><div><h3>Medir</h3><p>Toca una terminal con cada punta sin sujetar ambas partes metálicas con los dedos.</p></div></div></div><div><table><tr><th>Componente</th><th>Colores</th><th>Nominal</th><th>Medido</th><th>Dentro de tolerancia</th></tr><tr><td>R 220 Ω</td><td class="blank"></td><td>220 Ω</td><td></td><td>□ Sí □ No</td></tr><tr><td>R 470 Ω N.º 1</td><td></td><td>470 Ω</td><td></td><td>□ Sí □ No</td></tr><tr><td>R 470 Ω N.º 2</td><td></td><td>470 Ω</td><td></td><td>□ Sí □ No</td></tr><tr><td>R 1 kΩ</td><td></td><td>1 kΩ</td><td></td><td>□ Sí □ No</td></tr></table><div class="call danger"><strong>Nunca midas Ω con la fuente conectada o encendida.</strong></div></div></div>
+</section>
+
+<section class="slide" data-title="Preparar el multímetro">
+  <h2>Paso 2 · Elegir terminal, función y rango</h2>
+  <table><tr><th>Magnitud</th><th>Punta negra</th><th>Punta roja</th><th>Selector</th><th>Conexión</th><th>Estado del circuito</th></tr><tr><td>Resistencia</td><td><strong>COM</strong></td><td><strong>VΩ</strong></td><td>Ω</td><td>Entre extremos</td><td>Apagado y aislado</td></tr><tr><td>Voltaje DC</td><td><strong>COM</strong></td><td><strong>VΩ</strong></td><td>V⎓</td><td>Paralelo</td><td>Energizado</td></tr><tr><td>Corriente DC</td><td><strong>COM</strong></td><td><strong>10 A o mA</strong></td><td>A⎓ o mA⎓</td><td>Serie</td><td>Apagar para insertar</td></tr></table>
+  <div class="call warn"><strong>Rango desconocido:</strong> comienza en el rango más alto. Luego disminuye hasta obtener una lectura estable con resolución suficiente.</div>
+  <div class="call ok"><strong>Hábito obligatorio:</strong> después de medir corriente, apaga el circuito y devuelve inmediatamente la punta roja al terminal VΩ.</div>
+</section>
+
+<section class="slide" data-title="Medir voltaje">
+  <h2>Paso 3 · Medir voltaje DC</h2>
+  <div class="g2"><div><div class="step"><div class="step-num">1</div><div><h3>Preparar</h3><p>Negra en COM, roja en VΩ y selector en V⎓.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Elegir puntos</h3><p>Conecta las puntas a los dos nodos entre los que deseas conocer la diferencia de potencial.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>Conectar en paralelo</h3><p>No abras el circuito. Apoya las puntas a ambos lados del componente.</p></div></div><div class="step"><div class="step-num">4</div><div><h3>Interpretar</h3><p>Un signo negativo indica que las puntas están invertidas respecto de la polaridad real.</p></div></div></div><div><div class="meter"><div class="meter-box"><strong>Circuito energizado</strong><span>Dos nodos</span></div><div class="meter-arrow">⇄</div><div class="meter-box"><strong>Multímetro V⎓</strong><span>En paralelo</span></div></div><div class="call"><strong>Primera medición:</strong> antes de conectar la protoboard, confirma que la fuente entregue <span class="mono">12,00 V DC</span>.</div></div></div>
+</section>
+
+<section class="slide" data-title="Medir corriente">
+  <h2>Paso 4 · Medir corriente DC</h2>
+  <div class="g2"><div><div class="step"><div class="step-num">1</div><div><h3>Apagar</h3><p>Desenergiza antes de cambiar conexiones.</p></div></div><div class="step"><div class="step-num">2</div><div><h3>Preparar el instrumento</h3><p>Negra en COM. Roja inicialmente en la entrada de mayor corriente, según el multímetro.</p></div></div><div class="step"><div class="step-num">3</div><div><h3>Abrir el circuito</h3><p>Retira un conductor en el punto donde deseas medir.</p></div></div><div class="step"><div class="step-num">4</div><div><h3>Insertar en serie</h3><p>El multímetro debe cerrar el camino de la corriente.</p></div></div><div class="step"><div class="step-num">5</div><div><h3>Energizar y leer</h3><p>Enciende brevemente, registra, apaga y retira el instrumento.</p></div></div></div><div><div class="path">+12 V ── multímetro A⎓ ── circuito ── 0 V</div><div class="call danger"><strong>Nunca en paralelo:</strong> con la punta roja en A o mA, no toques simultáneamente los terminales de la fuente ni los extremos de una resistencia.</div></div></div>
+</section>
+
+<section class="slide" data-title="Errores frecuentes">
+  <h2>Antes de medir, evita estos errores</h2>
+  <div class="g3"><div class="card red"><h3>Ω con energía</h3><p>La tensión externa altera la medición y puede dañar el instrumento.</p></div><div class="card red"><h3>A en paralelo</h3><p>Produce una corriente muy alta y normalmente abre el fusible del multímetro.</p></div><div class="card amber"><h3>Terminal incorrecto</h3><p>Dejar la punta en A y luego intentar medir voltaje es una causa habitual de cortocircuito.</p></div><div class="card"><h3>Rango insuficiente</h3><p>Puede aparecer OL o sobrecarga. Comienza por un rango superior.</p></div><div class="card"><h3>Riel interrumpido</h3><p>Algunas protoboards dividen los rieles de alimentación en la mitad.</p></div><div class="card green"><h3>Contacto inestable</h3><p>Puntas flojas o componentes mal insertados producen lecturas variables.</p></div></div>
+</section>
+
+<section class="slide" data-title="Comprobar protoboard">
+  <h2>Paso 5 · Reconocer la protoboard</h2>
+  <div class="g2"><div class="card"><h3>Filas centrales</h3><p>Normalmente cada grupo de cinco orificios está unido internamente. La ranura central separa ambos lados.</p></div><div class="card green"><h3>Rieles laterales</h3><p>Distribuyen +12 V y 0 V, pero pueden estar interrumpidos. Compruébalos en continuidad con la fuente desconectada.</p></div></div>
+  <div class="task"><h3>Actividad</h3><ol><li>Desconecta la fuente.</li><li>Selecciona continuidad.</li><li>Identifica qué orificios pertenecen al mismo nodo.</li><li>Dibuja el mapa interno de la protoboard.</li><li>Marca los rieles elegidos para +12 V y 0 V.</li></ol></div>
+  <div class="call danger"><strong>No conectes la fuente hasta distinguir correctamente nodos, filas y rieles.</strong></div>
+</section>
+
+<section class="slide" data-title="Método de trabajo">
+  <h2>Procedimiento que se repite en cada circuito</h2>
+  <div class="g4"><div class="card red"><h3>1 · Calcular</h3><p>Determina Rt, corrientes, voltajes y potencias antes de montar.</p></div><div class="card"><h3>2 · Montar</h3><p>Fuente apagada; organiza nodos y revisa conexiones.</p></div><div class="card green"><h3>3 · Medir</h3><p>Rt sin energía; voltajes en paralelo; corrientes en serie.</p></div><div class="card amber"><h3>4 · Comparar</h3><p>Completa tabla, error porcentual y leyes de Kirchhoff.</p></div></div>
+  <div class="evidence"><strong>Registra también:</strong> tensión real de la fuente, valores medidos de las resistencias y rango utilizado en el multímetro.</div>
+</section>
+
+<section class="slide" data-title="Circuito serie">
+  <h2>Circuito 1 · Asociación en serie</h2>
+  <div class="g2"><figure class="photo"><img src="1.PNG" alt="Circuito serie de 220 ohm, 470 ohm y 1 kiloohm a 12 voltios"><figcaption>R1 = 220 Ω · R2 = 470 Ω · R3 = 1 kΩ · V = 12 V DC.</figcaption></figure><div><div class="formula">Rt = R1 + R2 + R3</div><ul><li>La corriente es la misma en todos los componentes.</li><li>Las caídas de voltaje suman la tensión de la fuente.</li><li>Una apertura interrumpe todo el circuito.</li></ul><div class="call"><strong>KVL:</strong> +12 V − VR1 − VR2 − VR3 = 0 V.</div></div></div>
+</section>
+
+<section class="slide" data-title="Cálculo serie">
+  <h2>Circuito 1 · Cálculo teórico corregido</h2>
+  <div class="formula">Rt = 220 + 470 + 1000 = 1690 Ω</div>
+  <div class="formula">It = 12 / 1690 = 0,0071006 A ≈ 7,101 mA</div>
+  <table><tr><th>Magnitud</th><th>Cálculo</th><th>Resultado</th></tr><tr><td>VR1</td><td>7,1006 mA × 220 Ω</td><td>1,562 V</td></tr><tr><td>VR2</td><td>7,1006 mA × 470 Ω</td><td>3,337 V</td></tr><tr><td>VR3</td><td>7,1006 mA × 1000 Ω</td><td>7,101 V</td></tr><tr><td>Comprobación</td><td>1,562 + 3,337 + 7,101</td><td>12,000 V</td></tr></table>
+</section>
+
+<section class="slide" data-title="Medición serie">
+  <h2>Circuito 1 · Montaje y medición paso a paso</h2>
+  <div class="g2"><div><ol><li>Con la fuente apagada, monta R1–R2–R3 en una sola trayectoria.</li><li>Desconecta la fuente y mide Rt entre los extremos del conjunto.</li><li>Configura la fuente en 12,00 V y límite 0,12 A.</li><li>Energiza y mide VR1, VR2 y VR3 en paralelo.</li><li>Apaga, abre el conductor entre +12 V y R1.</li><li>Inserta el multímetro en A⎓, energiza y mide It.</li><li>Apaga y devuelve la punta roja a VΩ.</li></ol></div><div><div class="call ok"><strong>Resultado esperado:</strong> la corriente medida en cualquier punto de la trayectoria debe ser prácticamente la misma.</div><div class="call warn"><strong>Si VR1 + VR2 + VR3 no se aproxima a la fuente:</strong> revisa puntos de contacto, tensión real de alimentación y polaridad de las puntas.</div></div></div>
+</section>
+
+<section class="slide" data-title="Registro serie">
+  <h2>Circuito 1 · Tabla de resultados</h2>
+  <table><tr><th>Magnitud</th><th>Teórico nominal</th><th>Medido</th><th>Error</th></tr><tr><td>Rt</td><td>1690 Ω</td><td></td><td></td></tr><tr><td>It</td><td>7,101 mA</td><td></td><td></td></tr><tr><td>VR1</td><td>1,562 V</td><td></td><td></td></tr><tr><td>VR2</td><td>3,337 V</td><td></td><td></td></tr><tr><td>VR3</td><td>7,101 V</td><td></td><td></td></tr><tr><td>VR1+VR2+VR3</td><td>12,000 V</td><td></td><td></td></tr></table>
+  <div class="evidence"><strong>Conclusión parcial:</strong> ¿se cumple KVL dentro del error experimental? ______________________________</div>
+</section>
+
+<section class="slide" data-title="Circuito paralelo">
+  <h2>Circuito 2 · Asociación en paralelo</h2>
+  <div class="g2"><figure class="photo"><img src="2.PNG" alt="Circuito paralelo de 220 ohm, 470 ohm y 1 kiloohm a 12 voltios"><figcaption>Valores reales de la figura: R1 = 220 Ω · R2 = 470 Ω · R3 = 1 kΩ.</figcaption></figure><div><div class="formula">1/Rt = 1/R1 + 1/R2 + 1/R3</div><ul><li>El voltaje es el mismo en las tres ramas.</li><li>La corriente total se divide entre las ramas.</li><li>Rt debe ser menor que la resistencia más pequeña.</li></ul><div class="call danger"><strong>Potencia:</strong> usa 220 Ω de 1 W y 470 Ω de ½ W como mínimo.</div></div></div>
+</section>
+
+<section class="slide" data-title="Cálculo paralelo">
+  <h2>Circuito 2 · Cálculo teórico corregido</h2>
+  <div class="formula">Rt = 1/(1/220 + 1/470 + 1/1000) = 130,325 Ω</div>
+  <table><tr><th>Rama</th><th>Corriente</th><th>Potencia</th></tr><tr><td>R1 = 220 Ω</td><td>I1 = 12/220 = 54,545 mA</td><td>P1 = 12²/220 = 0,655 W</td></tr><tr><td>R2 = 470 Ω</td><td>I2 = 12/470 = 25,532 mA</td><td>P2 = 12²/470 = 0,306 W</td></tr><tr><td>R3 = 1 kΩ</td><td>I3 = 12/1000 = 12,000 mA</td><td>P3 = 0,144 W</td></tr><tr><th>Total</th><th>It = 92,077 mA</th><th>Pt = 1,105 W</th></tr></table>
+  <div class="call"><strong>KCL:</strong> It = I1 + I2 + I3 = 54,545 + 25,532 + 12,000 = 92,077 mA.</div>
+</section>
+
+<section class="slide" data-title="Medición paralelo">
+  <h2>Circuito 2 · Montaje y medición paso a paso</h2>
+  <div class="g2"><div><ol><li>Con fuente apagada, crea dos nodos comunes.</li><li>Conecta cada resistencia entre esos mismos dos nodos.</li><li>Con la fuente desconectada, mide Rt entre los nodos.</li><li>Energiza y mide el voltaje en cada rama en paralelo.</li><li>Apaga y abre la rama R1; inserta el amperímetro en serie y mide I1.</li><li>Repite por separado con R2 y R3.</li><li>Mide It insertando el amperímetro antes del nodo de división.</li><li>Apaga y devuelve la punta roja a VΩ.</li></ol></div><div><div class="call danger"><strong>Cada cambio de rama se hace con la fuente apagada.</strong></div><div class="call warn"><strong>Corriente prevista:</strong> It ≈ 92 mA. Verifica que el terminal y el fusible seleccionados admitan este valor.</div></div></div>
+</section>
+
+<section class="slide" data-title="Registro paralelo">
+  <h2>Circuito 2 · Tabla de resultados</h2>
+  <table><tr><th>Magnitud</th><th>Teórico nominal</th><th>Medido</th><th>Error</th></tr><tr><td>Rt</td><td>130,325 Ω</td><td></td><td></td></tr><tr><td>V1</td><td>12,000 V</td><td></td><td></td></tr><tr><td>V2</td><td>12,000 V</td><td></td><td></td></tr><tr><td>V3</td><td>12,000 V</td><td></td><td></td></tr><tr><td>I1</td><td>54,545 mA</td><td></td><td></td></tr><tr><td>I2</td><td>25,532 mA</td><td></td><td></td></tr><tr><td>I3</td><td>12,000 mA</td><td></td><td></td></tr><tr><td>It</td><td>92,077 mA</td><td></td><td></td></tr></table>
+  <div class="evidence"><strong>Comprobación KCL:</strong> It medida ______ mA · I1+I2+I3 ______ mA · diferencia ______ mA.</div>
+</section>
+
+<section class="slide" data-title="Circuito mixto">
+  <h2>Circuito 3 · Asociación mixta</h2>
+  <div class="g2"><figure class="photo"><img src="3.PNG" alt="Circuito mixto con 220 y 470 ohm en serie, seguidos de 1 kiloohm en paralelo con 470 ohm"><figcaption>Topología corregida: R1 y R2 en serie; R3 y R4 en paralelo.</figcaption></figure><div><ul><li>R1 = 220 Ω en serie.</li><li>R2 = 470 Ω en serie.</li><li>R3 = 1 kΩ en paralelo con R4.</li><li>R4 = 470 Ω en paralelo con R3.</li></ul><div class="formula">Rt = R1 + R2 + (R3 || R4)</div><div class="call warn"><strong>Primero simplifica el paralelo R3 || R4.</strong></div></div></div>
+</section>
+
+<section class="slide" data-title="Cálculo mixto">
+  <h2>Circuito 3 · Cálculo teórico corregido</h2>
+  <div class="formula">R3||R4 = (1000·470)/(1000+470) = 319,728 Ω</div>
+  <div class="formula">Rt = 220 + 470 + 319,728 = 1009,728 Ω</div>
+  <div class="formula">It = 12/1009,728 = 11,884 mA</div>
+  <table><tr><th>Magnitud</th><th>Resultado</th></tr><tr><td>VR1</td><td>2,615 V</td></tr><tr><td>VR2</td><td>5,586 V</td></tr><tr><td>Voltaje del paralelo R3||R4</td><td>3,800 V</td></tr><tr><td>I3 por 1 kΩ</td><td>3,800 mA</td></tr><tr><td>I4 por 470 Ω</td><td>8,085 mA</td></tr></table>
+  <div class="call"><strong>Comprobaciones:</strong> 2,615 + 5,586 + 3,800 ≈ 12,000 V · 3,800 + 8,085 ≈ 11,884 mA.</div>
+</section>
+
+<section class="slide" data-title="Medición mixta">
+  <h2>Circuito 3 · Montaje y medición paso a paso</h2>
+  <div class="g2"><div><ol><li>Monta R1 y R2 en serie desde +12 V.</li><li>Desde la salida de R2 crea el nodo que alimenta R3 y R4.</li><li>Une los extremos inferiores de R3 y R4 al nodo 0 V.</li><li>Fuente desconectada: mide Rt.</li><li>Energiza: mide VR1, VR2 y el voltaje común de R3/R4.</li><li>Mide It antes de R1.</li><li>Apaga; inserta el multímetro sucesivamente en cada rama para medir I3 e I4.</li><li>Comprueba KVL y KCL.</li></ol></div><div><div class="call ok"><strong>Voltaje paralelo:</strong> VR3 y VR4 deben ser prácticamente iguales porque comparten los mismos dos nodos.</div><div class="call danger"><strong>No midas Rt mientras la fuente esté conectada.</strong></div></div></div>
+</section>
+
+<section class="slide" data-title="Registro mixto">
+  <h2>Circuito 3 · Tabla de resultados</h2>
+  <table><tr><th>Magnitud</th><th>Teórico nominal</th><th>Medido</th><th>Error</th></tr><tr><td>R3||R4</td><td>319,728 Ω</td><td></td><td></td></tr><tr><td>Rt</td><td>1009,728 Ω</td><td></td><td></td></tr><tr><td>It</td><td>11,884 mA</td><td></td><td></td></tr><tr><td>VR1</td><td>2,615 V</td><td></td><td></td></tr><tr><td>VR2</td><td>5,586 V</td><td></td><td></td></tr><tr><td>VR3 = VR4</td><td>3,800 V</td><td></td><td></td></tr><tr><td>I3</td><td>3,800 mA</td><td></td><td></td></tr><tr><td>I4</td><td>8,085 mA</td><td></td><td></td></tr></table>
+</section>
+
+<section class="slide" data-title="Análisis comparativo">
+  <h2>Comparar las tres configuraciones</h2>
+  <table><tr><th>Propiedad</th><th>Serie</th><th>Paralelo</th><th>Mixto</th></tr><tr><td>Resistencia equivalente</td><td>1690 Ω</td><td>130,325 Ω</td><td>1009,728 Ω</td></tr><tr><td>Corriente total a 12 V</td><td>7,101 mA</td><td>92,077 mA</td><td>11,884 mA</td></tr><tr><td>Voltaje</td><td>Se reparte</td><td>Igual en ramas</td><td>Se reparte y se iguala en el paralelo</td></tr><tr><td>Corriente</td><td>Igual</td><td>Se divide</td><td>Igual en serie y se divide en el nodo</td></tr></table>
+  <div class="task"><h3>Interpreta</h3><p>¿Por qué el circuito paralelo consume una corriente total mucho mayor que el circuito serie si ambos utilizan los mismos valores de resistencia y la misma fuente?</p></div>
+</section>
+
+<section class="slide" data-title="Preguntas de análisis">
+  <h2>Análisis y conclusiones</h2>
+  <ol><li>¿Por qué la resistencia equivalente en paralelo es menor que 220 Ω?</li><li>¿Qué ley se verifica al sumar VR1, VR2 y VR3 en el circuito serie?</li><li>¿Qué ley se verifica al comparar It con la suma de corrientes de rama?</li><li>¿Por qué una resistencia real puede diferir de su valor nominal?</li><li>¿Qué efecto tiene utilizar la tensión real medida de la fuente en los cálculos?</li><li>¿Qué ocurriría si se usara una resistencia de 220 Ω y ¼ W directamente a 12 V?</li><li>¿Por qué el amperímetro debe tener una resistencia interna muy baja?</li><li>¿Por qué el voltímetro se conecta en paralelo y no en serie?</li></ol>
+  <div class="evidence"><strong>Conclusión de la dupla:</strong> redacta entre 100 y 150 palabras relacionando teoría, mediciones, errores y uso seguro del multímetro.</div>
+</section>
+
+<section class="slide" data-title="Entregables y rúbrica">
+  <h2>Entregables y evaluación</h2>
+  <div class="g2"><div><ul class="checklist"><li>Tabla de identificación por colores.</li><li>Valores individuales medidos.</li><li>Cálculos previos de los tres circuitos.</li><li>Fotografías de los montajes.</li><li>Tablas completas de voltaje, corriente y resistencia.</li><li>Comprobaciones KVL y KCL.</li><li>Errores porcentuales.</li><li>Respuestas y conclusión final.</li></ul></div><div><table class="tight"><tr><th>Criterio</th><th>Peso</th></tr><tr><td>Seguridad y preparación del instrumento</td><td>20 %</td></tr><tr><td>Identificación y medición de resistencias</td><td>10 %</td></tr><tr><td>Cálculos teóricos</td><td>20 %</td></tr><tr><td>Montajes y orden de la protoboard</td><td>15 %</td></tr><tr><td>Medición correcta con multímetro</td><td>20 %</td></tr><tr><td>Análisis, error y conclusiones</td><td>15 %</td></tr><tr><th>Total</th><th>100 %</th></tr></table></div></div>
+</section>
+
+<section class="slide" data-title="Cierre">
+  <div class="hero"><div><div class="eyebrow">Cierre de la Práctica 1</div><h1>Medir correctamente también es comprender</h1><p class="lead">El resultado es confiable solo cuando la función, el rango, los terminales y el tipo de conexión del multímetro son adecuados.</p><div class="formula">Ω: sin energía · V: en paralelo · A: en serie</div><div class="call danger"><strong>Antes de tocar el circuito, mira siempre dónde está conectada la punta roja.</strong></div></div><div class="unit"><strong>✓</strong><span>Identificar · Calcular<br>Montar · Medir<br>Comparar · Explicar</span></div></div>
+  <p class="source">Material base: <a href="https://profepablopineda.github.io/lab1_Montaje/" target="_blank">guía de montaje original</a>. Procedimientos de medición revisados con documentación técnica de <a href="https://www.fluke.com/en-us/learn/blog/digital-multimeters/how-to-measure-resistance" target="_blank">resistencia</a>, <a href="https://www.fluke.com/en-us/learn/blog/digital-multimeters/how-to-measure-dc-voltage-with-a-digital-multimeter" target="_blank">voltaje DC</a> y <a href="https://media.fluke.com/03cd9543-1078-4527-8063-b10800c0e71c_original%20file.pdf" target="_blank">corriente en serie</a>.</p>
+</section>
+
+<div class="progress" id="progress"></div>
+</main>
+<footer><button id="prev">← Anterior</button><button id="overview">Índice</button><button id="print">Imprimir / PDF</button><button id="next">Siguiente →</button></footer>
+<div class="index-panel" id="indexPanel" aria-hidden="true"><div class="index-box"><div class="index-head"><div><div class="eyebrow">Navegación</div><h2 style="margin:.2em 0">Índice de la guía</h2></div><button id="closeIndex">Cerrar ×</button></div><div class="index-grid" id="indexGrid"></div></div></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];const count=document.getElementById('count'),progress=document.getElementById('progress'),prev=document.getElementById('prev'),next=document.getElementById('next'),panel=document.getElementById('indexPanel'),grid=document.getElementById('indexGrid');let current=0;
+function show(n){current=Math.max(0,Math.min(n,slides.length-1));slides.forEach((s,i)=>s.classList.toggle('active',i===current));slides[current].scrollTop=0;count.textContent=(current+1)+' / '+slides.length;progress.style.width=(((current+1)/slides.length)*100)+'%';prev.disabled=current===0;next.disabled=current===slides.length-1;history.replaceState(null,'','#slide-'+(current+1))}
+slides.forEach((s,i)=>{const b=document.createElement('button');b.className='index-item';b.textContent=(i+1)+'. '+(s.dataset.title||'Sección');b.onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');show(i)};grid.appendChild(b)});prev.onclick=()=>show(current-1);next.onclick=()=>show(current+1);document.getElementById('overview').onclick=()=>{panel.classList.add('open');panel.setAttribute('aria-hidden','false')};document.getElementById('closeIndex').onclick=()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true')};document.getElementById('print').onclick=()=>window.print();panel.addEventListener('click',e=>{if(e.target===panel)document.getElementById('closeIndex').click()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))document.getElementById('closeIndex').click();else if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(current+1)}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(current-1)}else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1)});let touchX=0;document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].screenX},{passive:true});document.addEventListener('touchend',e=>{const d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>60)show(current+(d<0?1:-1))},{passive:true});const hash=Number((location.hash.match(/slide-(\d+)/)||[])[1]);show(hash?hash-1:0);
+</script>
+</body>
+</html>
 
