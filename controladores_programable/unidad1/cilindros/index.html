@@ -1,1 +1,1657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía de estudio INACAP sobre programación Ladder de secuencias con cilindros de simple y doble efecto, desde uno hasta tres cilindros.">
+  <title>Secuencias neumáticas en Ladder | Guía de estudio INACAP</title>
+  <style>
+    :root {
+      --inacap-red: #d71920;
+      --inacap-dark-red: #a70f16;
+      --ink: #20252b;
+      --muted: #606a75;
+      --paper: #ffffff;
+      --soft: #f3f4f6;
+      --line: #d7dbe0;
+      --green: #167a57;
+      --amber: #a96500;
+      --blue: #1d64ad;
+      --purple: #6747a8;
+      --shadow: 0 14px 38px rgba(25, 30, 36, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--ink);
+      background: #202329;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    }
+
+    body { overflow: hidden; }
+    button { font: inherit; }
+    strong { font-weight: 800; }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      padding: clamp(4.45rem, 5.8vw, 6rem) clamp(2rem, 5.2vw, 6.5rem) clamp(4.1rem, 5vw, 5.4rem);
+      overflow: auto;
+      background:
+        linear-gradient(90deg, rgba(215,25,32,.04) 0 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(215,25,32,.03) 0 1px, transparent 1px) 0 0 / 42px 42px,
+        var(--paper);
+    }
+
+    .slide.active {
+      display: flex;
+      animation: enter .22s ease-out;
+    }
+
+    @keyframes enter {
+      from { opacity: .35; transform: translateX(12px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      min-height: 3.35rem;
+      padding: .72rem clamp(2rem, 5.2vw, 6.5rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #fff;
+      background: linear-gradient(90deg, var(--inacap-red), var(--inacap-dark-red));
+      box-shadow: 0 3px 0 rgba(167,15,22,.16);
+      z-index: 2;
+    }
+
+    .brand {
+      font-size: clamp(1rem, 1.25vw, 1.38rem);
+      font-weight: 900;
+      letter-spacing: .055em;
+    }
+
+    .unit {
+      font-size: clamp(.72rem, .88vw, .93rem);
+      font-weight: 680;
+      letter-spacing: .025em;
+      opacity: .97;
+    }
+
+    .kicker {
+      margin: 0 0 .4rem;
+      color: var(--inacap-red);
+      font-size: clamp(.76rem, .92vw, .98rem);
+      font-weight: 850;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      max-width: 15ch;
+      margin-bottom: 1.05rem;
+      font-size: clamp(2.45rem, 4.8vw, 5.25rem);
+      line-height: .99;
+      letter-spacing: -.045em;
+    }
+
+    h2 {
+      margin-bottom: clamp(.9rem, 1.7vw, 1.5rem);
+      font-size: clamp(1.85rem, 3.25vw, 3.55rem);
+      line-height: 1.04;
+      letter-spacing: -.035em;
+    }
+
+    h3 {
+      margin-bottom: .62rem;
+      font-size: clamp(1.02rem, 1.34vw, 1.42rem);
+      line-height: 1.16;
+    }
+
+    p, li, td, th, summary {
+      font-size: clamp(.84rem, 1.1vw, 1.16rem);
+      line-height: 1.39;
+    }
+
+    ul, ol {
+      margin: .3rem 0 0;
+      padding-left: 1.35em;
+    }
+
+    li + li { margin-top: .38rem; }
+    .accent { color: var(--inacap-red); }
+    .green { color: var(--green); }
+    .blue { color: var(--blue); }
+    .muted { color: var(--muted); }
+    .small { font-size: .83em; }
+    .mb0 { margin-bottom: 0; }
+    .mt1 { margin-top: 1rem; }
+
+    .lead {
+      max-width: 52rem;
+      margin-bottom: 1.3rem;
+      color: #424a53;
+      font-size: clamp(1.02rem, 1.48vw, 1.55rem);
+      line-height: 1.42;
+    }
+
+    .cover {
+      justify-content: center;
+      background:
+        radial-gradient(circle at 83% 36%, rgba(215,25,32,.16), transparent 24%),
+        linear-gradient(115deg, transparent 0 68%, rgba(215,25,32,.065) 68% 100%),
+        #fff;
+    }
+
+    .cover::after {
+      content: "";
+      position: absolute;
+      right: 7vw;
+      bottom: 13vh;
+      width: clamp(11rem, 23vw, 25rem);
+      aspect-ratio: 1;
+      border: clamp(1.6rem, 3vw, 3.4rem) solid rgba(215,25,32,.12);
+      border-radius: 50%;
+      box-shadow: 0 0 0 1.1rem rgba(215,25,32,.05);
+      pointer-events: none;
+    }
+
+    .cover-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.15rem;
+      padding: .42rem .82rem;
+      border: 1px solid #cfd4da;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      color: #414851;
+      font-size: clamp(.72rem, .9vw, .95rem);
+      font-weight: 700;
+    }
+
+    .grid-2, .grid-3, .grid-4, .split, .split-wide {
+      display: grid;
+      gap: clamp(.85rem, 1.6vw, 1.7rem);
+      min-height: 0;
+      flex: 1;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .split { grid-template-columns: minmax(0, .92fr) minmax(22rem, 1.08fr); }
+    .split-wide { grid-template-columns: minmax(0, 1.15fr) minmax(20rem, .85fr); }
+
+    .card {
+      min-width: 0;
+      padding: clamp(.9rem, 1.35vw, 1.35rem);
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      background: rgba(255,255,255,.97);
+      box-shadow: var(--shadow);
+    }
+
+    .card.redline { border-top: .36rem solid var(--inacap-red); }
+    .card.greenline { border-top: .36rem solid var(--green); }
+    .card.blueline { border-top: .36rem solid var(--blue); }
+    .card.purpleline { border-top: .36rem solid var(--purple); }
+
+    .number-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      gap: .8rem;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 2.45rem;
+      height: 2.45rem;
+      border-radius: .34rem;
+      color: #fff;
+      background: var(--inacap-red);
+      font-size: 1.15rem;
+      font-weight: 900;
+    }
+
+    .route {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: .58rem;
+      margin-top: .8rem;
+    }
+
+    .route-step {
+      position: relative;
+      min-height: 8.4rem;
+      padding: .82rem;
+      border: 1px solid var(--line);
+      border-top: .4rem solid var(--inacap-red);
+      border-radius: .45rem;
+      background: #fff;
+      box-shadow: 0 9px 22px rgba(23,28,35,.08);
+    }
+
+    .route-step:not(:last-child)::after {
+      content: "›";
+      position: absolute;
+      top: 38%;
+      right: -.52rem;
+      z-index: 3;
+      color: var(--inacap-red);
+      font-size: 1.75rem;
+      font-weight: 900;
+    }
+
+    .route-step b {
+      display: block;
+      margin-bottom: .4rem;
+      color: var(--inacap-red);
+      font-size: .72rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .route-step p { margin: 0; font-size: clamp(.72rem, .84vw, .9rem); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    th, td {
+      padding: .6rem .68rem;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #fff;
+      background: #343a42;
+      font-size: clamp(.74rem, .9vw, .96rem);
+    }
+
+    tbody tr:nth-child(even) { background: #f5f6f8; }
+
+    code, pre, .logic-expression {
+      font-family: "Cascadia Code", "Liberation Mono", Consolas, monospace;
+      font-variant-ligatures: none;
+    }
+
+    code:not(pre code) {
+      padding: .07em .3em;
+      border-radius: .24em;
+      color: #98171d;
+      background: #f8e7e8;
+      font-size: .9em;
+      font-weight: 750;
+    }
+
+    .note, .warning, .success, .teacher-note {
+      padding: .72rem .9rem;
+      border-left: .36rem solid var(--blue);
+      border-radius: .28rem;
+      background: #eef6ff;
+      font-size: clamp(.76rem, .93vw, .98rem);
+      line-height: 1.37;
+    }
+
+    .warning { border-left-color: var(--amber); background: #fff5dd; }
+    .success { border-left-color: var(--green); background: #ecf8f2; }
+    .teacher-note { border-left-color: var(--inacap-red); background: #fff0f0; }
+    .note b, .warning b, .success b, .teacher-note b { font-weight: 850; }
+
+    .image-slot {
+      position: relative;
+      min-height: 16rem;
+      margin: 0;
+      padding: .72rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      align-items: stretch;
+      border: 2px dashed #b7c0ca;
+      border-radius: .55rem;
+      background: #f7f8fa;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .image-slot img {
+      display: block;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      object-fit: contain;
+      object-position: center;
+      border-radius: .35rem;
+      background: #fff;
+    }
+
+    .image-slot-wide {
+      min-height: clamp(15rem, 38vh, 24rem) !important;
+    }
+
+    .image-placeholder {
+      display: none;
+      place-items: center;
+      min-height: 13rem;
+      padding: 1rem;
+      color: #626c77;
+      text-align: center;
+      background:
+        linear-gradient(135deg, rgba(215,25,32,.045) 25%, transparent 25%) 0 0 / 22px 22px,
+        #fff;
+    }
+
+    .image-placeholder span {
+      display: block;
+      margin-bottom: .42rem;
+      color: var(--inacap-red);
+      font-size: clamp(1.25rem, 2vw, 2rem);
+      font-weight: 900;
+    }
+
+    .image-slot.missing img { display: none; }
+    .image-slot.missing .image-placeholder { display: grid; }
+
+    figcaption {
+      flex: 0 0 auto;
+      margin-top: .5rem;
+      color: var(--muted);
+      font-size: clamp(.68rem, .8vw, .86rem);
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .stage-flow {
+      display: flex;
+      align-items: stretch;
+      gap: .52rem;
+      margin: .4rem 0 .8rem;
+      overflow-x: auto;
+      padding: .2rem .1rem .55rem;
+    }
+
+    .stage {
+      position: relative;
+      min-width: 8.2rem;
+      flex: 1;
+      padding: .72rem;
+      border: 1px solid var(--line);
+      border-top: .36rem solid var(--inacap-red);
+      border-radius: .42rem;
+      background: #fff;
+      text-align: center;
+      box-shadow: 0 7px 18px rgba(23,28,35,.08);
+    }
+
+    .stage:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 42%;
+      right: -.58rem;
+      z-index: 2;
+      color: var(--inacap-red);
+      font-weight: 900;
+    }
+
+    .stage b { display: block; color: var(--inacap-red); font-size: .78rem; }
+    .stage strong { display: block; margin: .25rem 0; font-size: 1.06rem; }
+    .stage span { color: var(--muted); font-size: .76rem; }
+
+    .logic-list {
+      display: grid;
+      gap: .48rem;
+    }
+
+    .logic-row {
+      display: grid;
+      grid-template-columns: 2.7rem minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .58rem;
+      padding: .55rem .65rem;
+      border: 1px solid #383f47;
+      border-radius: .38rem;
+      color: #eef2f5;
+      background: #1b2026;
+    }
+
+    .logic-row .network {
+      color: #ff8f94;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    .logic-expression {
+      overflow-x: auto;
+      color: #e6edf3;
+      font-size: clamp(.66rem, .83vw, .88rem);
+      white-space: nowrap;
+    }
+
+    .logic-coil {
+      padding: .28rem .5rem;
+      border: 1px solid #69b8e7;
+      border-radius: 999px;
+      color: #8fd5ff;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: clamp(.62rem, .77vw, .82rem);
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: .45rem; }
+
+    .signal-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .34rem .54rem;
+      border: 1px solid var(--line);
+      border-radius: .35rem;
+      background: #fff;
+      font-size: clamp(.68rem, .8vw, .86rem);
+      box-shadow: 0 5px 14px rgba(23,28,35,.06);
+    }
+
+    .signal-tag b { color: var(--inacap-red); }
+
+    .exercise {
+      padding: clamp(1rem, 1.5vw, 1.5rem);
+      border: 2px solid var(--inacap-red);
+      border-radius: .62rem;
+      background: #fffafa;
+      box-shadow: var(--shadow);
+    }
+
+    .exercise h3 { color: var(--inacap-red); }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .58rem;
+      margin-top: .75rem;
+    }
+
+    .deliverable {
+      padding: .62rem .72rem;
+      border: 1px solid var(--line);
+      border-left: .3rem solid var(--blue);
+      border-radius: .35rem;
+      background: #fff;
+      font-size: clamp(.72rem, .85vw, .9rem);
+    }
+
+    .question {
+      padding: .68rem .78rem;
+      border: 1px solid var(--line);
+      border-left: .36rem solid var(--inacap-red);
+      border-radius: .4rem;
+      background: #fff;
+      box-shadow: 0 7px 18px rgba(23,28,35,.07);
+    }
+
+    .question + .question { margin-top: .55rem; }
+
+    details {
+      margin-top: .8rem;
+      border: 1px solid var(--line);
+      border-radius: .42rem;
+      background: #fff;
+    }
+
+    summary {
+      padding: .7rem .85rem;
+      color: var(--blue);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    details > div { padding: 0 .85rem .8rem; }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem;
+    }
+
+    .check {
+      padding: .65rem .75rem;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      background: #fff;
+      box-shadow: 0 6px 15px rgba(23,28,35,.06);
+    }
+
+    .check::before { content: "□"; margin-right: .48rem; color: var(--inacap-red); font-weight: 900; }
+
+    .footer {
+      position: absolute;
+      left: clamp(2rem, 5.2vw, 6.5rem);
+      right: clamp(2rem, 5.2vw, 6.5rem);
+      bottom: .92rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #69717b;
+      font-size: clamp(.62rem, .73vw, .8rem);
+    }
+
+    .footer::before {
+      content: "";
+      position: absolute;
+      top: -.52rem;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #d6d9dd;
+    }
+
+    .slide-no { font-weight: 800; }
+
+    .nav {
+      position: fixed;
+      right: 1rem;
+      bottom: .7rem;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: .38rem;
+    }
+
+    .nav button, .menu-button {
+      display: grid;
+      place-items: center;
+      min-width: 2.35rem;
+      height: 2.35rem;
+      padding: 0 .68rem;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(31,36,43,.88);
+      box-shadow: 0 4px 14px rgba(0,0,0,.22);
+      cursor: pointer;
+    }
+
+    .nav button:hover, .nav button:focus-visible, .menu-button:hover, .menu-button:focus-visible {
+      background: var(--inacap-red);
+      outline: 3px solid rgba(215,25,32,.25);
+    }
+
+    .nav button:disabled { opacity: .35; cursor: not-allowed; }
+
+    .progress {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      z-index: 35;
+      width: 0;
+      height: .34rem;
+      background: var(--inacap-red);
+      transition: width .2s ease;
+    }
+
+    .menu-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      padding: clamp(1rem, 3vw, 2.5rem);
+      background: rgba(23,27,32,.92);
+      backdrop-filter: blur(7px);
+    }
+
+    .menu-panel.open { display: grid; place-items: center; }
+
+    .menu-card {
+      width: min(72rem, 100%);
+      max-height: 88vh;
+      padding: clamp(1rem, 2vw, 1.6rem);
+      overflow: auto;
+      border-radius: .7rem;
+      background: #fff;
+      box-shadow: 0 24px 70px rgba(0,0,0,.34);
+    }
+
+    .menu-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .menu-head h2 { margin: 0; font-size: clamp(1.5rem, 2.4vw, 2.5rem); }
+    .menu-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin-top: 1rem; }
+    .menu-grid button { padding: .65rem .72rem; border: 1px solid var(--line); border-radius: .38rem; background: #fff; text-align: left; cursor: pointer; }
+    .menu-grid button:hover { border-color: var(--inacap-red); color: var(--inacap-red); background: #fff5f5; }
+
+    @media (max-width: 1050px) {
+      body { overflow: auto; }
+      .deck { height: auto; min-height: 100vh; }
+      .slide { position: relative; display: none; min-height: 100vh; }
+      .slide.active { display: flex; }
+      .grid-3, .grid-4, .split, .split-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .route { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .route-step:not(:last-child)::after { display: none; }
+      .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .unit { display: none; }
+    }
+
+    @media (max-width: 680px) {
+      .grid-2, .grid-3, .grid-4, .split, .split-wide, .deliverables, .checklist, .menu-grid { grid-template-columns: 1fr; }
+      .route { grid-template-columns: 1fr; }
+      .cover::after { opacity: .25; }
+      .logic-row { grid-template-columns: 2.5rem minmax(0, 1fr); }
+      .logic-coil { grid-column: 2; justify-self: start; }
+      .image-slot-wide { min-height: 13rem !important; }
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 0; }
+      body { overflow: visible; background: #fff; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .deck { width: auto; height: auto; overflow: visible; }
+      .slide, .slide.active {
+        position: relative;
+        display: flex !important;
+        width: 297mm;
+        height: 210mm;
+        page-break-after: always;
+        overflow: hidden;
+        animation: none;
+      }
+      .nav, .progress, .menu-panel { display: none !important; }
+      .card, table, .image-slot, .exercise, .question, .stage { box-shadow: none; }
+      details { display: block; }
+      details > div { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-live="polite">
+
+    <section class="slide cover active" data-title="Portada">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Automatización y control industrial</span></div>
+      <p class="kicker">Apunte de estudio · Programación de PLC</p>
+      <h1>Secuencias neumáticas en <span class="accent">Ladder</span></h1>
+      <p class="lead">Teoría, método de diseño, ejemplos resueltos y ejercicios con cilindros de simple y doble efecto, desde uno hasta tres actuadores.</p>
+      <div class="cover-meta">
+        <span class="pill">Progresión: 1 → 2 → 3 cilindros</span>
+        <span class="pill">Método: memorias de etapa</span>
+        <span class="pill">Trabajo: lectura, diseño y comprobación</span>
+      </div>
+      <div class="footer"><span>Docente: Pablo Pineda · Sección: __________</span><span class="slide-no">01</span></div>
+    </section>
+
+    <section class="slide" data-title="Propósito">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Guía de estudio · Secuencias neumáticas</span></div>
+      <p class="kicker">Propósito de aprendizaje</p>
+      <h2>Pasar de una descripción de movimientos a un programa Ladder verificable</h2>
+      <div class="grid-3">
+        <article class="card redline"><h3>Interpretar</h3><p>Reconocer cilindros, válvulas, sensores de posición, movimientos y condiciones de seguridad.</p></article>
+        <article class="card greenline"><h3>Secuenciar</h3><p>Dividir el ciclo en etapas y definir qué evento permite avanzar de una etapa a la siguiente.</p></article>
+        <article class="card blueline"><h3>Programar</h3><p>Implementar memorias, transiciones, salidas, temporizadores, parada y reinicio controlado.</p></article>
+      </div>
+      <div class="teacher-note"><b>Meta:</b> al finalizar podrás diseñar y explicar secuencias de uno, dos y tres cilindros sin depender de ensayo y error.</div>
+      <div class="footer"><span>Aprendizaje esperado</span><span class="slide-no">02</span></div>
+    </section>
+
+    <section class="slide" data-title="Ruta de aprendizaje">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Ruta de aprendizaje</span></div>
+      <p class="kicker">Construcción incremental</p>
+      <h2>Seis casos, desde lo básico hasta una secuencia completa</h2>
+      <div class="route">
+        <article class="route-step"><b>Caso 1</b><p>Un cilindro de simple efecto.</p></article>
+        <article class="route-step"><b>Caso 2</b><p>Un cilindro de doble efecto.</p></article>
+        <article class="route-step"><b>Caso 3</b><p>Dos cilindros de simple efecto.</p></article>
+        <article class="route-step"><b>Caso 4</b><p>Dos cilindros de doble efecto.</p></article>
+        <article class="route-step"><b>Caso 5</b><p>Tres cilindros de simple efecto.</p></article>
+        <article class="route-step"><b>Caso 6</b><p>Tres cilindros de doble efecto.</p></article>
+      </div>
+      <div class="note mt1"><b>En cada caso:</b> observarás el proceso, identificarás señales, revisarás un ejemplo y resolverás un ejercicio de modificación.</div>
+      <div class="footer"><span>De menor a mayor complejidad</span><span class="slide-no">03</span></div>
+    </section>
+
+    <section class="slide" data-title="Cilindros y válvulas">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Fundamentos neumáticos</span></div>
+      <p class="kicker">Antes de programar</p>
+      <h2>El tipo de cilindro determina qué puede ordenar el PLC</h2>
+      <div class="split">
+        <div>
+          <table>
+            <thead><tr><th>Actuador</th><th>Avance</th><th>Retroceso</th><th>Válvula habitual</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Simple efecto</strong></td><td>Por aire comprimido.</td><td>Por resorte al quitar el aire.</td><td>3/2 monoestable, una bobina.</td></tr>
+              <tr><td><strong>Doble efecto</strong></td><td>Por aire comprimido.</td><td>También por aire comprimido.</td><td>5/2 monoestable o 5/2 biestable.</td></tr>
+            </tbody>
+          </table>
+          <div class="warning"><b>No confundas actuador y válvula:</b> el cilindro realiza el movimiento; la electroválvula dirige el aire y es la salida eléctrica controlada por el PLC.</div>
+        </div>
+        <!-- IMAGEN 1: guardar el archivo como 1.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="1.png" alt="Comparación entre cilindro de simple efecto, cilindro de doble efecto y sus válvulas">
+          <div class="image-placeholder"><div><span>1.png</span>Inserta aquí la comparación de cilindros y válvulas.</div></div>
+          <figcaption>Imagen 1. Cilindros de simple y doble efecto con sus válvulas de mando.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Fundamentos neumáticos</span><span class="slide-no">04</span></div>
+    </section>
+
+    <section class="slide" data-title="Nomenclatura">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Sensores, movimientos y salidas</span></div>
+      <p class="kicker">Lenguaje común</p>
+      <h2>Cómo nombrar posiciones y movimientos</h2>
+      <div class="grid-2">
+        <article class="card redline">
+          <h3>Cilindro A</h3>
+          <div class="tag-list">
+            <span class="signal-tag"><b>a0</b> retraído</span>
+            <span class="signal-tag"><b>a1</b> extendido</span>
+            <span class="signal-tag"><b>A+</b> avanzar</span>
+            <span class="signal-tag"><b>A−</b> retroceder</span>
+          </div>
+          <p class="mt1">Para B se usan <code>b0</code>, <code>b1</code>, <code>B+</code> y <code>B−</code>. Para C se usan <code>c0</code>, <code>c1</code>, <code>C+</code> y <code>C−</code>.</p>
+        </article>
+        <article class="card blueline">
+          <h3>Señales del PLC</h3>
+          <ul>
+            <li><code>X</code>: entrada física, como pulsador o sensor.</li>
+            <li><code>Y</code>: salida física conectada a una bobina.</li>
+            <li><code>M</code>: memoria interna usada como etapa.</li>
+            <li><code>T</code>: temporizador.</li>
+          </ul>
+        </article>
+      </div>
+      <!-- IMAGEN 2: guardar el archivo como 2.png en la misma carpeta del HTML -->
+      <figure class="image-slot image-slot-wide mt1">
+        <img src="2.png" alt="Nomenclatura de sensores a0 a1 b0 b1 c0 c1 y símbolos Ladder">
+        <div class="image-placeholder"><div><span>2.png</span>Inserta aquí la nomenclatura de sensores y símbolos Ladder.</div></div>
+        <figcaption>Imagen 2. Convenciones de posición, movimiento y direcciones utilizadas en la guía.</figcaption>
+      </figure>
+      <div class="footer"><span>Nomenclatura normalizada para la guía</span><span class="slide-no">05</span></div>
+    </section>
+
+    <section class="slide" data-title="Lectura Ladder">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Fundamentos de programación Ladder</span></div>
+      <p class="kicker">Lectura de redes</p>
+      <h2>El PLC evalúa condiciones de izquierda a derecha y de arriba hacia abajo</h2>
+      <div class="grid-4">
+        <article class="card redline"><h3>Contacto NO</h3><p>Conduce cuando su variable vale 1.</p></article>
+        <article class="card blueline"><h3>Contacto NC</h3><p>Conduce cuando su variable vale 0.</p></article>
+        <article class="card greenline"><h3>Bobina</h3><p>Escribe el resultado lógico en una salida o memoria.</p></article>
+        <article class="card purpleline"><h3>SET / RST</h3><p>Enclava o borra una memoria aunque la condición deje de estar activa.</p></article>
+      </div>
+      <div class="logic-list mt1">
+        <div class="logic-row"><span class="network">R1</span><span class="logic-expression">X0 START · /X1 STOP · a0</span><span class="logic-coil">SET M1</span></div>
+        <div class="logic-row"><span class="network">R2</span><span class="logic-expression">M1 · a1</span><span class="logic-coil">RST M1 / SET M2</span></div>
+        <div class="logic-row"><span class="network">R3</span><span class="logic-expression">M1 + M2</span><span class="logic-coil">Y0</span></div>
+      </div>
+      <div class="note mt1"><b>Convención de esta guía:</b> el punto “·” significa AND, el signo “+” significa OR y “/X1” representa una condición negada o contacto normalmente cerrado. La lógica es independiente de marca: adapta el relé de primer barrido y la base de tiempo a tu PLC.</div>
+      <div class="footer"><span>Leer primero las condiciones; después la acción</span><span class="slide-no">06</span></div>
+    </section>
+
+    <section class="slide" data-title="Método por etapas">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Método de diseño</span></div>
+      <p class="kicker">Regla principal</p>
+      <h2>Una etapa responde tres preguntas</h2>
+      <div class="grid-3">
+        <article class="card redline"><h3>1. ¿Qué está ocurriendo?</h3><p>Ejemplo: el cilindro A está avanzando. La memoria <code>M1</code> identifica esa etapa.</p></article>
+        <article class="card greenline"><h3>2. ¿Qué salida debe activarse?</h3><p>Mientras <code>M1</code> esté activa, la salida correspondiente genera <code>A+</code>.</p></article>
+        <article class="card blueline"><h3>3. ¿Cuándo termina?</h3><p>El sensor <code>a1</code> confirma el final del avance y habilita la etapa siguiente.</p></article>
+      </div>
+      <div class="success mt1"><b>Principio de exclusión:</b> durante el ciclo debe existir una sola memoria de etapa activa. Si dos etapas quedan activas al mismo tiempo, pueden aparecer órdenes contradictorias.</div>
+      <div class="warning mt1"><b>Regla de transición:</b> una misma condición de cambio debe activar la etapa siguiente y desactivar la etapa actual.</div>
+      <div class="footer"><span>Estado + acción + condición de término</span><span class="slide-no">07</span></div>
+    </section>
+
+    <section class="slide" data-title="Diseño previo">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Método de diseño</span></div>
+      <p class="kicker">Antes de abrir el software</p>
+      <h2>Diseña la secuencia en cinco pasos</h2>
+      <div class="grid-2">
+        <div>
+          <article class="card number-card"><span class="step-number">1</span><div><h3>Escribe el ciclo</h3><p class="mb0">Ejemplo: <code>A+ A−</code>.</p></div></article>
+          <article class="card number-card mt1"><span class="step-number">2</span><div><h3>Comprueba la posición inicial</h3><p class="mb0">El sensor <code>a0</code> debe estar activo.</p></div></article>
+          <article class="card number-card mt1"><span class="step-number">3</span><div><h3>Crea una tabla de etapas</h3><p class="mb0">Una fila por movimiento o espera.</p></div></article>
+        </div>
+        <div>
+          <article class="card number-card"><span class="step-number">4</span><div><h3>Programa las transiciones</h3><p class="mb0">Cada sensor o temporizador permite avanzar.</p></div></article>
+          <article class="card number-card mt1"><span class="step-number">5</span><div><h3>Asocia etapas con salidas</h3><p class="mb0">Las salidas no deciden la secuencia: obedecen a las memorias.</p></div></article>
+          <div class="teacher-note mt1"><b>Consejo:</b> no comiences programando bobinas. Primero termina la tabla de etapas; luego el Ladder se vuelve una traducción ordenada.</div>
+        </div>
+      </div>
+      <div class="footer"><span>Planificar antes de programar</span><span class="slide-no">08</span></div>
+    </section>
+
+    <section class="slide" data-title="Caso 1: simple efecto">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 1 · Un cilindro de simple efecto</span></div>
+      <p class="kicker">Ejemplo resuelto 1</p>
+      <h2>Un ciclo automático: <span class="accent">A+ · espera · A−</span></h2>
+      <div class="split">
+        <div>
+          <h3>Descripción</h3>
+          <p>Al presionar START, A avanza. Cuando llega a <code>a1</code>, permanece extendido durante 1 segundo. Luego se desenergiza la válvula y el resorte lo retrae hasta <code>a0</code>.</p>
+          <table>
+            <thead><tr><th>Dirección</th><th>Elemento</th></tr></thead>
+            <tbody>
+              <tr><td><code>X0</code></td><td>START</td></tr>
+              <tr><td><code>X1</code></td><td>STOP / reset</td></tr>
+              <tr><td><code>X2</code></td><td><code>a0</code> retraído</td></tr>
+              <tr><td><code>X3</code></td><td><code>a1</code> extendido</td></tr>
+              <tr><td><code>Y0</code></td><td>Válvula 3/2: <code>A+</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- IMAGEN 3: guardar el archivo como 3.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="3.png" alt="Esquema electroneumático de un cilindro de simple efecto">
+          <div class="image-placeholder"><div><span>3.png</span>Inserta aquí el esquema electroneumático del caso 1.</div></div>
+          <figcaption>Imagen 3. Cilindro A de simple efecto, válvula 3/2 y sensores a0–a1.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 1 · Definición del proceso</span><span class="slide-no">09</span></div>
+    </section>
+
+    <section class="slide" data-title="Etapas caso 1">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 1 · Un cilindro de simple efecto</span></div>
+      <p class="kicker">Tabla de etapas</p>
+      <h2>La salida permanece activa hasta ordenar el retorno</h2>
+      <div class="stage-flow">
+        <div class="stage"><b>M0</b><strong>Reposo</strong><span>START y a0</span></div>
+        <div class="stage"><b>M1</b><strong>A+</strong><span>hasta a1</span></div>
+        <div class="stage"><b>M2</b><strong>Espera</strong><span>T0 = 1 s</span></div>
+        <div class="stage"><b>M3</b><strong>A−</strong><span>hasta a0</span></div>
+      </div>
+      <table>
+        <thead><tr><th>Etapa</th><th>Estado de Y0</th><th>Condición para avanzar</th><th>Siguiente</th></tr></thead>
+        <tbody>
+          <tr><td><code>M0</code> reposo</td><td>0</td><td><code>X0 · X2</code></td><td><code>M1</code></td></tr>
+          <tr><td><code>M1</code> avance</td><td>1</td><td><code>X3 = a1</code></td><td><code>M2</code></td></tr>
+          <tr><td><code>M2</code> espera</td><td>1</td><td><code>T0</code> cumplido</td><td><code>M3</code></td></tr>
+          <tr><td><code>M3</code> retorno</td><td>0</td><td><code>X2 = a0</code></td><td><code>M0</code></td></tr>
+        </tbody>
+      </table>
+      <div class="note"><b>Observa:</b> en un cilindro de simple efecto, <code>A−</code> se logra poniendo <code>Y0 = 0</code>. No existe una segunda bobina para retroceder.</div>
+      <div class="footer"><span>Caso 1 · Análisis por etapas</span><span class="slide-no">10</span></div>
+    </section>
+
+    <section class="slide" data-title="Ladder caso 1">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 1 · Un cilindro de simple efecto</span></div>
+      <p class="kicker">Resumen de redes</p>
+      <h2>Memorias, transición, temporizador y salida</h2>
+      <div class="split-wide">
+        <div class="logic-list">
+          <div class="logic-row"><span class="network">R1</span><span class="logic-expression">Primer ciclo del PLC</span><span class="logic-coil">SET M0</span></div>
+          <div class="logic-row"><span class="network">R2</span><span class="logic-expression">M0 · X0 · /X1 · X2</span><span class="logic-coil">SET M1 / RST M0</span></div>
+          <div class="logic-row"><span class="network">R3</span><span class="logic-expression">M1 · X3</span><span class="logic-coil">SET M2 / RST M1</span></div>
+          <div class="logic-row"><span class="network">R4</span><span class="logic-expression">M2</span><span class="logic-coil">TON T0 1 s</span></div>
+          <div class="logic-row"><span class="network">R5</span><span class="logic-expression">M2 · T0</span><span class="logic-coil">SET M3 / RST M2</span></div>
+          <div class="logic-row"><span class="network">R6</span><span class="logic-expression">M3 · X2</span><span class="logic-coil">SET M0 / RST M3</span></div>
+          <div class="logic-row"><span class="network">R7</span><span class="logic-expression">/X1 · (M1 + M2)</span><span class="logic-coil">Y0</span></div>
+          <div class="logic-row"><span class="network">R8</span><span class="logic-expression">X1 STOP</span><span class="logic-coil">RST M1 M2 M3 / SET M0</span></div>
+        </div>
+        <!-- IMAGEN 4: guardar el archivo como 4.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="4.png" alt="Programa Ladder del ciclo de un cilindro de simple efecto">
+          <div class="image-placeholder"><div><span>4.png</span>Inserta aquí el programa Ladder completo del caso 1.</div></div>
+          <figcaption>Imagen 4. Implementación Ladder del ciclo A+ · espera · A−.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 1 · Ejemplo resuelto</span><span class="slide-no">11</span></div>
+    </section>
+
+    <section class="slide" data-title="Ejercicio caso 1">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 1 · Ejercicio</span></div>
+      <p class="kicker">Ahora tú</p>
+      <h2>Ejercicio 1 · Prensa temporizada de simple efecto</h2>
+      <div class="exercise">
+        <h3>Desafío</h3>
+        <p>Modifica el ejemplo para que A permanezca extendido durante <strong>2,5 segundos</strong>. El ciclo solo puede iniciar si <code>a0</code> está activo. Agrega una luz <code>Y1</code> que permanezca encendida únicamente durante la espera.</p>
+        <div class="deliverables">
+          <div class="deliverable">1. Secuencia escrita con movimientos y espera.</div>
+          <div class="deliverable">2. Tabla de entradas, salidas y memorias.</div>
+          <div class="deliverable">3. Ladder con START, STOP y T0.</div>
+          <div class="deliverable">4. Prueba de ciclo normal y sensor ausente.</div>
+        </div>
+      </div>
+      <details><summary>Orientación para comprobar tu respuesta</summary><div>La etapa de espera debe conservar <code>Y0 = 1</code>, activar <code>Y1 = 1</code> y ejecutar el temporizador. Cuando T0 termina, ambas salidas deben apagarse para permitir el retorno por resorte.</div></details>
+      <div class="footer"><span>Ejercicio 1 · Aplicación individual</span><span class="slide-no">12</span></div>
+    </section>
+
+    <section class="slide" data-title="Caso 2: doble efecto">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 2 · Un cilindro de doble efecto</span></div>
+      <p class="kicker">Ejemplo resuelto 2</p>
+      <h2>Un ciclo con órdenes independientes: <span class="accent">A+ · espera · A−</span></h2>
+      <div class="split">
+        <div>
+          <p>Se utilizará una válvula <strong>5/2 biestable de dos bobinas</strong>. Una bobina ordena el avance y la otra ordena el retroceso.</p>
+          <table>
+            <thead><tr><th>Dirección</th><th>Elemento</th></tr></thead>
+            <tbody>
+              <tr><td><code>X0 / X1</code></td><td>START / STOP</td></tr>
+              <tr><td><code>X2 / X3</code></td><td><code>a0 / a1</code></td></tr>
+              <tr><td><code>Y0</code></td><td>Bobina <code>YA+</code></td></tr>
+              <tr><td><code>Y1</code></td><td>Bobina <code>YA−</code></td></tr>
+            </tbody>
+          </table>
+          <div class="warning"><b>Interbloqueo obligatorio:</b> <code>Y0</code> y <code>Y1</code> nunca deben activarse simultáneamente.</div>
+        </div>
+        <!-- IMAGEN 5: guardar el archivo como 5.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="5.png" alt="Esquema de un cilindro de doble efecto con válvula 5/2 biestable">
+          <div class="image-placeholder"><div><span>5.png</span>Inserta aquí el esquema electroneumático del caso 2.</div></div>
+          <figcaption>Imagen 5. Cilindro A de doble efecto y válvula 5/2 de dos bobinas.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 2 · Definición del proceso</span><span class="slide-no">13</span></div>
+    </section>
+
+    <section class="slide" data-title="Etapas caso 2">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 2 · Un cilindro de doble efecto</span></div>
+      <p class="kicker">Tabla de etapas</p>
+      <h2>Cada sentido posee su propia salida</h2>
+      <div class="stage-flow">
+        <div class="stage"><b>M10</b><strong>Reposo</strong><span>START y a0</span></div>
+        <div class="stage"><b>M11</b><strong>A+</strong><span>YA+ hasta a1</span></div>
+        <div class="stage"><b>M12</b><strong>Espera</strong><span>T1 = 1 s</span></div>
+        <div class="stage"><b>M13</b><strong>A−</strong><span>YA− hasta a0</span></div>
+      </div>
+      <table>
+        <thead><tr><th>Etapa</th><th>YA+</th><th>YA−</th><th>Transición</th></tr></thead>
+        <tbody>
+          <tr><td><code>M10</code> reposo</td><td>0</td><td>0</td><td>START y a0</td></tr>
+          <tr><td><code>M11</code> avance</td><td>1</td><td>0</td><td>a1</td></tr>
+          <tr><td><code>M12</code> espera</td><td>0</td><td>0</td><td>T1 cumplido</td></tr>
+          <tr><td><code>M13</code> retorno</td><td>0</td><td>1</td><td>a0</td></tr>
+        </tbody>
+      </table>
+      <div class="note"><b>Válvula biestable:</b> después de la orden de avance, la corredera conserva su posición aunque YA+ se apague. Por eso durante la espera ambas bobinas pueden quedar en 0.</div>
+      <div class="footer"><span>Caso 2 · Análisis por etapas</span><span class="slide-no">14</span></div>
+    </section>
+
+    <section class="slide" data-title="Ladder caso 2">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 2 · Un cilindro de doble efecto</span></div>
+      <p class="kicker">Lógica principal</p>
+      <h2>Las etapas separan avance, espera y retroceso</h2>
+      <div class="split-wide">
+        <div>
+          <div class="logic-list">
+            <div class="logic-row"><span class="network">R1</span><span class="logic-expression">M10 · X0 · /X1 · X2</span><span class="logic-coil">M11 ← M10</span></div>
+            <div class="logic-row"><span class="network">R2</span><span class="logic-expression">M11 · X3</span><span class="logic-coil">M12 ← M11</span></div>
+            <div class="logic-row"><span class="network">R3</span><span class="logic-expression">M12</span><span class="logic-coil">TON T1 1 s</span></div>
+            <div class="logic-row"><span class="network">R4</span><span class="logic-expression">M12 · T1</span><span class="logic-coil">M13 ← M12</span></div>
+            <div class="logic-row"><span class="network">R5</span><span class="logic-expression">M13 · X2</span><span class="logic-coil">M10 ← M13</span></div>
+            <div class="logic-row"><span class="network">R6</span><span class="logic-expression">/X1 · M11 · /Y1</span><span class="logic-coil">Y0 YA+</span></div>
+            <div class="logic-row"><span class="network">R7</span><span class="logic-expression">/X1 · M13 · /Y0</span><span class="logic-coil">Y1 YA−</span></div>
+          </div>
+          <div class="warning mt1"><b>STOP no es descarga neumática:</b> una válvula biestable puede conservar la posición. La parada de emergencia real requiere diseño neumático y eléctrico de seguridad.</div>
+        </div>
+        <!-- IMAGEN 6: guardar el archivo como 6.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="6.png" alt="Programa Ladder de un cilindro de doble efecto">
+          <div class="image-placeholder"><div><span>6.png</span>Inserta aquí el programa Ladder completo del caso 2.</div></div>
+          <figcaption>Imagen 6. Ladder del ciclo A+ · espera · A− con interbloqueo.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 2 · Ejemplo resuelto</span><span class="slide-no">15</span></div>
+    </section>
+
+    <section class="slide" data-title="Ejercicio caso 2">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 2 · Ejercicio</span></div>
+      <p class="kicker">Ahora tú</p>
+      <h2>Ejercicio 2 · Expulsor con confirmación de retorno</h2>
+      <div class="exercise">
+        <h3>Desafío</h3>
+        <p>Programa un cilindro de doble efecto que avance al presionar START. Debe permanecer extendido hasta que el operador presione <code>X4 CONFIRMAR</code>; solo entonces debe retroceder. Un nuevo ciclo no puede comenzar hasta detectar <code>a0</code>.</p>
+        <div class="deliverables">
+          <div class="deliverable">1. Etapas de reposo, avance, espera y retorno.</div>
+          <div class="deliverable">2. Interbloqueo eléctrico YA+ / YA−.</div>
+          <div class="deliverable">3. Reset conocido después de STOP.</div>
+          <div class="deliverable">4. Explicación del efecto de una válvula biestable.</div>
+        </div>
+      </div>
+      <details><summary>Pista</summary><div>Reemplaza la transición temporizada de <code>M12</code> por la condición <code>M12 · X4</code>. No utilices X4 directamente sobre la bobina de retroceso: primero debe cambiar la etapa.</div></details>
+      <div class="footer"><span>Ejercicio 2 · Aplicación individual</span><span class="slide-no">16</span></div>
+    </section>
+
+    <section class="slide" data-title="Caso 3: dos simples">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 3 · Dos cilindros de simple efecto</span></div>
+      <p class="kicker">Ejemplo resuelto 3</p>
+      <h2>Secuencia encadenada: <span class="accent">A+ B+ B− A−</span></h2>
+      <div class="split">
+        <div>
+          <p>A avanza primero. Cuando llega a <code>a1</code>, B avanza. Al detectar <code>b1</code>, B retorna por resorte; cuando llega a <code>b0</code>, A retorna.</p>
+          <table>
+            <thead><tr><th>Entradas</th><th>Salidas</th></tr></thead>
+            <tbody>
+              <tr><td>X0 START · X1 STOP</td><td>Y0 = A+</td></tr>
+              <tr><td>X2 a0 · X3 a1</td><td>Y1 = B+</td></tr>
+              <tr><td>X4 b0 · X5 b1</td><td>Retornos: salida correspondiente = 0</td></tr>
+            </tbody>
+          </table>
+          <div class="note"><b>Condición inicial:</b> antes de START deben estar activos <code>a0</code> y <code>b0</code>.</div>
+        </div>
+        <!-- IMAGEN 7: guardar el archivo como 7.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="7.png" alt="Esquema de dos cilindros de simple efecto A y B">
+          <div class="image-placeholder"><div><span>7.png</span>Inserta aquí el esquema electroneumático de A y B.</div></div>
+          <figcaption>Imagen 7. Dos cilindros de simple efecto y sus sensores finales de carrera.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 3 · Definición del proceso</span><span class="slide-no">17</span></div>
+    </section>
+
+    <section class="slide" data-title="Etapas caso 3">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 3 · Dos cilindros de simple efecto</span></div>
+      <p class="kicker">Tabla de etapas</p>
+      <h2>Para mantener A extendido, Y0 debe continuar activa</h2>
+      <div class="stage-flow">
+        <div class="stage"><b>M20</b><strong>Reposo</strong><span>START · a0 · b0</span></div>
+        <div class="stage"><b>M21</b><strong>A+</strong><span>hasta a1</span></div>
+        <div class="stage"><b>M22</b><strong>B+</strong><span>hasta b1</span></div>
+        <div class="stage"><b>M23</b><strong>B−</strong><span>hasta b0</span></div>
+        <div class="stage"><b>M24</b><strong>A−</strong><span>hasta a0</span></div>
+      </div>
+      <table>
+        <thead><tr><th>Etapa</th><th>Y0 A+</th><th>Y1 B+</th><th>Finaliza con</th></tr></thead>
+        <tbody>
+          <tr><td>M21: A+</td><td>1</td><td>0</td><td>a1</td></tr>
+          <tr><td>M22: B+</td><td>1</td><td>1</td><td>b1</td></tr>
+          <tr><td>M23: B−</td><td>1</td><td>0</td><td>b0</td></tr>
+          <tr><td>M24: A−</td><td>0</td><td>0</td><td>a0</td></tr>
+        </tbody>
+      </table>
+      <!-- IMAGEN 8: guardar el archivo como 8.png en la misma carpeta del HTML -->
+      <figure class="image-slot image-slot-wide">
+        <img src="8.png" alt="Diagrama de etapas A más B más B menos A menos">
+        <div class="image-placeholder"><div><span>8.png</span>Inserta aquí el diagrama gráfico de etapas del caso 3.</div></div>
+        <figcaption>Imagen 8. Evolución de las etapas y estados de salida.</figcaption>
+      </figure>
+      <div class="footer"><span>Caso 3 · Análisis por etapas</span><span class="slide-no">18</span></div>
+    </section>
+
+    <section class="slide" data-title="Ladder caso 3">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 3 · Dos cilindros de simple efecto</span></div>
+      <p class="kicker">Lógica principal</p>
+      <h2>Las salidas son la suma de las etapas que necesitan mantener presión</h2>
+      <div class="split-wide">
+        <div class="logic-list">
+          <div class="logic-row"><span class="network">TR1</span><span class="logic-expression">M20 · X0 · a0 · b0</span><span class="logic-coil">M21 ← M20</span></div>
+          <div class="logic-row"><span class="network">TR2</span><span class="logic-expression">M21 · a1</span><span class="logic-coil">M22 ← M21</span></div>
+          <div class="logic-row"><span class="network">TR3</span><span class="logic-expression">M22 · b1</span><span class="logic-coil">M23 ← M22</span></div>
+          <div class="logic-row"><span class="network">TR4</span><span class="logic-expression">M23 · b0</span><span class="logic-coil">M24 ← M23</span></div>
+          <div class="logic-row"><span class="network">TR5</span><span class="logic-expression">M24 · a0</span><span class="logic-coil">M20 ← M24</span></div>
+          <div class="logic-row"><span class="network">Y0</span><span class="logic-expression">/STOP · (M21 + M22 + M23)</span><span class="logic-coil">A+</span></div>
+          <div class="logic-row"><span class="network">Y1</span><span class="logic-expression">/STOP · M22</span><span class="logic-coil">B+</span></div>
+        </div>
+        <!-- IMAGEN 9: guardar el archivo como 9.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="9.png" alt="Programa Ladder para dos cilindros de simple efecto">
+          <div class="image-placeholder"><div><span>9.png</span>Inserta aquí el programa Ladder completo del caso 3.</div></div>
+          <figcaption>Imagen 9. Ladder de la secuencia A+ B+ B− A−.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 3 · Ejemplo resuelto</span><span class="slide-no">19</span></div>
+    </section>
+
+    <section class="slide" data-title="Ejercicio caso 3">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 3 · Ejercicio</span></div>
+      <p class="kicker">Ahora tú</p>
+      <h2>Ejercicio 3 · Cambiar el orden de retorno</h2>
+      <div class="exercise">
+        <h3>Desafío</h3>
+        <p>Diseña la secuencia <strong>A+ B+ A− B−</strong> con dos cilindros de simple efecto. Después de detectar <code>b1</code>, A debe retornar mientras B permanece extendido; solo cuando A llegue a <code>a0</code> debe retornar B.</p>
+        <div class="deliverables">
+          <div class="deliverable">1. Tabla de cuatro movimientos.</div>
+          <div class="deliverable">2. Estado de Y0 y Y1 en cada etapa.</div>
+          <div class="deliverable">3. Condiciones de transición a1, b1, a0 y b0.</div>
+          <div class="deliverable">4. Programa de ciclo único.</div>
+        </div>
+      </div>
+      <details><summary>Pista sobre las salidas</summary><div>Durante A− debe quedar <code>Y0 = 0</code> y <code>Y1 = 1</code>. Durante B− ambas salidas quedan en 0.</div></details>
+      <div class="footer"><span>Ejercicio 3 · Modificación de secuencia</span><span class="slide-no">20</span></div>
+    </section>
+
+    <section class="slide" data-title="Caso 4: dos dobles">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 4 · Dos cilindros de doble efecto</span></div>
+      <p class="kicker">Ejemplo resuelto 4</p>
+      <h2>Dos actuadores, cuatro órdenes: <span class="accent">A+ B+ B− A−</span></h2>
+      <div class="split">
+        <div>
+          <table>
+            <thead><tr><th>Elemento</th><th>Dirección</th><th>Función</th></tr></thead>
+            <tbody>
+              <tr><td>a0 / a1</td><td>X2 / X3</td><td>Posición de A</td></tr>
+              <tr><td>b0 / b1</td><td>X4 / X5</td><td>Posición de B</td></tr>
+              <tr><td>YA+ / YA−</td><td>Y0 / Y1</td><td>Movimiento de A</td></tr>
+              <tr><td>YB+ / YB−</td><td>Y2 / Y3</td><td>Movimiento de B</td></tr>
+            </tbody>
+          </table>
+          <div class="warning"><b>Dos interbloqueos:</b> YA+ con YA− y YB+ con YB−. El interbloqueo de A no reemplaza el de B.</div>
+        </div>
+        <!-- IMAGEN 10: guardar el archivo como 10.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="10.png" alt="Esquema electroneumático de dos cilindros de doble efecto">
+          <div class="image-placeholder"><div><span>10.png</span>Inserta aquí el esquema de dos cilindros de doble efecto.</div></div>
+          <figcaption>Imagen 10. Cilindros A y B con válvulas 5/2 biestables.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 4 · Definición del proceso</span><span class="slide-no">21</span></div>
+    </section>
+
+    <section class="slide" data-title="Etapas caso 4">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 4 · Dos cilindros de doble efecto</span></div>
+      <p class="kicker">Tabla de etapas</p>
+      <h2>Una orden de movimiento por etapa</h2>
+      <div class="stage-flow">
+        <div class="stage"><b>M30</b><strong>Reposo</strong><span>a0 · b0</span></div>
+        <div class="stage"><b>M31</b><strong>A+</strong><span>hasta a1</span></div>
+        <div class="stage"><b>M32</b><strong>B+</strong><span>hasta b1</span></div>
+        <div class="stage"><b>M33</b><strong>B−</strong><span>hasta b0</span></div>
+        <div class="stage"><b>M34</b><strong>A−</strong><span>hasta a0</span></div>
+      </div>
+      <table>
+        <thead><tr><th>Etapa</th><th>Salida activa</th><th>Sensor esperado</th><th>Riesgo si el sensor falla</th></tr></thead>
+        <tbody>
+          <tr><td>M31</td><td>Y0 = YA+</td><td>a1</td><td>La secuencia queda esperando.</td></tr>
+          <tr><td>M32</td><td>Y2 = YB+</td><td>b1</td><td>B continúa presurizado.</td></tr>
+          <tr><td>M33</td><td>Y3 = YB−</td><td>b0</td><td>No se inicia A−.</td></tr>
+          <tr><td>M34</td><td>Y1 = YA−</td><td>a0</td><td>No retorna al reposo.</td></tr>
+        </tbody>
+      </table>
+      <div class="success"><b>Diagnóstico sencillo:</b> la memoria activa indica qué movimiento está esperando confirmación.</div>
+      <div class="footer"><span>Caso 4 · Análisis por etapas</span><span class="slide-no">22</span></div>
+    </section>
+
+    <section class="slide" data-title="Ladder caso 4">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 4 · Dos cilindros de doble efecto</span></div>
+      <p class="kicker">Lógica principal</p>
+      <h2>Las memorias activan solo la bobina correspondiente al movimiento actual</h2>
+      <div class="split-wide">
+        <div class="logic-list">
+          <div class="logic-row"><span class="network">TR1</span><span class="logic-expression">M30 · START · a0 · b0</span><span class="logic-coil">M31 ← M30</span></div>
+          <div class="logic-row"><span class="network">TR2</span><span class="logic-expression">M31 · a1</span><span class="logic-coil">M32 ← M31</span></div>
+          <div class="logic-row"><span class="network">TR3</span><span class="logic-expression">M32 · b1</span><span class="logic-coil">M33 ← M32</span></div>
+          <div class="logic-row"><span class="network">TR4</span><span class="logic-expression">M33 · b0</span><span class="logic-coil">M34 ← M33</span></div>
+          <div class="logic-row"><span class="network">TR5</span><span class="logic-expression">M34 · a0</span><span class="logic-coil">M30 ← M34</span></div>
+          <div class="logic-row"><span class="network">OUT</span><span class="logic-expression">M31→Y0 · M32→Y2 · M33→Y3 · M34→Y1</span><span class="logic-coil">4 salidas</span></div>
+        </div>
+        <!-- IMAGEN 11: guardar el archivo como 11.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="11.png" alt="Programa Ladder para dos cilindros de doble efecto">
+          <div class="image-placeholder"><div><span>11.png</span>Inserta aquí el programa Ladder completo del caso 4.</div></div>
+          <figcaption>Imagen 11. Ladder de A+ B+ B− A− con válvulas biestables.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 4 · Ejemplo resuelto</span><span class="slide-no">23</span></div>
+    </section>
+
+    <section class="slide" data-title="Ejercicio caso 4">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 4 · Ejercicio</span></div>
+      <p class="kicker">Ahora tú</p>
+      <h2>Ejercicio 4 · Secuencia con pausas intermedias</h2>
+      <div class="exercise">
+        <h3>Desafío</h3>
+        <p>Programa <strong>A+ · espera 1 s · B+ · A− · espera 1 s · B−</strong>. Usa dos temporizadores y memorias diferentes para cada espera.</p>
+        <div class="deliverables">
+          <div class="deliverable">1. Seis etapas más reposo.</div>
+          <div class="deliverable">2. T0 después de a1 y T1 después de a0.</div>
+          <div class="deliverable">3. Interbloqueo para ambas válvulas.</div>
+          <div class="deliverable">4. Prueba forzando b1 y a0.</div>
+        </div>
+      </div>
+      <details><summary>Pista de diseño</summary><div>Una espera también es una etapa. No conectes el temporizador directamente entre dos bobinas; crea una memoria propia para cada pausa y úsala como condición de su temporizador.</div></details>
+      <div class="footer"><span>Ejercicio 4 · Temporizadores en secuencia</span><span class="slide-no">24</span></div>
+    </section>
+
+    <section class="slide" data-title="Caso 5: tres simples">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 5 · Tres cilindros de simple efecto</span></div>
+      <p class="kicker">Ejemplo resuelto 5</p>
+      <h2>Secuencia simétrica: <span class="accent">A+ B+ C+ C− B− A−</span></h2>
+      <div class="split">
+        <div>
+          <p>Los cilindros avanzan en orden A, B y C. Luego retornan en el orden inverso. Cada salida debe mantenerse activa hasta la etapa en que corresponda su retorno.</p>
+          <table>
+            <thead><tr><th>Cilindro</th><th>Sensores</th><th>Salida</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>X2 a0 · X3 a1</td><td>Y0 A+</td></tr>
+              <tr><td>B</td><td>X4 b0 · X5 b1</td><td>Y1 B+</td></tr>
+              <tr><td>C</td><td>X6 c0 · X7 c1</td><td>Y2 C+</td></tr>
+            </tbody>
+          </table>
+          <div class="note"><b>Inicio permitido:</b> START · a0 · b0 · c0.</div>
+        </div>
+        <!-- IMAGEN 12: guardar el archivo como 12.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="12.png" alt="Esquema de tres cilindros de simple efecto">
+          <div class="image-placeholder"><div><span>12.png</span>Inserta aquí el esquema electroneumático de A, B y C.</div></div>
+          <figcaption>Imagen 12. Tres cilindros de simple efecto con sus válvulas 3/2.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 5 · Definición del proceso</span><span class="slide-no">25</span></div>
+    </section>
+
+    <section class="slide" data-title="Etapas caso 5">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 5 · Tres cilindros de simple efecto</span></div>
+      <p class="kicker">Tabla de etapas</p>
+      <h2>El patrón de salidas sube y luego baja</h2>
+      <table>
+        <thead><tr><th>Etapa</th><th>Movimiento</th><th>Y0 A+</th><th>Y1 B+</th><th>Y2 C+</th><th>Transición</th></tr></thead>
+        <tbody>
+          <tr><td>M41</td><td>A+</td><td>1</td><td>0</td><td>0</td><td>a1</td></tr>
+          <tr><td>M42</td><td>B+</td><td>1</td><td>1</td><td>0</td><td>b1</td></tr>
+          <tr><td>M43</td><td>C+</td><td>1</td><td>1</td><td>1</td><td>c1</td></tr>
+          <tr><td>M44</td><td>C−</td><td>1</td><td>1</td><td>0</td><td>c0</td></tr>
+          <tr><td>M45</td><td>B−</td><td>1</td><td>0</td><td>0</td><td>b0</td></tr>
+          <tr><td>M46</td><td>A−</td><td>0</td><td>0</td><td>0</td><td>a0</td></tr>
+        </tbody>
+      </table>
+      <!-- IMAGEN 13: guardar el archivo como 13.png en la misma carpeta del HTML -->
+      <figure class="image-slot image-slot-wide mt1">
+        <img src="13.png" alt="Diagrama de seis etapas con tres cilindros de simple efecto">
+        <div class="image-placeholder"><div><span>13.png</span>Inserta aquí el diagrama gráfico de las seis etapas.</div></div>
+        <figcaption>Imagen 13. Secuencia de estados A+ B+ C+ C− B− A−.</figcaption>
+      </figure>
+      <div class="footer"><span>Caso 5 · Análisis por etapas</span><span class="slide-no">26</span></div>
+    </section>
+
+    <section class="slide" data-title="Ladder caso 5">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 5 · Tres cilindros de simple efecto</span></div>
+      <p class="kicker">Lógica principal</p>
+      <h2>Cada salida se construye con las etapas que la necesitan activa</h2>
+      <div class="split-wide">
+        <div>
+          <div class="logic-list">
+            <div class="logic-row"><span class="network">Y0</span><span class="logic-expression">M41 + M42 + M43 + M44 + M45</span><span class="logic-coil">A+</span></div>
+            <div class="logic-row"><span class="network">Y1</span><span class="logic-expression">M42 + M43 + M44</span><span class="logic-coil">B+</span></div>
+            <div class="logic-row"><span class="network">Y2</span><span class="logic-expression">M43</span><span class="logic-coil">C+</span></div>
+          </div>
+          <div class="note mt1"><b>Lectura:</b> A debe mantenerse extendido durante cinco etapas; B durante tres; C solamente durante su etapa de avance.</div>
+          <div class="warning mt1"><b>STOP seguro para este caso:</b> al borrar las etapas y desenergizar Y0, Y1 e Y2, los tres cilindros tenderán a retornar por resorte. Verifica que ese retorno simultáneo sea mecánicamente seguro.</div>
+        </div>
+        <!-- IMAGEN 14: guardar el archivo como 14.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="14.png" alt="Programa Ladder para tres cilindros de simple efecto">
+          <div class="image-placeholder"><div><span>14.png</span>Inserta aquí el programa Ladder completo del caso 5.</div></div>
+          <figcaption>Imagen 14. Ladder de A+ B+ C+ C− B− A−.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 5 · Ejemplo resuelto</span><span class="slide-no">27</span></div>
+    </section>
+
+    <section class="slide" data-title="Ejercicio caso 5">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 5 · Ejercicio</span></div>
+      <p class="kicker">Ahora tú</p>
+      <h2>Ejercicio 5 · Retorno no simétrico</h2>
+      <div class="exercise">
+        <h3>Desafío</h3>
+        <p>Diseña la secuencia <strong>A+ B+ C+ B− C− A−</strong>. B debe retornar primero, C debe permanecer extendido hasta confirmar <code>b0</code> y A debe permanecer extendido hasta confirmar <code>c0</code>.</p>
+        <div class="deliverables">
+          <div class="deliverable">1. Tabla de seis etapas.</div>
+          <div class="deliverable">2. Combinación de salidas por etapa.</div>
+          <div class="deliverable">3. Red de transición para cada sensor.</div>
+          <div class="deliverable">4. Explicación de por qué C sigue extendido durante B−.</div>
+        </div>
+      </div>
+      <details><summary>Pista sobre la etapa B−</summary><div>En B−, los estados deben ser A extendido, B retornando y C extendido: <code>Y0 = 1</code>, <code>Y1 = 0</code>, <code>Y2 = 1</code>.</div></details>
+      <div class="footer"><span>Ejercicio 5 · Análisis de estados</span><span class="slide-no">28</span></div>
+    </section>
+
+    <section class="slide" data-title="Caso 6: tres dobles">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 6 · Tres cilindros de doble efecto</span></div>
+      <p class="kicker">Ejemplo resuelto 6</p>
+      <h2>Seis movimientos controlados: <span class="accent">A+ B+ C+ C− B− A−</span></h2>
+      <div class="split">
+        <div>
+          <table>
+            <thead><tr><th>Cilindro</th><th>Avance</th><th>Retroceso</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>Y0 = YA+</td><td>Y1 = YA−</td></tr>
+              <tr><td>B</td><td>Y2 = YB+</td><td>Y3 = YB−</td></tr>
+              <tr><td>C</td><td>Y4 = YC+</td><td>Y5 = YC−</td></tr>
+            </tbody>
+          </table>
+          <p>Las entradas de posición se mantienen como <code>a0/a1</code>, <code>b0/b1</code> y <code>c0/c1</code>.</p>
+          <div class="warning"><b>Tres interbloqueos independientes:</b> Y0↔Y1, Y2↔Y3 y Y4↔Y5.</div>
+        </div>
+        <!-- IMAGEN 15: guardar el archivo como 15.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="15.png" alt="Esquema de tres cilindros de doble efecto">
+          <div class="image-placeholder"><div><span>15.png</span>Inserta aquí el esquema electroneumático de A, B y C.</div></div>
+          <figcaption>Imagen 15. Tres cilindros de doble efecto y seis bobinas de mando.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 6 · Definición del proceso</span><span class="slide-no">29</span></div>
+    </section>
+
+    <section class="slide" data-title="Etapas caso 6">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 6 · Tres cilindros de doble efecto</span></div>
+      <p class="kicker">Tabla de etapas</p>
+      <h2>Una memoria, una orden de movimiento y un sensor final</h2>
+      <table>
+        <thead><tr><th>Etapa</th><th>Movimiento</th><th>Salida</th><th>Final de movimiento</th><th>Etapa siguiente</th></tr></thead>
+        <tbody>
+          <tr><td>M51</td><td>A+</td><td>Y0</td><td>a1</td><td>M52</td></tr>
+          <tr><td>M52</td><td>B+</td><td>Y2</td><td>b1</td><td>M53</td></tr>
+          <tr><td>M53</td><td>C+</td><td>Y4</td><td>c1</td><td>M54</td></tr>
+          <tr><td>M54</td><td>C−</td><td>Y5</td><td>c0</td><td>M55</td></tr>
+          <tr><td>M55</td><td>B−</td><td>Y3</td><td>b0</td><td>M56</td></tr>
+          <tr><td>M56</td><td>A−</td><td>Y1</td><td>a0</td><td>M50 reposo</td></tr>
+        </tbody>
+      </table>
+      <!-- IMAGEN 16: guardar el archivo como 16.png en la misma carpeta del HTML -->
+      <figure class="image-slot image-slot-wide mt1">
+        <img src="16.png" alt="Diagrama de etapas para tres cilindros de doble efecto">
+        <div class="image-placeholder"><div><span>16.png</span>Inserta aquí el diagrama gráfico de las seis etapas.</div></div>
+        <figcaption>Imagen 16. Relación entre etapa, salida y sensor de transición.</figcaption>
+      </figure>
+      <div class="footer"><span>Caso 6 · Análisis por etapas</span><span class="slide-no">30</span></div>
+    </section>
+
+    <section class="slide" data-title="Ladder caso 6">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 6 · Tres cilindros de doble efecto</span></div>
+      <p class="kicker">Lógica principal</p>
+      <h2>El programa conserva el mismo patrón; solo aumenta el número de etapas</h2>
+      <div class="split-wide">
+        <div class="logic-list">
+          <div class="logic-row"><span class="network">TR1</span><span class="logic-expression">M50 · START · a0 · b0 · c0</span><span class="logic-coil">M51 ← M50</span></div>
+          <div class="logic-row"><span class="network">TR2</span><span class="logic-expression">M51·a1 → M52; M52·b1 → M53</span><span class="logic-coil">Avances</span></div>
+          <div class="logic-row"><span class="network">TR3</span><span class="logic-expression">M53·c1 → M54; M54·c0 → M55</span><span class="logic-coil">Cambio C</span></div>
+          <div class="logic-row"><span class="network">TR4</span><span class="logic-expression">M55·b0 → M56; M56·a0 → M50</span><span class="logic-coil">Retornos</span></div>
+          <div class="logic-row"><span class="network">OUT</span><span class="logic-expression">M51→Y0; M52→Y2; M53→Y4; M54→Y5; M55→Y3; M56→Y1</span><span class="logic-coil">6 salidas</span></div>
+        </div>
+        <!-- IMAGEN 17: guardar el archivo como 17.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="17.png" alt="Programa Ladder para tres cilindros de doble efecto">
+          <div class="image-placeholder"><div><span>17.png</span>Inserta aquí el programa Ladder completo del caso 6.</div></div>
+          <figcaption>Imagen 17. Ladder de A+ B+ C+ C− B− A−.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Caso 6 · Ejemplo resuelto</span><span class="slide-no">31</span></div>
+    </section>
+
+    <section class="slide" data-title="Ejercicio caso 6">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Caso 6 · Ejercicio</span></div>
+      <p class="kicker">Ahora tú</p>
+      <h2>Ejercicio 6 · Estación de transferencia</h2>
+      <div class="exercise">
+        <h3>Desafío integrador</h3>
+        <p>Programa <strong>A+ B+ C+ A− B− C−</strong> con modo de ciclo único. Agrega un selector <code>X8 AUTOMÁTICO</code>: si está activo al finalizar C−, el sistema puede iniciar un nuevo ciclo; si está inactivo, debe quedar en reposo.</p>
+        <div class="deliverables">
+          <div class="deliverable">1. Secuencia y tabla de siete estados.</div>
+          <div class="deliverable">2. Seis salidas con tres interbloqueos.</div>
+          <div class="deliverable">3. Selección ciclo único / repetitivo.</div>
+          <div class="deliverable">4. Estado seguro después de reiniciar el PLC.</div>
+        </div>
+      </div>
+      <details><summary>Pista para el modo automático</summary><div>Al llegar a c0, vuelve siempre a la memoria de reposo. Desde reposo, inicia con START o con la condición AUTOMÁTICO, pero únicamente si a0, b0 y c0 confirman la posición inicial.</div></details>
+      <div class="footer"><span>Ejercicio 6 · Integración</span><span class="slide-no">32</span></div>
+    </section>
+
+    <section class="slide" data-title="Parada y reinicio">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Seguridad funcional de la secuencia</span></div>
+      <p class="kicker">Situaciones reales</p>
+      <h2>STOP, RESET y emergencia no significan lo mismo</h2>
+      <div class="grid-3">
+        <article class="card redline"><h3>STOP de proceso</h3><p>Detiene el ciclo de manera programada. Puede conservar el estado para continuar o exigir un reinicio.</p></article>
+        <article class="card blueline"><h3>RESET de secuencia</h3><p>Borra las memorias de movimiento, activa reposo y verifica sensores antes de aceptar START.</p></article>
+        <article class="card greenline"><h3>Emergencia</h3><p>Debe actuar mediante un sistema de seguridad adecuado, no solo mediante lógica Ladder estándar.</p></article>
+      </div>
+      <div class="warning mt1"><b>Importante:</b> cortar bobinas no garantiza el mismo comportamiento en una válvula monoestable y en una biestable. La reacción neumática debe analizarse antes de definir el reset.</div>
+      <div class="footer"><span>Detener no siempre significa retornar</span><span class="slide-no">33</span></div>
+    </section>
+
+    <section class="slide" data-title="Fallas comunes">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Diagnóstico de programas secuenciales</span></div>
+      <p class="kicker">Errores frecuentes</p>
+      <h2>Cuando la secuencia no avanza, revisa el estado antes de cambiar el código</h2>
+      <div class="grid-2">
+        <div>
+          <div class="question"><strong>Ninguna etapa activa:</strong> faltó inicializar la memoria de reposo o un reset borró todas las etapas.</div>
+          <div class="question"><strong>Dos etapas activas:</strong> una transición hizo SET de la siguiente, pero no RST de la anterior.</div>
+          <div class="question"><strong>Movimiento detenido:</strong> el sensor final no cambia o está asignado a otra entrada.</div>
+          <div class="question"><strong>Bobinas opuestas activas:</strong> falta interbloqueo o existen etapas incompatibles.</div>
+        </div>
+        <!-- IMAGEN 18: guardar el archivo como 18.png en la misma carpeta del HTML -->
+        <figure class="image-slot">
+          <img src="18.png" alt="Monitorización online de etapas entradas y salidas de un PLC">
+          <div class="image-placeholder"><div><span>18.png</span>Inserta aquí una captura de monitorización online y diagnóstico.</div></div>
+          <figcaption>Imagen 18. Observación de entradas, memorias de etapa y salidas durante una prueba.</figcaption>
+        </figure>
+      </div>
+      <div class="footer"><span>Diagnóstico basado en evidencias</span><span class="slide-no">34</span></div>
+    </section>
+
+    <section class="slide" data-title="Plan de pruebas">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Comprobación del programa</span></div>
+      <p class="kicker">Prueba sistemática</p>
+      <h2>No basta con observar un ciclo correcto</h2>
+      <div class="checklist">
+        <div class="check">Antes de START, solo está activa la etapa de reposo.</div>
+        <div class="check">START no funciona si falta un sensor de posición inicial.</div>
+        <div class="check">Cada etapa activa exactamente las salidas previstas.</div>
+        <div class="check">Cada sensor produce una sola transición.</div>
+        <div class="check">No existen dos órdenes opuestas sobre la misma válvula.</div>
+        <div class="check">Un sensor que no llega detiene el avance de la secuencia.</div>
+        <div class="check">STOP y RESET producen el comportamiento definido.</div>
+        <div class="check">Después de energizar el PLC, el estado es conocido.</div>
+      </div>
+      <div class="success mt1"><b>Método recomendado:</b> monitorea primero memorias M, luego entradas X y finalmente salidas Y. Así separas un error de secuencia de un problema eléctrico o neumático.</div>
+      <div class="footer"><span>Validación paso a paso</span><span class="slide-no">35</span></div>
+    </section>
+
+    <section class="slide" data-title="Autoevaluación">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Autoevaluación</span></div>
+      <p class="kicker">Comprueba tu aprendizaje</p>
+      <h2>Preguntas de estudio</h2>
+      <div class="grid-2">
+        <div>
+          <div class="question">1. ¿Por qué A− se programa de manera diferente en un cilindro de simple efecto?</div>
+          <div class="question">2. ¿Qué función cumple una memoria de etapa?</div>
+          <div class="question">3. ¿Por qué una espera temporizada debe tratarse como etapa?</div>
+          <div class="question">4. ¿Qué ocurre si dos etapas permanecen activas?</div>
+        </div>
+        <div>
+          <div class="question">5. ¿Por qué una válvula biestable puede quedar sin bobinas durante una espera?</div>
+          <div class="question">6. ¿Cómo se construye la salida A+ en el caso de tres cilindros simples?</div>
+          <div class="question">7. ¿Qué sensores deben comprobarse antes de START?</div>
+          <div class="question">8. ¿Por qué STOP no reemplaza una parada de emergencia?</div>
+        </div>
+      </div>
+      <details><summary>Ver respuestas breves</summary><div>1) El retorno depende del resorte y se obtiene desenergizando. 2) Representa el estado actual. 3) Porque tiene duración y transición propias. 4) Puede haber salidas contradictorias. 5) Conserva la posición mecánica de la corredera. 6) Sumando las etapas que necesitan A extendido. 7) Los sensores de posición inicial de todos los cilindros. 8) Porque la seguridad requiere elementos y arquitectura adecuados, independientes de la lógica normal.</div></details>
+      <div class="footer"><span>Autoevaluación formativa</span><span class="slide-no">36</span></div>
+    </section>
+
+    <section class="slide" data-title="Plantilla de trabajo">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Plantilla para resolver nuevas secuencias</span></div>
+      <p class="kicker">Herramienta de estudio</p>
+      <h2>Completa esta tabla antes de programar</h2>
+      <table>
+        <thead><tr><th>Etapa</th><th>Movimiento o espera</th><th>Salidas activas</th><th>Condición de transición</th><th>Siguiente etapa</th></tr></thead>
+        <tbody>
+          <tr><td>Reposo</td><td>________________</td><td>________________</td><td>START + posición inicial</td><td>________________</td></tr>
+          <tr><td>1</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr>
+          <tr><td>2</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr>
+          <tr><td>3</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr>
+          <tr><td>4</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr>
+          <tr><td>5</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr>
+          <tr><td>6</td><td>________________</td><td>________________</td><td>________________</td><td>________________</td></tr>
+        </tbody>
+      </table>
+      <div class="note mt1"><b>Orden de implementación:</b> inicialización → transiciones → temporizadores → salidas → interbloqueos → STOP/RESET → pruebas.</div>
+      <div class="footer"><span>Plantilla reutilizable</span><span class="slide-no">37</span></div>
+    </section>
+
+    <section class="slide" data-title="Uso de imágenes">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Recursos de la guía</span></div>
+      <p class="kicker">Imágenes locales</p>
+      <h2>Cómo agregar los diagramas y capturas</h2>
+      <div class="grid-2">
+        <article class="card redline">
+          <h3>Ubicación</h3>
+          <p>Guarda el archivo HTML y las imágenes <code>1.png</code>, <code>2.png</code>, <code>3.png</code>… <code>18.png</code> dentro de la misma carpeta.</p>
+          <p>Al abrir nuevamente la guía, cada espacio mostrará automáticamente la imagen que corresponda.</p>
+        </article>
+        <article class="card blueline">
+          <h3>Código ya incorporado</h3>
+          <div class="logic-list">
+            <div class="logic-row"><span class="network">HTML</span><span class="logic-expression">&lt;img src=&quot;1.png&quot; alt=&quot;Descripción de la imagen&quot;&gt;</span><span class="logic-coil">Imagen 1</span></div>
+          </div>
+          <p class="mt1">No necesitas editar rutas mientras las imágenes permanezcan junto al HTML y con el nombre exacto en minúsculas.</p>
+        </article>
+      </div>
+      <div class="warning mt1"><b>Evita espacios y tildes en los nombres:</b> utiliza exactamente <code>1.png</code>, <code>2.png</code>, etc.</div>
+      <div class="footer"><span>Guía completamente local</span><span class="slide-no">38</span></div>
+    </section>
+
+    <section class="slide" data-title="Cierre">
+      <div class="topbar"><span class="brand">INACAP</span><span class="unit">Cierre de la guía</span></div>
+      <p class="kicker">Síntesis</p>
+      <h2>Una secuencia compleja sigue siendo una suma de etapas simples</h2>
+      <div class="grid-3">
+        <article class="card redline"><h3>Describe</h3><p>Escribe los movimientos en orden y confirma la posición inicial.</p></article>
+        <article class="card greenline"><h3>Divide</h3><p>Asigna una memoria a cada movimiento o espera.</p></article>
+        <article class="card blueline"><h3>Comprueba</h3><p>Observa etapa, sensor y salida antes de modificar el programa.</p></article>
+      </div>
+      <p class="lead mt1"><strong>Idea clave:</strong> el Ladder no “adivina” el proceso. Cada sensor confirma un hecho físico y cada memoria conserva el lugar exacto de la secuencia.</p>
+      <div class="teacher-note"><b>Próximo paso sugerido:</b> implementar uno de los ejercicios en el PLC o simulador y documentar la monitorización de cada etapa.</div>
+      <div class="footer"><span>Fin de la guía de estudio</span><span class="slide-no">39</span></div>
+    </section>
+
+  </main>
+
+  <div class="nav" aria-label="Navegación de la guía">
+    <button id="menuButton" type="button" aria-label="Abrir contenido" title="Contenido (M)">☰</button>
+    <button id="prev" type="button" aria-label="Lámina anterior" title="Anterior (←)">←</button>
+    <button id="next" type="button" aria-label="Lámina siguiente" title="Siguiente (→)">→</button>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <aside class="menu-panel" id="menuPanel" aria-hidden="true" aria-label="Contenido de la guía">
+    <div class="menu-card">
+      <div class="menu-head">
+        <h2>Contenido de la guía</h2>
+        <button class="menu-button" id="closeMenu" type="button" aria-label="Cerrar contenido">Cerrar</button>
+      </div>
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+  </aside>
+
+  <script>
+    (() => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const progress = document.getElementById('progress');
+      const prevButton = document.getElementById('prev');
+      const nextButton = document.getElementById('next');
+      const menuButton = document.getElementById('menuButton');
+      const menuPanel = document.getElementById('menuPanel');
+      const closeMenu = document.getElementById('closeMenu');
+      const menuGrid = document.getElementById('menuGrid');
+      let current = 0;
+
+      function show(index) {
+        current = Math.max(0, Math.min(index, slides.length - 1));
+        slides.forEach((slide, position) => {
+          const active = position === current;
+          slide.classList.toggle('active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+          if (active) slide.scrollTop = 0;
+        });
+        progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+        document.title = `${current + 1}/${slides.length} · ${slides[current].dataset.title} | INACAP`;
+        prevButton.disabled = current === 0;
+        nextButton.disabled = current === slides.length - 1;
+      }
+
+      function openMenu() {
+        menuPanel.classList.add('open');
+        menuPanel.setAttribute('aria-hidden', 'false');
+        closeMenu.focus();
+      }
+
+      function hideMenu() {
+        menuPanel.classList.remove('open');
+        menuPanel.setAttribute('aria-hidden', 'true');
+        menuButton.focus();
+      }
+
+      slides.forEach((slide, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = `${String(index + 1).padStart(2, '0')} · ${slide.dataset.title}`;
+        button.addEventListener('click', () => { hideMenu(); show(index); });
+        menuGrid.appendChild(button);
+      });
+
+      prevButton.addEventListener('click', () => show(current - 1));
+      nextButton.addEventListener('click', () => show(current + 1));
+      menuButton.addEventListener('click', openMenu);
+      closeMenu.addEventListener('click', hideMenu);
+      menuPanel.addEventListener('click', event => { if (event.target === menuPanel) hideMenu(); });
+
+      document.addEventListener('keydown', event => {
+        if (menuPanel.classList.contains('open')) {
+          if (event.key === 'Escape') hideMenu();
+          return;
+        }
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); show(current + 1); }
+        if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); show(current - 1); }
+        if (event.key === 'Home') show(0);
+        if (event.key === 'End') show(slides.length - 1);
+        if (event.key.toLowerCase() === 'm') openMenu();
+      });
+
+      let touchStart = null;
+      document.addEventListener('touchstart', event => { touchStart = event.changedTouches[0].clientX; }, { passive: true });
+      document.addEventListener('touchend', event => {
+        if (touchStart === null || menuPanel.classList.contains('open')) return;
+        const distance = event.changedTouches[0].clientX - touchStart;
+        if (Math.abs(distance) > 55) distance < 0 ? show(current + 1) : show(current - 1);
+        touchStart = null;
+      }, { passive: true });
+
+      document.querySelectorAll('.image-slot').forEach(slot => {
+        const img = slot.querySelector('img');
+        const missing = () => slot.classList.add('missing');
+        const loaded = () => slot.classList.remove('missing');
+        img.addEventListener('error', missing);
+        img.addEventListener('load', loaded);
+        if (img.complete) img.naturalWidth ? loaded() : missing();
+      });
+
+      show(0);
+    })();
+  </script>
+</body>
+</html>
 
