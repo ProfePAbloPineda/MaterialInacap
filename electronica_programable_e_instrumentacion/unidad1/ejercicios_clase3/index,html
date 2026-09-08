@@ -1,1 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>INACAP · Arduino y Tinkercad · Guía de trabajo 02</title>
+<style>
+:root{
+  --red:#d71920; --dark:#171717; --blue:#174a7e; --green:#217a50;
+  --bg:#eef1f4; --soft:#f6f7f8; --line:#d7dce1; --yellow:#fff5cf;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222;line-height:1.48}
+header{background:linear-gradient(120deg,#111,#2d2d2d);color:#fff;border-bottom:7px solid var(--red);padding:30px 20px}
+.wrap{max-width:1180px;margin:auto}
+.eyebrow{font-size:.78rem;letter-spacing:1.8px;text-transform:uppercase;opacity:.76}
+h1{font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.05;margin:.3rem 0}
+.lead{font-size:1.06rem;max-width:900px;color:#e7e7e7}
+nav{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 2px 10px #0002}
+nav .wrap{display:flex;gap:8px;overflow:auto;padding:9px 14px}
+nav a{text-decoration:none;color:#333;padding:8px 11px;border-radius:7px;white-space:nowrap;font-size:.9rem}
+nav a:hover{background:#f0f1f3}
+main{max-width:1180px;margin:22px auto;padding:0 15px 70px}
+section{background:#fff;border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:0 4px 18px #0000000d}
+h2{margin-top:0;border-left:6px solid var(--red);padding-left:12px}
+h3{color:var(--blue);margin-top:1.6rem}
+.tag{display:inline-block;padding:4px 9px;border-radius:999px;background:var(--red);color:#fff;font-size:.75rem;font-weight:700}
+.goal,.info,.warn,.ok{padding:14px 16px;border-radius:9px;margin:12px 0}
+.goal{background:#fff2f2;border-left:5px solid var(--red)}
+.info{background:#edf6ff;border-left:5px solid var(--blue)}
+.warn{background:var(--yellow);border-left:5px solid #d3a800}
+.ok{background:#effaf4;border-left:5px solid var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{border:1px solid var(--line);border-radius:11px;padding:15px;background:#fff}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th,td{border:1px solid var(--line);padding:9px;vertical-align:top;text-align:left}
+th{background:#f0f2f4}
+.codehint{background:#1e242b;color:#f4f4f4;border-left:5px solid var(--red);padding:14px;border-radius:9px;font-family:"Courier New",monospace;user-select:none;-webkit-user-select:none;white-space:pre-wrap}
+.blank{color:#ffd66b}
+textarea,input[type=text]{width:100%;border:1px solid #b9c0c8;border-radius:8px;padding:10px;font:inherit}
+textarea.code{font-family:"Courier New",monospace;min-height:125px;background:#fbfbfb}
+textarea.code.large{min-height:230px}
+textarea.answer{min-height:72px}
+.step{display:grid;grid-template-columns:52px 1fr;gap:13px;margin:18px 0}
+.n{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--red);color:#fff;font-weight:bold}
+.figure{
+  min-height:230px;border:2px dashed #9ca5af;border-radius:12px;background:#fafafa;
+  display:flex;align-items:center;justify-content:center;text-align:center;color:#68727d;padding:22px;margin:12px 0
+}
+.figure img{display:block;max-width:100%;height:auto;margin:0 auto 12px;border-radius:6px}
+.figure strong{display:block;color:#3d4650;margin-bottom:6px}
+.evidence{background:#fafbfc;border:1px solid var(--line);padding:15px;border-radius:10px}
+.check label{display:block;margin:7px 0}
+.small{font-size:.88rem;color:#606872}
+button{background:var(--red);color:#fff;border:0;border-radius:8px;padding:10px 15px;font-weight:bold;cursor:pointer}
+@media(max-width:800px){.grid2,.grid3{grid-template-columns:1fr}.step{grid-template-columns:42px 1fr}}
+@media print{nav,button{display:none}body{background:#fff}section{box-shadow:none;break-inside:avoid}header{background:#fff!important;color:#000}.lead,.eyebrow{color:#000}}
+</style>
+</head>
+<body>
 
+<header>
+<div class="wrap">
+  <div class="eyebrow">INACAP · Electrónica programable para la automatización</div>
+  <h1>Guía de trabajo 02 · Arduino y Tinkercad</h1>
+  <div class="lead">Construcción autónoma de programas a partir del circuito físico: entradas, salidas, señales analógicas, Monitor Serial, funciones y modos de operación.</div>
+</div>
+</header>
+
+<nav><div class="wrap">
+<a href="#inicio">Inicio</a>
+<a href="#metodo">Método</a>
+<a href="#e1">Ejercicio 1</a>
+<a href="#e2">Ejercicio 2</a>
+<a href="#e3">Ejercicio 3</a>
+<a href="#cierre">Cierre</a>
+</div></nav>
+
+<main>
+
+<section id="inicio">
+<span class="tag">CONTINUIDAD DE LA CLASE 01</span>
+<h2>Ahora el programa debe responder al hardware</h2>
+<div class="goal"><strong>Propósito:</strong> construir, probar y corregir programas para Arduino en Tinkercad a partir de montajes físicos. En esta guía el circuito es el punto de partida; el código se desarrolla de manera progresiva y no se entrega como solución terminada.</div>
+
+<p>En la clase anterior ya trabajaste con salidas digitales, Monitor Serial, pulsadores, decisiones, antirrebote y funciones. En esta sesión usarás esos recursos para construir soluciones nuevas y comenzarás a integrar señales físicas de distinto tipo.</p>
+
+<div class="grid3">
+  <div class="card"><strong>Montar</strong><br>Construye primero el circuito y revisa alimentación, GND, polaridad y resistencias.</div>
+  <div class="card"><strong>Programar</strong><br>Escribe solo el bloque necesario para probar la etapa actual.</div>
+  <div class="card"><strong>Comprobar</strong><br>Simula, observa el circuito y usa el Monitor Serial antes de continuar.</div>
+</div>
+
+<h3>Materiales virtuales de la clase</h3>
+<table>
+<tr><th>Componente</th><th>Uso</th></tr>
+<tr><td>Arduino Uno R3 + protoboard</td><td>Plataforma de control y montaje.</td></tr>
+<tr><td>LED + resistencia de 220 Ω</td><td>Salida digital visible.</td></tr>
+<tr><td>Pulsador + resistencia de 10 kΩ</td><td>Entrada digital con pull-down.</td></tr>
+<tr><td>Potenciómetro</td><td>Entrada analógica variable.</td></tr>
+<tr><td>Buzzer o servomotor</td><td>Actuador para el ejercicio integrador.</td></tr>
+<tr><td>Monitor Serial</td><td>Comprobación de valores y selección de modos.</td></tr>
+</table>
+
+<div class="warn"><strong>Regla de laboratorio virtual:</strong> detén la simulación antes de modificar el cableado. Verifica siempre 5 V, GND y polaridad antes de atribuir una falla al programa.</div>
+<button onclick="window.print()">Imprimir / guardar como PDF</button>
+</section>
+
+<section id="metodo">
+<span class="tag">FORMA DE TRABAJO</span>
+<h2>Una etapa a la vez</h2>
+<p>En cada ejercicio trabajarás con cuatro acciones repetidas:</p>
+<div class="grid2">
+<div class="card"><strong>1 · Construcción física</strong><br>Agregar componentes, cablear y revisar conexiones.</div>
+<div class="card"><strong>2 · Código mínimo</strong><br>Escribir únicamente lo necesario para probar esa etapa.</div>
+<div class="card"><strong>3 · Simulación</strong><br>Modificar físicamente la entrada y observar la salida.</div>
+<div class="card"><strong>4 · Evidencia</strong><br>Registrar valores o comportamiento antes de integrar una nueva función.</div>
+</div>
+<div class="info"><strong>No copies una solución completa.</strong> Las cajas oscuras contienen pistas de estructura. Los espacios de código son para que construyas tu propia implementación en Tinkercad.</div>
+</section>
+
+<section id="e1">
+<span class="tag">EJERCICIO 1 · ENTRADA Y SALIDA DIGITAL</span>
+<h2>Pulsador + LED + Monitor Serial</h2>
+
+<div class="goal"><strong>Objetivo físico:</strong> construir un circuito donde un pulsador conectado a una entrada digital controle un LED externo y donde el Monitor Serial permita verificar el estado eléctrico leído por Arduino.</div>
+
+<h3>A. Montaje en Tinkercad</h3>
+<table>
+<tr><th>Elemento</th><th>Conexión propuesta</th></tr>
+<tr><td>LED</td><td>D8 → resistencia 220 Ω → ánodo del LED; cátodo → GND.</td></tr>
+<tr><td>Pulsador</td><td>Un lado → 5 V; lado de señal → D2.</td></tr>
+<tr><td>Pull-down</td><td>D2 → resistencia 10 kΩ → GND.</td></tr>
+</table>
+
+<div class="figure"><div><img src="1.png" alt="Montaje completo con Arduino, pulsador y LED en Tinkercad"><strong>IMAGEN 1</strong>Captura o esquema del montaje completo en Tinkercad.<br><span class="small">Archivo: 1.png</span></div></div>
+
+<div class="check">
+<label><input type="checkbox"> El LED tiene resistencia limitadora.</label>
+<label><input type="checkbox"> El pulsador tiene resistencia pull-down.</label>
+<label><input type="checkbox"> Arduino y protoboard comparten GND.</label>
+<label><input type="checkbox"> La simulación está detenida mientras modifico el cableado.</label>
+</div>
+
+<h3>B. Primera prueba: comprobar solo el LED</h3>
+<p>Antes de utilizar el pulsador, programa el LED para que cambie de estado. El objetivo es demostrar que la salida y el cableado funcionan.</p>
+<div class="codehint">Declarar pin del LED
+configurarlo como <span class="blank">[tipo de pin]</span>
+en loop():
+    escribir <span class="blank">[estado 1]</span>
+    esperar
+    escribir <span class="blank">[estado 2]</span>
+    esperar</div>
+<textarea class="code" placeholder="// Escribe aquí el código mínimo para probar únicamente el LED"></textarea>
+
+<h3>C. Segunda prueba: observar el pulsador</h3>
+<p>Ahora agrega la lectura digital y muéstrala en el Monitor Serial. No controles todavía el LED con el botón.</p>
+<div class="step"><div class="n">1</div><div>
+<strong>Configura la comunicación serial y la entrada.</strong>
+<textarea class="code"></textarea>
+</div></div>
+
+<div class="step"><div class="n">2</div><div>
+<strong>Lee D2 y envía el valor al Monitor Serial.</strong>
+<div class="codehint"><span class="blank">[variable]</span> = digitalRead(<span class="blank">[pin]</span>);
+Serial.println(<span class="blank">[variable]</span>);</div>
+<textarea class="code"></textarea>
+</div></div>
+
+<div class="evidence">
+<strong>Registra valores observados:</strong>
+<table>
+<tr><th>Condición física</th><th>Valor observado en Serial</th></tr>
+<tr><td>Pulsador libre</td><td contenteditable="true"></td></tr>
+<tr><td>Pulsador presionado</td><td contenteditable="true"></td></tr>
+</table>
+</div>
+
+<h3>D. Integración</h3>
+<p>Modifica el programa para que el estado físico del pulsador determine directamente el estado del LED.</p>
+<div class="codehint">leer entrada
+SI la entrada corresponde a pulsador activo:
+    activar LED
+SINO:
+    desactivar LED
+mostrar lectura por Serial</div>
+<textarea class="code large" placeholder="// Construye aquí el bloque principal de tu solución"></textarea>
+
+<div class="ok"><strong>Comprobación mínima:</strong> el LED responde al pulsador y el Monitor Serial permite verificar si Arduino está leyendo LOW o HIGH.</div>
+</section>
+
+<section id="e2">
+<span class="tag">EJERCICIO 2 · ENTRADA ANALÓGICA</span>
+<h2>Potenciómetro + Monitor Serial + LED</h2>
+
+<div class="goal"><strong>Objetivo físico:</strong> conectar un potenciómetro a una entrada analógica, observar cómo cambia su valor eléctrico y utilizar esa lectura para modificar el comportamiento de una salida.</div>
+
+<h3>A. Montaje del potenciómetro</h3>
+<table>
+<tr><th>Terminal</th><th>Conexión</th></tr>
+<tr><td>Extremo 1</td><td>5 V</td></tr>
+<tr><td>Terminal central</td><td>A0</td></tr>
+<tr><td>Extremo 2</td><td>GND</td></tr>
+</table>
+
+<div class="figure"><div><img src="2.JPG" alt="Potenciómetro conectado a 5 V, GND y A0"><strong>IMAGEN 2</strong>Potenciómetro conectado a 5 V, GND y A0.<br><span class="small">Archivo: 2.JPG</span></div></div>
+
+<h3>B. Leer una señal analógica</h3>
+<p>En este ejercicio no necesitas configurar A0 con <code>pinMode()</code>. Lee el potenciómetro y observa el valor en Serial mientras lo giras lentamente.</p>
+<div class="codehint"><span class="blank">[variable]</span> = analogRead(<span class="blank">[entrada analógica]</span>);
+Serial.println(<span class="blank">[variable]</span>);</div>
+<textarea class="code"></textarea>
+
+<h3>C. Medición en simulación</h3>
+<table>
+<tr><th>Posición aproximada del potenciómetro</th><th>Valor A0 observado</th></tr>
+<tr><td>Mínimo</td><td contenteditable="true"></td></tr>
+<tr><td>Mitad</td><td contenteditable="true"></td></tr>
+<tr><td>Máximo</td><td contenteditable="true"></td></tr>
+</table>
+
+<p class="small">El conversor analógico-digital del Arduino Uno representa normalmente el rango de entrada mediante valores enteros entre 0 y 1023.</p>
+
+<h3>D. Convertir la lectura en una acción física</h3>
+<p>Mantén el LED del ejercicio anterior. Utiliza el valor del potenciómetro para modificar el tiempo de parpadeo. Al girarlo, la velocidad visible debe cambiar.</p>
+
+<div class="codehint">leer potenciómetro
+guardar lectura en una variable
+
+encender LED
+esperar usando <span class="blank">[la lectura o una variable derivada]</span>
+apagar LED
+esperar usando <span class="blank">[la lectura o una variable derivada]</span>
+
+mostrar valor por Serial</div>
+<textarea class="code large"></textarea>
+
+<div class="figure"><div><img src="3.JPG" alt="Montaje con Arduino, potenciómetro y LED"><strong>IMAGEN 3</strong>Montaje con Arduino + potenciómetro + LED funcionando.<br><span class="small">Archivo: 3.JPG</span></div></div>
+
+<h3>E. Verificación</h3>
+<div class="check">
+<label><input type="checkbox"> El valor de A0 cambia al mover físicamente el potenciómetro.</label>
+<label><input type="checkbox"> El Monitor Serial muestra el valor leído.</label>
+<label><input type="checkbox"> La velocidad del LED cambia de forma visible.</label>
+<label><input type="checkbox"> Puedo distinguir qué parte del circuito es entrada y qué parte es salida observando el montaje.</label>
+</div>
+</section>
+
+<section id="e3">
+<span class="tag">EJERCICIO 3 · SISTEMA INTEGRADO</span>
+<h2>Control físico con modos de operación</h2>
+
+<div class="goal"><strong>Objetivo:</strong> integrar pulsador, potenciómetro, LED y un segundo actuador. El Monitor Serial permitirá seleccionar el modo de operación, pero el comportamiento del sistema dependerá de las entradas físicas.</div>
+
+<h3>A. Ampliación del circuito</h3>
+<p>Mantén los componentes anteriores y agrega <strong>un buzzer o un servomotor</strong>. Utiliza una salida diferente a D8.</p>
+
+<div class="figure"><div><img src="4.PNG" alt="Montaje integrador con Arduino, pulsador, potenciómetro, LED y buzzer o servo"><strong>IMAGEN 4</strong>Montaje integrador: Arduino + pulsador + potenciómetro + LED + buzzer/servo.<br><span class="small">Archivo: 4.PNG</span></div></div>
+
+<table>
+<tr><th>Dispositivo</th><th>Pin elegido</th><th>Tipo de señal</th></tr>
+<tr><td>Pulsador</td><td contenteditable="true"></td><td>Entrada digital</td></tr>
+<tr><td>Potenciómetro</td><td contenteditable="true"></td><td>Entrada analógica</td></tr>
+<tr><td>LED</td><td contenteditable="true"></td><td>Salida</td></tr>
+<tr><td>Buzzer / servo</td><td contenteditable="true"></td><td>Salida</td></tr>
+</table>
+
+<h3>B. Modos de funcionamiento</h3>
+<table>
+<tr><th>Selección Serial</th><th>Modo</th><th>Comportamiento físico</th></tr>
+<tr><td>1</td><td>Monitoreo</td><td>Mostrar continuamente pulsador y potenciómetro. Las salidas permanecen detenidas.</td></tr>
+<tr><td>2</td><td>Manual</td><td>El pulsador controla una salida; el potenciómetro modifica un parámetro físico de la otra.</td></tr>
+<tr><td>3</td><td>Automático</td><td>Arduino toma decisiones a partir de las entradas y ejecuta una respuesta programada.</td></tr>
+</table>
+
+<h3>C. Organiza el programa mediante funciones</h3>
+<p>Define una función para cada modo. <code>loop()</code> debe seleccionar qué función ejecutar según el modo actual.</p>
+<div class="codehint">void loop() {
+    revisar si llegó una selección por Serial
+    actualizar variable <span class="blank">[modo]</span>
+
+    si modo es 1 → llamar función de monitoreo
+    si modo es 2 → llamar función manual
+    si modo es 3 → llamar función automática
+}</div>
+
+<div class="grid2">
+<div>
+<strong>Función modo monitoreo</strong>
+<textarea class="code large"></textarea>
+</div>
+<div>
+<strong>Función modo manual</strong>
+<textarea class="code large"></textarea>
+</div>
+<div>
+<strong>Función modo automático</strong>
+<textarea class="code large"></textarea>
+</div>
+<div>
+<strong>loop() y selección Serial</strong>
+<textarea class="code large"></textarea>
+</div>
+</div>
+
+<h3>D. Pruebas físicas obligatorias</h3>
+<table>
+<tr><th>Prueba</th><th>Acción realizada en Tinkercad</th><th>Resultado esperado</th><th>Resultado obtenido</th></tr>
+<tr><td>1</td><td>Seleccionar modo 1 y girar potenciómetro.</td><td>Serial cambia; actuadores permanecen detenidos.</td><td contenteditable="true"></td></tr>
+<tr><td>2</td><td>Seleccionar modo 2 y presionar pulsador.</td><td>La salida asignada responde al pulsador.</td><td contenteditable="true"></td></tr>
+<tr><td>3</td><td>En modo 2, girar potenciómetro.</td><td>Cambia el parámetro físico definido.</td><td contenteditable="true"></td></tr>
+<tr><td>4</td><td>Seleccionar modo 3 y variar ambas entradas.</td><td>El programa responde según las condiciones diseñadas.</td><td contenteditable="true"></td></tr>
+<tr><td>5</td><td>Enviar una opción distinta de 1, 2 o 3.</td><td>El sistema continúa funcionando sin bloquearse.</td><td contenteditable="true"></td></tr>
+</table>
+
+<div class="figure"><div><img src="5.png" alt="Diagrama de bloques de Arduino con entradas, tres modos de operación y una lectura ilustrativa del Monitor Serial"><strong>IMAGEN 5</strong>Diagrama de bloques del menú, los modos de operación y las lecturas del Monitor Serial.<br><span class="small">Archivo: 5.png · Valores ilustrativos.</span></div></div>
+
+<div class="ok"><strong>Producto verificable:</strong> el estudiante debe poder modificar físicamente las entradas durante la simulación y demostrar que el programa responde de forma diferente según el modo seleccionado.</div>
+</section>
+
+<section id="cierre">
+<span class="tag">CIERRE</span>
+<h2>Comprobación técnica</h2>
+<p>Antes de finalizar, demuestra el funcionamiento de tu circuito y registra solo información que pueda verificarse en la simulación.</p>
+
+<table>
+<tr><th>Criterio</th><th>Comprobado</th></tr>
+<tr><td>El montaje posee alimentación y GND correctamente distribuidos.</td><td>□</td></tr>
+<tr><td>Las entradas digitales poseen un estado definido.</td><td>□</td></tr>
+<tr><td>La entrada analógica entrega valores variables en Serial.</td><td>□</td></tr>
+<tr><td>Cada salida puede probarse físicamente por separado.</td><td>□</td></tr>
+<tr><td>Las funciones separan los distintos modos de operación.</td><td>□</td></tr>
+<tr><td>El Monitor Serial permite seleccionar o comprobar el funcionamiento.</td><td>□</td></tr>
+<tr><td>El programa completo compila y funciona en Tinkercad.</td><td>□</td></tr>
+</table>
+
+<h3>Registro final</h3>
+<p><strong>Indica una falla de cableado o programación detectada durante el trabajo y la corrección aplicada:</strong></p>
+<textarea class="answer"></textarea>
+
+<div class="info"><strong>Entrega:</strong> conserva el enlace del circuito de Tinkercad y guarda esta guía en PDF si el docente lo solicita.</div>
+</section>
+
+</main>
+</body>
+</html>
