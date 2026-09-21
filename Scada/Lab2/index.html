@@ -1,1 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Guía de laboratorio — Señales analógicas en INFILINK</title>
+  <style>
+    :root{--red:#c8102e;--dark:#222;--gray:#eef0f2;--line:#c9cdd2;--blue:#0c5a85;--ok:#e9f6ef;--warn:#fff6df}
+    *{box-sizing:border-box} body{margin:0;font:16px/1.5 Arial,Helvetica,sans-serif;color:var(--dark);background:#f5f5f5}
+    .page{max-width:1050px;margin:24px auto;background:#fff;box-shadow:0 2px 12px #0002}
+    header{padding:34px 46px 28px;border-top:12px solid var(--red);border-bottom:1px solid var(--line)}
+    .brand{font-size:14px;font-weight:700;letter-spacing:.08em;color:var(--red)}
+    h1{font-size:30px;line-height:1.15;margin:10px 0 8px} h2{font-size:23px;border-left:7px solid var(--red);padding-left:12px;margin-top:38px}
+    h3{font-size:18px;color:var(--blue);margin-top:28px} h4{margin-bottom:6px}
+    main{padding:28px 46px 52px}.meta,.grid2,.grid3{display:grid;gap:14px}.meta{grid-template-columns:repeat(2,1fr);margin-top:24px}.grid2{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}
+    .field,.card,.callout,.evidence{border:1px solid var(--line);padding:14px;border-radius:4px}.field span{display:block;font-size:12px;color:#555;text-transform:uppercase}.field b{display:block;min-height:22px}
+    .objective{background:var(--gray);padding:18px 22px;border-radius:4px}.callout{background:var(--warn);border-left:5px solid #e0a000}.evidence{background:var(--ok);border-left:5px solid #2f8f5b}
+    .step{display:grid;grid-template-columns:44px 1fr;gap:12px;margin:17px 0}.n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:bold}.step p{margin:0 0 7px}
+    table{width:100%;border-collapse:collapse;margin:14px 0 22px}th,td{border:1px solid var(--line);padding:10px;vertical-align:top}th{background:#333;color:#fff;text-align:left}.check td:first-child{width:44px;text-align:center}
+    code{background:#f0f1f2;padding:2px 5px;border-radius:3px}.placeholder{border:2px dashed #9da3aa;min-height:170px;padding:24px;text-align:center;color:#666;margin:16px 0;background:#fafafa}.placeholder small{display:block;margin-top:8px}.guide-image{margin:16px 0;padding:10px;border:1px solid var(--line);border-radius:4px;background:#fafafa}.guide-image img{display:block;width:100%;height:auto}.guide-image figcaption{margin-top:8px;color:#555;font-size:13px}
+    .write-line{display:block;min-height:28px;border-bottom:1px solid #777;margin-top:5px}.response{min-height:105px;border:1px solid #9da3aa;background:repeating-linear-gradient(to bottom,#fff 0,#fff 27px,#d9dde1 28px);margin:8px 0 20px}
+    .downloads a,.button{display:inline-block;padding:10px 14px;margin:5px 5px 5px 0;background:var(--red);color:#fff;text-decoration:none;border-radius:3px;font-weight:bold}.button.secondary{background:#444}
+    .video{margin:16px 0 24px}.video-frame{position:relative;width:100%;aspect-ratio:16/9;background:#111;border:1px solid var(--line)}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.code-note{font-size:13px;color:#555;background:#f4f5f6;padding:10px;border-left:4px solid var(--blue);overflow-wrap:anywhere}
+    .rubric td:first-child{width:33%}.footer{border-top:1px solid var(--line);padding-top:18px;color:#555;font-size:13px}
+    ul,ol{padding-left:24px}.tag{font-family:monospace;color:#7b1730}.avoid{color:#9d1628;font-weight:bold}
+    @media(max-width:750px){.page{margin:0}.meta,.grid2,.grid3{grid-template-columns:1fr}header,main{padding-left:22px;padding-right:22px}}
+    @media print{body{background:#fff;font-size:11pt}.page{max-width:none;margin:0;box-shadow:none}header,main{padding-left:18mm;padding-right:18mm}.no-print{display:none}h2,h3,.card,.evidence,.callout,table,.guide-image{break-inside:avoid}.placeholder{min-height:100px}.page-break{break-before:page}}
+  </style>
+</head>
+<body>
+<article class="page">
+  <header>
+    <div class="brand">INACAP · ÁREA AUTOMATIZACIÓN Y ROBÓTICA</div>
+    <h1>Guía de laboratorio: manejo de señales analógicas en INFILINK</h1>
+    <p>Supervisión de nivel, animación de proceso y análisis de respuestas PID</p>
+    <div class="meta">
+      <div class="field"><span>Asignatura</span><b>Domótica</b></div>
+      <div class="field"><span>Modalidad</span><b>Laboratorio práctico</b></div>
+      <div class="field"><span>Estudiante(s)</span><span class="write-line"></span></div>
+      <div class="field"><span>Sección / fecha</span><span class="write-line"></span></div>
+      <div class="field"><span>Equipo / estación de trabajo</span><span class="write-line"></span></div>
+    </div>
+  </header>
+  <main>
+    <section class="objective">
+      <h3 style="margin-top:0">Aprendizaje esperado</h3>
+      <p>Configurar una interfaz HMI en INFILINK para supervisar una variable analógica de nivel, representar visualmente el proceso, registrar su evolución temporal y analizar el efecto de diferentes parámetros de un controlador PID.</p>
+      <p><strong>Producto de la actividad:</strong> proyecto INFILINK con tres ventanas operativas, navegación funcional, estanque animado y Trend View con registro histórico; más un análisis técnico de tres ensayos PID.</p>
+    </section>
+
+    <h3>Recursos entregados</h3>
+    <div class="downloads">
+      <!-- Los archivos descargables y las imágenes deben estar en la misma carpeta que este HTML. -->
+      <a href="Simulacion_Estanque.factoryio" download>Simulación Factory I/O</a>
+      <a href="Programa_PLC_SX2.isp" download>Programa ISPSoft — PLC SX2</a>
+      <a href="Proyecto_KEPServerEX.opf" download>Proyecto KEPServerEX</a>
+    </div>
+    <div class="callout"><strong>Preparación del material:</strong> guarda en una sola carpeta este HTML, los tres archivos descargables y todas las imágenes. No es necesario crear una subcarpeta <code>img</code>. Antes de publicar, verifica que los nombres escritos en <code>href</code> y <code>src</code> coincidan exactamente con los archivos, incluidas mayúsculas, minúsculas y extensiones. GitHub resolverá estas rutas de manera relativa.</div>
+
+    <h3>Video 1 — Puesta en marcha de la simulación</h3>
+    <p>Observa el procedimiento completo antes de iniciar: carga del proyecto KEPServerEX, apertura del programa en ISPSoft, simulación mediante COMMGR y ejecución de la escena en Factory I/O.</p>
+    <div class="video">
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/WAnod_zMZKA" title="Video: puesta en marcha de la simulación" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="code-note">Si el reproductor no se muestra, abre el video directamente en el navegador: <a href="https://youtu.be/WAnod_zMZKA" target="_blank" rel="noopener">ver en YouTube</a>.</div>
+    </div>
+
+    <h3>Software requerido</h3>
+    <ul><li>ISPSoft y COMMGR.</li><li>KEPServerEX con el proyecto y tags suministrados.</li><li>Factory I/O con la escena del estanque analógico.</li><li>INFILINK HMI Design Mode V6.</li></ul>
+
+    <h2>Parte 1. Pon en marcha la simulación</h2>
+    <p>En esta etapa no se modifica el control. El propósito es comprobar la cadena completa antes de diseñar la HMI.</p>
+    <div class="step"><div class="n">1</div><div><p><strong>Descarga y descomprime</strong> todos los recursos en una carpeta de trabajo. Evita ejecutar los proyectos directamente desde un archivo comprimido.</p></div></div>
+    <div class="step"><div class="n">2</div><div><p><strong>Abre KEPServerEX</strong> y carga el proyecto entregado. Verifica que existan el canal, el dispositivo y los tags. No cambies sus nombres, porque INFILINK utilizará esas rutas OPC.</p></div></div>
+    <div class="step"><div class="n">3</div><div><p><strong>Abre el proyecto en ISPSoft.</strong> Revisa la tabla de símbolos y localiza las variables analógicas principales: referencia, nivel medido, salida del controlador y ganancias PID.</p></div></div>
+    <div class="step"><div class="n">4</div><div><p><strong>Configura COMMGR</strong> con el driver de simulación correspondiente al proyecto. Inicia la simulación del PLC y descarga el programa al PLC simulado. Deja el programa en modo <em>RUN</em>.</p></div></div>
+    <div class="step"><div class="n">5</div><div><p><strong>Comprueba la comunicación OPC.</strong> En KEPServerEX observa la calidad y variación de los tags. La calidad debe ser <em>Good</em>; un valor numérico inmóvil no demuestra por sí solo que toda la cadena esté funcionando.</p></div></div>
+    <div class="step"><div class="n">6</div><div><p><strong>Abre Factory I/O</strong>, carga la escena entregada, selecciona el driver configurado para la práctica e inicia la simulación. Confirma que el nivel y los actuadores responden al programa del PLC.</p></div></div>
+    <div class="placeholder">ESPACIO PARA IMAGEN 1: secuencia de puesta en marcha o captura del video<small>&lt;img src="01_puesta_en_marcha.png" alt="Secuencia para iniciar PLC, OPC y Factory I/O"&gt;</small></div>
+    <table class="check"><thead><tr><th>✓</th><th>Verificación previa a INFILINK</th><th>Evidencia observable</th></tr></thead><tbody>
+      <tr><td>□</td><td>PLC simulado en RUN</td><td>Monitoreo activo en ISPSoft.</td></tr>
+      <tr><td>□</td><td>Servidor OPC operativo</td><td>Tags con calidad <em>Good</em> y valores coherentes.</td></tr>
+      <tr><td>□</td><td>Proceso en ejecución</td><td>El estanque de Factory I/O llena o vacía según el control.</td></tr>
+    </tbody></table>
+
+    <h2 class="page-break">Parte 2. Construye la interfaz en INFILINK</h2>
+    <p>Crea un proyecto nuevo y define una resolución común para todas las ventanas. La interfaz tendrá tres ventanas: <strong>Principal</strong>, <strong>Proceso</strong> e <strong>Historial</strong>.</p>
+
+    <h3>Video 2 — Construcción del proyecto en INFILINK</h3>
+    <p>Utiliza el video como apoyo para crear el proyecto, vincular los tags OPC, construir las tres ventanas y configurar la animación y el registro histórico.</p>
+    <div class="video">
+      <!-- Reemplazar REEMPLAZAR_ID_VIDEO_INFILINK por el ID del video de YouTube. -->
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/REEMPLAZAR_ID_VIDEO_INFILINK" title="Video: construcción del proyecto en INFILINK" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="code-note">Código por editar: <code>https://www.youtube.com/embed/REEMPLAZAR_ID_VIDEO_INFILINK</code></div>
+    </div>
+
+    <h3>2.1 Comunicación y tags OPC</h3>
+    <ol>
+      <li>En INFILINK, crea un grupo de tags de tipo OPC.</li>
+      <li>Selecciona el servidor KEPServerEX instalado mediante el explorador. Para KEPServerEX 6, normalmente se presenta como <code>Kepware.KEPServerEX.V6</code>.</li>
+      <li>Navega por el servidor y vincula los tags entregados. Evita escribir manualmente la ruta si está disponible el navegador OPC.</li>
+      <li>Comprueba que el tipo de dato de cada tag corresponda al configurado en KEPServerEX.</li>
+    </ol>
+    <table><thead><tr><th>Tag INFILINK</th><th>Item OPC</th><th>Tipo / rango</th><th>Uso en la HMI</th></tr></thead><tbody>
+      <tr><td class="tag">Nivel_PV</td><td>Completar: Canal.Dispositivo.Tag</td><td>Analógico: ____ a ____</td><td>Animación, indicador y tendencia</td></tr>
+      <tr><td class="tag">Nivel_SP</td><td>Completar</td><td>Analógico: ____ a ____</td><td>Referencia del controlador</td></tr>
+      <tr><td class="tag">Salida_PID</td><td>Completar</td><td>Analógico: ____ a ____</td><td>Acción de control</td></tr>
+      <tr><td class="tag">Kp / Ki / Kd</td><td>Completar</td><td>Numérico</td><td>Identificación de cada ensayo</td></tr>
+    </tbody></table>
+    <div class="callout"><strong>Escalamiento:</strong> documenta si el PLC trabaja en unidades de ingeniería (por ejemplo, 0–100 %) o en cuentas digitales. El rango configurado en la animación y en el eje vertical debe corresponder al valor real recibido por INFILINK.</div>
+
+    <h3>2.2 Ventana 1 — Principal</h3>
+    <p>Diseña una portada funcional, no una segunda pantalla de proceso. Debe incluir nombre de la experiencia, identificación del sistema, estado general de comunicación y botones de navegación.</p>
+    <ul><li>Botón <strong>Proceso</strong>: abre la ventana de animación.</li><li>Botón <strong>Historial</strong>: abre la ventana de tendencias.</li><li>Botón <strong>Salir</strong>: finaliza el modo de ejecución, si el docente lo autoriza.</li></ul>
+    <div class="evidence"><strong>Verificación de navegación:</strong> ejecuta el proyecto y prueba cada botón en ambos sentidos. Comprueba que sea posible pasar desde Principal a Proceso e Historial y regresar sin dejar ventanas inaccesibles. Registra dos decisiones de diseño que ayuden al operador a orientarse; las necesitarás en el informe técnico.</div>
+    <figure class="guide-image"><img src="02_ventana_principal.png" alt="Ventana principal del proyecto INFILINK con accesos a Historial y Proceso"><figcaption>Figura 2. Ventana principal del proyecto INFILINK.</figcaption></figure>
+
+    <h3>2.3 Ventana 2 — Animación del proceso</h3>
+    <ol>
+      <li>Abre <strong>Library Manager</strong>, carga la biblioteca del sistema y selecciona un estanque apropiado.</li>
+      <li>Inserta el estanque y superpone un rectángulo que represente el líquido dentro de su zona útil.</li>
+      <li>Selecciona el rectángulo y configura <strong>Animations → Stretch Vertically</strong>.</li>
+      <li>Asocia <code>Nivel_PV</code>, ingresa su rango mínimo y máximo y selecciona crecimiento desde el borde inferior (<em>Right/bottom edge</em>).</li>
+      <li>Añade un indicador numérico con unidad y, si corresponde, una entrada o visualizador para <code>Nivel_SP</code>.</li>
+      <li>Agrega navegación hacia <strong>Principal</strong> e <strong>Historial</strong>.</li>
+    </ol>
+    <figure class="guide-image"><img src="03_ventana_proceso.png" alt="Ventana de proceso con animación analógica del nivel"><figcaption>Figura 3. Ventana de proceso en INFILINK con estanque, setpoint, nivel y mandos.</figcaption></figure>
+    <figure class="guide-image"><img src="03b_configuracion_stretch.png" alt="Configuración Stretch Vertically de la animación del nivel"><figcaption>Figura 4. Configuración de la animación vertical del nivel mediante Stretch Vertically.</figcaption></figure>
+    <div class="evidence"><strong>Prueba obligatoria:</strong> observa 0 %, un valor intermedio y un valor cercano al máximo. El líquido debe permanecer anclado al fondo, crecer hacia arriba y coincidir con el indicador numérico.</div>
+
+    <h3>2.4 Ventana 3 — Trend View e historial</h3>
+    <ol>
+      <li>Inserta un objeto <strong>Trend</strong> y asígnale un nombre reconocible, por ejemplo <code>Trend</code>.</li>
+      <li>Configura el eje vertical con el rango de ingeniería del nivel. Configura un intervalo temporal suficiente para observar llenado, sobreimpulso y estabilización.</li>
+      <li>Define y registra los valores de <strong>Time Span</strong> y <strong>Refresh Rate</strong>. El primero determina cuánto tiempo se observa; el segundo, con qué frecuencia se actualiza el gráfico.</li>
+      <li>Añade como mínimo dos pens: <code>Nivel_SP</code> y <code>Nivel_PV</code>. Si el rango lo permite, añade <code>Salida_PID</code>; de lo contrario, utiliza un segundo Trend o una escala adecuada.</li>
+      <li>Asigna colores contrastantes y agrega una leyenda con nombre y unidad de cada señal. Anota por qué esos colores permiten diferenciar correctamente SP, PV y, si corresponde, la salida PID.</li>
+      <li>Activa <strong>Enable Historical Display</strong>.</li>
+      <li>Habilita el registro de los tags requeridos (<em>Log Data / Log on data change</em>) y configura el Data Logger para iniciar con el proyecto.</li>
+      <li>Agrega controles de <strong>Tiempo real</strong>, <strong>Histórico</strong>, retroceso, avance y retorno a Principal.</li>
+    </ol>
+    <figure class="guide-image"><img src="04_trend_pens.png" alt="Configuración de las señales en las propiedades del Trend Viewer"><figcaption>Figura 5. Configuración de las señales o pens del Trend Viewer.</figcaption></figure>
+    <figure class="guide-image"><img src="05_historial.png" alt="Configuración del Data Logger para el historial"><figcaption>Figura 6. Configuración del registro histórico mediante Data Logger.</figcaption></figure>
+    <div class="callout"><strong>Importante:</strong> Trend View muestra la señal; el Data Logger conserva los datos. Activar solo la visualización histórica no crea por sí mismo un registro anterior.</div>
+    <table><tbody>
+      <tr><th>Time Span utilizado</th><td><span class="write-line"></span></td></tr>
+      <tr><th>Refresh Rate utilizado</th><td><span class="write-line"></span></td></tr>
+      <tr><th>Rango del eje vertical</th><td><span class="write-line"></span></td></tr>
+      <tr><th>Colores de las pens y justificación</th><td><span class="write-line"></span><span class="write-line"></span></td></tr>
+    </tbody></table>
+    <div class="evidence"><strong>Prueba de recuperación:</strong> observa PV en tiempo real, deja que se registren datos, cambia al modo histórico y retrocede en el tiempo. Si el valor en vivo funciona pero el historial está vacío, revisa <em>Log Data / Log on data change</em>, el inicio del Data Logger, su carpeta de almacenamiento y la habilitación del modo histórico.</div>
+
+    <h3>Lista de cotejo del proyecto HMI</h3>
+    <table class="check"><thead><tr><th>✓</th><th>Criterio</th><th>Comprobación</th></tr></thead><tbody>
+      <tr><td>□</td><td>Tres ventanas diferenciadas</td><td>Navegación correcta, sin ventanas duplicadas.</td></tr>
+      <tr><td>□</td><td>Tags OPC válidos</td><td>Valor y calidad coherentes durante Run Mode.</td></tr>
+      <tr><td>□</td><td>Variable analógica animada</td><td>Nivel gráfico y valor numérico coincidentes.</td></tr>
+      <tr><td>□</td><td>Tendencia legible</td><td>SP y PV identificables, con escalas y unidades.</td></tr>
+      <tr><td>□</td><td>Histórico funcional</td><td>Es posible retroceder y revisar datos registrados.</td></tr>
+    </tbody></table>
+
+    <h2 class="page-break">Parte 3. Experimentación y análisis en INFILINK</h2>
+    <p>Realiza tres ensayos con el mismo cambio de referencia y las mismas condiciones iniciales. Solo deben variar las ganancias del controlador. El objetivo no es programar nuevamente el PID, sino utilizar INFILINK para <strong>observar, registrar, comparar y fundamentar</strong> el comportamiento dinámico.</p>
+
+    <h3>3.1 Condiciones comunes de ensayo</h3>
+    <table><tbody>
+      <tr><th>Condición inicial</th><td>Ej.: nivel inicial 20 % <span class="write-line"></span></td></tr>
+      <tr><th>Cambio de referencia</th><td>Ej.: de 20 % a 70 % <span class="write-line"></span></td></tr>
+      <tr><th>Duración por ensayo</th><td><span class="write-line"></span></td></tr>
+      <tr><th>Time Span del Trend</th><td><span class="write-line"></span></td></tr>
+      <tr><th>Refresh Rate</th><td><span class="write-line"></span></td></tr>
+    </tbody></table>
+    <div class="callout"><strong>Comparación válida:</strong> reinicia el proceso en la misma condición antes de cada prueba. No modifiques simultáneamente la referencia, las ganancias y el estado inicial.</div>
+
+    <h3>3.2 Ganancias de los tres ensayos</h3>
+    <table><thead><tr><th>Ensayo</th><th>Kp</th><th>Ki</th><th>Kd</th><th>Resultado esperado</th></tr></thead><tbody>
+      <tr><td>1 — No sintonizado A</td><td>[Kp A]</td><td>[Ki A]</td><td>[Kd A]</td><td>Respuesta deficiente para reconocer y justificar.</td></tr>
+      <tr><td>2 — No sintonizado B</td><td>[Kp B]</td><td>[Ki B]</td><td>[Kd B]</td><td>Respuesta deficiente diferente del ensayo 1.</td></tr>
+      <tr><td>3 — Sintonizado</td><td>[Kp C]</td><td>[Ki C]</td><td>[Kd C]</td><td>Mejor compromiso según los criterios del proceso.</td></tr>
+    </tbody></table>
+    <p><em>El docente reemplazará los valores entre corchetes antes de publicar la guía.</em></p>
+
+    <h3>3.3 Procedimiento de registro</h3>
+    <ol>
+      <li>Confirma que el Data Logger esté activo y que el Trend muestre <code>Nivel_SP</code> y <code>Nivel_PV</code>.</li>
+      <li>Ingresa las ganancias del ensayo y devuelve el proceso a la condición inicial definida.</li>
+      <li>Aplica el cambio de referencia en un instante claramente identificable.</li>
+      <li>Espera hasta que la respuesta se estabilice o hasta completar el tiempo establecido.</li>
+      <li>Registra hora de inicio y término, completa la tabla y toma una captura independiente de la tendencia antes de cambiar las ganancias.</li>
+      <li>Repite el procedimiento para los tres conjuntos de ganancias.</li>
+    </ol>
+    <div class="evidence"><strong>Capturas obligatorias de los ensayos:</strong> guarda tres pantallazos independientes: <strong>Respuesta 1</strong>, <strong>Respuesta 2</strong> y <strong>Respuesta 3</strong>. En cada imagen deben verse SP, PV, ejes, escala temporal, leyenda y la respuesta completa hasta estabilizarse o terminar el intervalo. Identifica la imagen con el número de ensayo y sus valores Kp, Ki y Kd. Estas tres imágenes se cargarán por separado en el informe técnico.</div>
+    <div class="callout"><strong>Vista histórica conjunta:</strong> además de las tres capturas obligatorias, puedes ejecutar los ensayos consecutivamente dentro del mismo registro, dejando separaciones identificables, y obtener una cuarta captura panorámica. Si el proyecto incluye tags independientes para cada prueba, pueden representarse como tres pens; no dupliques un mismo tag creyendo que así conservarás resultados anteriores.</div>
+
+    <h3>3.4 Resultados obtenidos</h3>
+    <table><thead><tr><th>Ensayo</th><th>Tiempo de subida</th><th>Sobreimpulso</th><th>Oscilación</th><th>Tiempo de establecimiento</th><th>Error estacionario</th></tr></thead><tbody>
+      <tr><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
+    </tbody></table>
+    <div class="placeholder">EVIDENCIA PID 1: captura histórica del ensayo no sintonizado A, identificada con Kp, Ki y Kd<small>&lt;img src="06_pid_respuesta_1.png" alt="Respuesta PID del ensayo 1"&gt;</small></div>
+    <div class="placeholder">EVIDENCIA PID 2: captura histórica del ensayo no sintonizado B, identificada con Kp, Ki y Kd<small>&lt;img src="07_pid_respuesta_2.png" alt="Respuesta PID del ensayo 2"&gt;</small></div>
+    <div class="placeholder">EVIDENCIA PID 3: captura histórica del ensayo sintonizado, identificada con Kp, Ki y Kd<small>&lt;img src="08_pid_respuesta_3.png" alt="Respuesta PID del ensayo 3"&gt;</small></div>
+
+    <h3>3.5 Preguntas de profundización</h3>
+    <h4>1. ¿Qué información aporta el Trend View que no puede obtenerse mirando solamente la animación del estanque?</h4><div class="response"></div>
+    <h4>2. Compara los ensayos 1 y 2. ¿Qué diferencias observas en rapidez, sobreimpulso, oscilación y error estacionario? Fundamenta con datos del gráfico.</h4><div class="response"></div>
+    <h4>3. ¿Por qué la respuesta sintonizada se considera superior? Indica al menos dos criterios medibles; no respondas solo “porque es más estable”.</h4><div class="response"></div>
+    <h4>4. Explica qué efecto observaste al variar Kp, Ki y Kd. Relaciona cada parámetro con una característica visible en la tendencia.</h4><div class="response"></div>
+    <h4>5. ¿Qué consecuencias tendría configurar incorrectamente el rango del tag o del eje vertical en INFILINK, aunque el programa del PLC estuviera funcionando bien?</h4><div class="response"></div>
+    <h4>6. ¿Por qué el registro histórico es relevante en una aplicación domótica real, por ejemplo en un estanque domiciliario o de un edificio?</h4><div class="response"></div>
+    <h4>7. Si la calidad OPC fuera <em>Bad</em> o la tendencia quedara congelada, propone una secuencia de diagnóstico desde INFILINK hasta Factory I/O.</h4><div class="response"></div>
+    <h4>8. Formula una mejora para la ventana de proceso o historial que ayude a un operador a tomar decisiones, sin modificar el programa PLC.</h4><div class="response"></div>
+    <h4>9. El Trend muestra PV en tiempo real, pero al cambiar al modo histórico no aparecen datos anteriores. ¿Qué configuraciones de INFILINK revisarías y en qué orden?</h4><div class="response"></div>
+
+    <h3>Entrega</h3>
+    <table class="rubric"><tbody>
+      <tr><td><strong>Proyecto INFILINK</strong></td><td>Carpeta completa y ejecutable, con tres ventanas, navegación, tags, animación y Trend histórico.</td></tr>
+      <tr><td><strong>Evidencias</strong></td><td>Seis capturas legibles: ventana Principal, animación del Proceso, ventana Historial y respuestas PID 1, 2 y 3. Cada respuesta PID debe estar identificada con sus ganancias.</td></tr>
+      <tr><td><strong>Análisis</strong></td><td>Tabla de resultados y respuestas fundamentadas mediante observaciones del Trend.</td></tr>
+    </tbody></table>
+    <div class="footer">Guía de laboratorio · Domótica · Manejo de señales analógicas en INFILINK<br>Documento preparado para trabajo práctico en entorno ISPSoft + COMMGR + KEPServerEX + Factory I/O + INFILINK.</div>
+  </main>
+</article>
+</body>
+</html>
 
