@@ -17,14 +17,14 @@
     .objective{background:var(--gray);padding:18px 22px;border-radius:4px}.callout{background:var(--warn);border-left:5px solid #e0a000}.evidence{background:var(--ok);border-left:5px solid #2f8f5b}
     .step{display:grid;grid-template-columns:44px 1fr;gap:12px;margin:17px 0}.n{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--red);color:#fff;font-weight:bold}.step p{margin:0 0 7px}
     table{width:100%;border-collapse:collapse;margin:14px 0 22px}th,td{border:1px solid var(--line);padding:10px;vertical-align:top}th{background:#333;color:#fff;text-align:left}.check td:first-child{width:44px;text-align:center}
-    code{background:#f0f1f2;padding:2px 5px;border-radius:3px}.placeholder{border:2px dashed #9da3aa;min-height:170px;padding:24px;text-align:center;color:#666;margin:16px 0;background:#fafafa}.placeholder small{display:block;margin-top:8px}.guide-image{margin:16px 0;padding:10px;border:1px solid var(--line);border-radius:4px;background:#fafafa}.guide-image img{display:block;width:100%;height:auto}.guide-image figcaption{margin-top:8px;color:#555;font-size:13px}
+    code{background:#f0f1f2;padding:2px 5px;border-radius:3px}.guide-image{margin:16px 0;padding:10px;border:1px solid var(--line);border-radius:4px;background:#fafafa}.guide-image img{display:block;width:100%;height:auto}.guide-image figcaption{margin-top:8px;color:#555;font-size:13px}
     .write-line{display:block;min-height:28px;border-bottom:1px solid #777;margin-top:5px}.response{min-height:105px;border:1px solid #9da3aa;background:repeating-linear-gradient(to bottom,#fff 0,#fff 27px,#d9dde1 28px);margin:8px 0 20px}
     .downloads a,.button{display:inline-block;padding:10px 14px;margin:5px 5px 5px 0;background:var(--red);color:#fff;text-decoration:none;border-radius:3px;font-weight:bold}.button.secondary{background:#444}
     .video{margin:16px 0 24px}.video-frame{position:relative;width:100%;aspect-ratio:16/9;background:#111;border:1px solid var(--line)}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.code-note{font-size:13px;color:#555;background:#f4f5f6;padding:10px;border-left:4px solid var(--blue);overflow-wrap:anywhere}
     .rubric td:first-child{width:33%}.footer{border-top:1px solid var(--line);padding-top:18px;color:#555;font-size:13px}
     ul,ol{padding-left:24px}.tag{font-family:monospace;color:#7b1730}.avoid{color:#9d1628;font-weight:bold}
     @media(max-width:750px){.page{margin:0}.meta,.grid2,.grid3{grid-template-columns:1fr}header,main{padding-left:22px;padding-right:22px}}
-    @media print{body{background:#fff;font-size:11pt}.page{max-width:none;margin:0;box-shadow:none}header,main{padding-left:18mm;padding-right:18mm}.no-print{display:none}h2,h3,.card,.evidence,.callout,table,.guide-image{break-inside:avoid}.placeholder{min-height:100px}.page-break{break-before:page}}
+    @media print{body{background:#fff;font-size:11pt}.page{max-width:none;margin:0;box-shadow:none}header,main{padding-left:18mm;padding-right:18mm}.no-print{display:none}h2,h3,.card,.evidence,.callout,table,.guide-image{break-inside:avoid}.page-break{break-before:page}}
   </style>
 </head>
 <body>
@@ -55,7 +55,7 @@
       <a href="Programa_PLC_SX2.isp" download>Programa ISPSoft — PLC SX2</a>
       <a href="Proyecto_KEPServerEX.opf" download>Proyecto KEPServerEX</a>
     </div>
-    <div class="callout"><strong>Preparación del material:</strong> guarda en una sola carpeta este HTML, los tres archivos descargables y todas las imágenes. No es necesario crear una subcarpeta <code>img</code>. Antes de publicar, verifica que los nombres escritos en <code>href</code> y <code>src</code> coincidan exactamente con los archivos, incluidas mayúsculas, minúsculas y extensiones. GitHub resolverá estas rutas de manera relativa.</div>
+    <div class="callout"><strong>Organización de los recursos:</strong> descarga los archivos y guárdalos en una misma carpeta de trabajo antes de comenzar. No ejecutes los proyectos directamente desde un archivo comprimido.</div>
 
     <h3>Video 1 — Puesta en marcha de la simulación</h3>
     <p>Observa el procedimiento completo antes de iniciar: carga del proyecto KEPServerEX, apertura del programa en ISPSoft, simulación mediante COMMGR y ejecución de la escena en Factory I/O.</p>
@@ -75,7 +75,7 @@
     <div class="step"><div class="n">4</div><div><p><strong>Configura COMMGR</strong> con el driver de simulación correspondiente al proyecto. Inicia la simulación del PLC y descarga el programa al PLC simulado. Deja el programa en modo <em>RUN</em>.</p></div></div>
     <div class="step"><div class="n">5</div><div><p><strong>Comprueba la comunicación OPC.</strong> En KEPServerEX observa la calidad y variación de los tags. La calidad debe ser <em>Good</em>; un valor numérico inmóvil no demuestra por sí solo que toda la cadena esté funcionando.</p></div></div>
     <div class="step"><div class="n">6</div><div><p><strong>Abre Factory I/O</strong>, carga la escena entregada, selecciona el driver configurado para la práctica e inicia la simulación. Confirma que el nivel y los actuadores responden al programa del PLC.</p></div></div>
-    <div class="placeholder">ESPACIO PARA IMAGEN 1: secuencia de puesta en marcha <small>&lt;<img src="01_puesta_en_marcha.png" alt="Secuencia para iniciar PLC, OPC y Factory I/O">&gt;</small></div>
+    <figure class="guide-image"><img src="01_puesta_en_marcha.png" alt="Secuencia para validar la cadena de control antes de diseñar la HMI"><figcaption>Figura 1. Secuencia de puesta en marcha y validación de la cadena de control.</figcaption></figure>
     <table class="check"><thead><tr><th>✓</th><th>Verificación previa a INFILINK</th><th>Evidencia observable</th></tr></thead><tbody>
       <tr><td>□</td><td>PLC simulado en RUN</td><td>Monitoreo activo en ISPSoft.</td></tr>
       <tr><td>□</td><td>Servidor OPC operativo</td><td>Tags con calidad <em>Good</em> y valores coherentes.</td></tr>
@@ -88,9 +88,8 @@
     <h3>Video 2 — Construcción del proyecto en INFILINK</h3>
     <p>Utiliza el video como apoyo para crear el proyecto, vincular los tags OPC, construir las tres ventanas y configurar la animación y el registro histórico.</p>
     <div class="video">
-      <!-- Reemplazar REEMPLAZAR_ID_VIDEO_INFILINK por el ID del video de YouTube. -->
-      <div class="video-frame"><iframe src="https://www.youtube.com/embed/REEMPLAZAR_ID_VIDEO_INFILINK" title="Video: construcción del proyecto en INFILINK" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-      <div class="code-note">Código por editar: <code>https://www.youtube.com/embed/REEMPLAZAR_ID_VIDEO_INFILINK</code></div>
+      <div class="video-frame"><iframe src="https://www.youtube.com/embed/UfRgQiRmtVI" title="Video: construcción del proyecto en INFILINK" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+      <div class="code-note">Si el reproductor no se muestra, abre el video directamente en el navegador: <a href="https://youtu.be/UfRgQiRmtVI" target="_blank" rel="noopener">ver en YouTube</a>.</div>
     </div>
 
     <h3>2.1 Comunicación y tags OPC</h3>
@@ -173,11 +172,10 @@
 
     <h3>3.2 Ganancias de los tres ensayos</h3>
     <table><thead><tr><th>Ensayo</th><th>Kp</th><th>Ki</th><th>Kd</th><th>Resultado esperado</th></tr></thead><tbody>
-      <tr><td>1 — No sintonizado A</td><td>[Kp A]</td><td>[Ki A]</td><td>[Kd A]</td><td>Respuesta deficiente para reconocer y justificar.</td></tr>
-      <tr><td>2 — No sintonizado B</td><td>[Kp B]</td><td>[Ki B]</td><td>[Kd B]</td><td>Respuesta deficiente diferente del ensayo 1.</td></tr>
-      <tr><td>3 — Sintonizado</td><td>[Kp C]</td><td>[Ki C]</td><td>[Kd C]</td><td>Mejor compromiso según los criterios del proceso.</td></tr>
+      <tr><td>1 — No sintonizado A</td><td><span class="write-line"></span></td><td><span class="write-line"></span></td><td><span class="write-line"></span></td><td>Respuesta deficiente para reconocer y justificar.</td></tr>
+      <tr><td>2 — No sintonizado B</td><td><span class="write-line"></span></td><td><span class="write-line"></span></td><td><span class="write-line"></span></td><td>Respuesta deficiente diferente del ensayo 1.</td></tr>
+      <tr><td>3 — Sintonizado</td><td><span class="write-line"></span></td><td><span class="write-line"></span></td><td><span class="write-line"></span></td><td>Mejor compromiso según los criterios del proceso.</td></tr>
     </tbody></table>
-    <p><em>El docente reemplazará los valores entre corchetes antes de publicar la guía.</em></p>
 
     <h3>3.3 Procedimiento de registro</h3>
     <ol>
@@ -197,9 +195,6 @@
       <tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
       <tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
     </tbody></table>
-    <div class="placeholder">EVIDENCIA PID 1: captura histórica del ensayo no sintonizado A, identificada con Kp, Ki y Kd<small>&lt;img src="06_pid_respuesta_1.png" alt="Respuesta PID del ensayo 1"&gt;</small></div>
-    <div class="placeholder">EVIDENCIA PID 2: captura histórica del ensayo no sintonizado B, identificada con Kp, Ki y Kd<small>&lt;img src="07_pid_respuesta_2.png" alt="Respuesta PID del ensayo 2"&gt;</small></div>
-    <div class="placeholder">EVIDENCIA PID 3: captura histórica del ensayo sintonizado, identificada con Kp, Ki y Kd<small>&lt;img src="08_pid_respuesta_3.png" alt="Respuesta PID del ensayo 3"&gt;</small></div>
 
     <h3>3.5 Preguntas de profundización</h3>
     <h4>1. ¿Qué información aporta el Trend View que no puede obtenerse mirando solamente la animación del estanque?</h4><div class="response"></div>
