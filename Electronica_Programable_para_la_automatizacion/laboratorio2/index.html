@@ -1,1 +1,861 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guía de laboratorio INACAP sobre diodos, rectificación, filtrado capacitivo y regulación con 7812.">
+  <title>Guía de laboratorio | Rectificación y fuente 7812</title>
+  <style>
+    :root {
+      --inacap: #d71920;
+      --inacap-dark: #a90f15;
+      --ink: #20242a;
+      --muted: #606872;
+      --line: #cfd4da;
+      --soft: #f3f5f7;
+      --paper: #ffffff;
+      --warning: #fff4df;
+      --warning-line: #d78a00;
+      --formula-bg: #f7f8fa;
+      --formula-head: #30343b;
+      --shadow: 0 12px 34px rgba(23, 29, 36, .12);
+    }
 
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #e8ebee;
+      font: 16px/1.52 Arial, Helvetica, sans-serif;
+    }
+    button, input, textarea { font: inherit; }
+    a { color: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .72rem clamp(1rem, 3vw, 2rem);
+      color: #fff;
+      background: #24282e;
+      box-shadow: 0 2px 12px rgba(0,0,0,.22);
+    }
+    .topbar strong { letter-spacing: .04em; }
+    .topbar button {
+      min-height: 42px;
+      padding: .55rem 1rem;
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 4px;
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+    }
+    .topbar button:hover, .topbar button:focus-visible { background: var(--inacap); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 900px);
+      justify-content: center;
+      gap: 1.4rem;
+      padding: 1.4rem;
+    }
+    .toc {
+      position: sticky;
+      top: 82px;
+      align-self: start;
+      max-height: calc(100vh - 100px);
+      overflow: auto;
+      padding: 1rem;
+      border-top: 5px solid var(--inacap);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .toc h2 { margin: 0 0 .65rem; font-size: 1rem; }
+    .toc ol { margin: 0; padding-left: 1.35rem; }
+    .toc li { margin: .42rem 0; }
+    .toc a { text-decoration: none; font-size: .9rem; }
+    .toc a:hover, .toc a:focus-visible { color: var(--inacap); text-decoration: underline; }
+
+    main {
+      min-width: 0;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .sheet { padding: clamp(1.2rem, 4vw, 3rem); }
+    .cover { border-top: 12px solid var(--inacap); }
+    .brand { margin: 0 0 2.3rem; color: var(--inacap); font-size: 1.75rem; font-weight: 800; letter-spacing: .06em; }
+    h1 { max-width: 760px; margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.05; letter-spacing: -.035em; }
+    .kicker { margin: .8rem 0 2rem; color: var(--muted); font-size: 1.22rem; font-weight: 700; }
+    h2 {
+      margin: 2.6rem 0 1rem;
+      padding-bottom: .45rem;
+      border-bottom: 3px solid var(--inacap);
+      font-size: 1.55rem;
+      line-height: 1.2;
+    }
+    h3 { margin: 2rem 0 .8rem; font-size: 1.16rem; }
+    p { margin: .65rem 0; }
+    .activity-title { margin-top: 0; }
+    .lead { font-size: 1.08rem; }
+    .purpose {
+      margin: 1rem 0 1.4rem;
+      padding: .85rem 1rem;
+      border-left: 5px solid var(--inacap);
+      background: #fbeaec;
+    }
+    .page-break { border-top: 1px solid transparent; }
+
+    .fields, .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+    }
+    .fields th, .fields td, .data-table th, .data-table td {
+      border: 1px solid var(--line);
+      padding: .58rem .65rem;
+      vertical-align: middle;
+    }
+    .fields th { width: 18%; background: var(--soft); text-align: left; font-size: .88rem; }
+    .fields input { width: 100%; min-width: 80px; border: 0; border-bottom: 1px solid #8c949d; background: transparent; }
+    .data-table { font-size: .92rem; }
+    .data-table th { color: #fff; background: #30343b; text-align: center; }
+    .data-table tbody tr:nth-child(even) { background: #f7f8f9; }
+    .data-table td[contenteditable="true"] { min-width: 80px; background: #fff; outline: none; }
+    .data-table td[contenteditable="true"]:focus { box-shadow: inset 0 0 0 2px var(--inacap); }
+    .table-scroll { overflow-x: auto; }
+
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { display: flex; gap: .6rem; margin: .58rem 0; }
+    .checklist input { width: 1.15rem; height: 1.15rem; margin-top: .22rem; accent-color: var(--inacap); }
+    ol.procedure { padding-left: 1.5rem; }
+    ol.procedure li { margin: .58rem 0; padding-left: .28rem; }
+    .warning {
+      margin: 1.25rem 0;
+      padding: 1rem 1.1rem;
+      border: 1px solid #edc87d;
+      border-left: 6px solid var(--warning-line);
+      background: var(--warning);
+    }
+    .warning strong { display: block; margin-bottom: .25rem; }
+
+    .formula-card {
+      margin: 1.15rem 0;
+      border: 2px solid var(--formula-head);
+      break-inside: avoid;
+    }
+    .formula-title {
+      padding: .48rem .75rem;
+      color: #fff;
+      background: var(--formula-head);
+      font-size: .86rem;
+      font-weight: 700;
+      letter-spacing: .025em;
+      text-transform: uppercase;
+    }
+    .formula-expression {
+      padding: 1rem .8rem;
+      background: var(--formula-bg);
+      text-align: center;
+      font-family: "Cambria Math", "Times New Roman", serif;
+      font-size: clamp(1.2rem, 3vw, 1.65rem);
+      line-height: 1.5;
+    }
+    .formula-note { padding: .55rem .75rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .86rem; }
+    .formula-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .formula-grid .formula-card { margin: 0; }
+
+    figure.diagram {
+      position: relative;
+      margin: 1.5rem 0;
+      border: 1px solid var(--line);
+      background: #fff;
+      break-inside: avoid;
+    }
+    .figure-stage { position: relative; min-height: 250px; display: grid; place-items: center; padding: 1.2rem; overflow: hidden; }
+    .figure-stage svg { display: block; width: 100%; height: auto; max-height: 330px; }
+    .custom-figure { display: none; width: 100%; max-height: 480px; object-fit: contain; }
+    figure.has-custom .default-figure { display: none; }
+    figure.has-custom .custom-figure { display: block; }
+    figcaption { padding: .65rem .85rem; border-top: 1px solid var(--line); color: var(--muted); text-align: center; font-size: .88rem; font-style: italic; }
+
+    .answer { width: 100%; min-height: 86px; margin: .5rem 0 1.1rem; padding: .65rem; border: 1px solid var(--line); resize: vertical; background: repeating-linear-gradient(#fff 0, #fff 31px, #d8dde2 32px); line-height: 32px; }
+    .answer.tall { min-height: 165px; }
+    .signature { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem; }
+    .signature div { padding-top: .5rem; border-top: 1px solid #555; text-align: center; }
+    .small { color: var(--muted); font-size: .88rem; }
+
+    @media (max-width: 900px) {
+      .layout { display: block; padding: 0; }
+      .toc { position: static; max-height: none; margin: 0; box-shadow: none; border-top: 0; border-bottom: 1px solid var(--line); }
+      .toc ol { columns: 2; }
+      main { box-shadow: none; }
+      .formula-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      body { font-size: 16px; }
+      .topbar span { display: none; }
+      .toc ol { columns: 1; }
+      .sheet { padding: 1.15rem; }
+      .fields, .fields tbody, .fields tr, .fields th, .fields td { display: block; width: 100%; }
+      .fields th { border-bottom: 0; }
+      .fields td { min-height: 44px; }
+      .signature { grid-template-columns: 1fr; }
+    }
+    @page { size: letter; margin: 1.1cm 1.2cm 1.2cm; }
+    @media print {
+      html, body { background: #fff; }
+      body { font-size: 9.4pt; line-height: 1.34; }
+      .topbar, .toc { display: none !important; }
+      .layout { display: block; padding: 0; }
+      main { width: auto; box-shadow: none; }
+      .sheet { padding: 0; }
+      .cover { border-top-width: 6px; }
+      .brand { margin-bottom: 1rem; font-size: 16pt; }
+      h1 { font-size: 23pt; }
+      .kicker { margin: .4rem 0 1rem; }
+      h2 {
+        margin: 1.15rem 0 .55rem;
+        padding-bottom: .25rem;
+        font-size: 14.5pt;
+        break-after: avoid-page;
+      }
+      h3 {
+        margin: .9rem 0 .35rem;
+        font-size: 11.5pt;
+        break-after: avoid-page;
+      }
+      p { margin: .35rem 0; orphans: 3; widows: 3; }
+      p:has(+ .answer) { break-after: avoid-page; }
+
+      /* La paginación se deja al motor de impresión. Los saltos forzados
+         anteriores provocaban hojas vacías y grandes espacios sin utilizar. */
+      .page-break { break-before: auto; page-break-before: auto; }
+      section { break-before: auto; break-after: auto; }
+      #aprendizajes { break-before: page; }
+
+      .fields, .data-table { margin: .45rem 0 .75rem; }
+      .fields th, .fields td, .data-table th, .data-table td {
+        padding: .26rem .32rem;
+      }
+      .fields th { font-size: 8pt; }
+      .data-table {
+        font-size: 7.8pt;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+      .data-table thead { display: table-header-group; }
+      .data-table tfoot { display: table-footer-group; }
+      .data-table tr { break-inside: avoid; page-break-inside: avoid; }
+      .data-table td[contenteditable="true"] { min-width: 48px; }
+
+      .purpose {
+        margin: .45rem 0 .65rem;
+        padding: .45rem .6rem;
+        border-left-width: 4px;
+        break-inside: avoid;
+      }
+      .activity-title { break-after: avoid-page; }
+      section[id^="actividad-"] > .purpose { break-after: avoid-page; }
+      .warning {
+        margin: .6rem 0;
+        padding: .55rem .65rem;
+        break-inside: avoid;
+      }
+      .checklist { margin: .35rem 0; }
+      .checklist li, ol.procedure li {
+        margin: .28rem 0;
+        break-inside: avoid;
+      }
+      ol.procedure { margin: .35rem 0 .65rem; padding-left: 1.3rem; }
+
+      .formula-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+        margin: -.12rem;
+      }
+      .formula-grid .formula-card {
+        width: calc(50% - .24rem);
+        margin: .12rem;
+      }
+      .formula-card {
+        margin: .55rem 0;
+        break-inside: avoid;
+      }
+      .formula-title { padding: .3rem .48rem; font-size: 7.5pt; }
+      .formula-expression { padding: .45rem .5rem; font-size: 14pt; line-height: 1.25; }
+      .formula-note { padding: .3rem .48rem; font-size: 7.5pt; }
+
+      figure.diagram {
+        margin: .65rem 0;
+        break-inside: avoid;
+      }
+      .figure-stage { display: block; min-height: 0; padding: .35rem; text-align: center; }
+      .figure-stage svg { max-height: 9.8cm; }
+      .custom-figure { max-height: 9.8cm; }
+      figcaption { padding: .32rem .5rem; font-size: 7.8pt; }
+
+      .answer {
+        min-height: 48px;
+        margin: .18rem 0 .55rem;
+        padding: .25rem .4rem;
+        resize: none;
+        line-height: 20px;
+        background: repeating-linear-gradient(#fff 0, #fff 19px, #d8dde2 20px);
+        break-inside: avoid;
+      }
+      .answer.tall { min-height: 92px; }
+      .signature { display: flex; gap: 1.2rem; margin-top: 1.6rem; break-inside: avoid; }
+      .signature div { flex: 1; }
+      a { text-decoration: none; }
+      .table-scroll { overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <strong>INACAP <span>| Guía de Laboratorio</span></strong>
+    <button type="button" onclick="window.print()">Imprimir / guardar PDF</button>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contenido de la guía">
+      <h2>Contenido</h2>
+      <ol>
+        <li><a href="#inicio">Identificación</a></li>
+        <li><a href="#aprendizajes">Aprendizajes</a></li>
+        <li><a href="#seguridad">Seguridad</a></li>
+        <li><a href="#materiales">Materiales</a></li>
+        <li><a href="#fundamento">Fundamento técnico</a></li>
+        <li><a href="#trabajo-previo">Trabajo previo</a></li>
+        <li><a href="#actividad-1">Diodo en CC</a></li>
+        <li><a href="#actividad-2">Media onda</a></li>
+        <li><a href="#actividad-3">Puente rectificador</a></li>
+        <li><a href="#actividad-4">Punto medio</a></li>
+        <li><a href="#actividad-5">Filtro y rizado</a></li>
+        <li><a href="#actividad-6">Regulador 7812</a></li>
+        <li><a href="#sintesis">Síntesis</a></li>
+        <li><a href="#evaluacion">Evidencias</a></li>
+      </ol>
+    </nav>
+
+    <main id="inicio">
+      <section class="sheet cover">
+        <p class="brand">INACAP</p>
+        <h1>Rectificación, filtrado y regulación lineal de tensión</h1>
+        <p class="kicker">Guía de Laboratorio</p>
+
+        <table class="fields" aria-label="Datos de identificación">
+          <tr><th>Asignatura</th><td><input aria-label="Asignatura"></td><th>Guía N.º</th><td><input aria-label="Número de guía"></td></tr>
+          <tr><th>Carrera</th><td><input aria-label="Carrera"></td><th>Sección</th><td><input aria-label="Sección"></td></tr>
+          <tr><th>Sede</th><td><input aria-label="Sede"></td><th>Fecha</th><td><input type="date" aria-label="Fecha"></td></tr>
+          <tr><th>Docente</th><td><input aria-label="Docente"></td><th>Duración</th><td>6 horas pedagógicas</td></tr>
+          <tr><th>Integrantes</th><td><input aria-label="Integrantes"></td><th>Puesto</th><td><input aria-label="Puesto de trabajo"></td></tr>
+        </table>
+
+        <h2>Propósito de la experiencia</h2>
+        <p class="lead">Montar y verificar experimentalmente las etapas de una fuente lineal: comportamiento del diodo en corriente continua, rectificación de media onda, dos métodos de rectificación de onda completa, filtrado capacitivo y regulación fija con 7812.</p>
+
+        <h2>Producto esperado</h2>
+        <p>Circuitos operativos, registros de osciloscopio y multímetro, cálculos contrastados con mediciones y una fuente de 12 V continuos regulados ensayada con dos condiciones de carga.</p>
+
+        <h2>Requisito de ingreso</h2>
+        <p>Manejo básico de multímetro y osciloscopio, Ley de Ohm, valores eficaz y peak de una señal senoidal, y reconocimiento de polaridad en diodos y condensadores electrolíticos.</p>
+
+        <section id="aprendizajes" class="page-break">
+          <h2>1. Aprendizajes y criterios de logro</h2>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Criterio</th><th>Evidencia observable</th></tr></thead>
+            <tbody>
+              <tr><td>Polarización del diodo</td><td>Reconoce ánodo, cátodo, conducción directa y bloqueo inverso; mide V<sub>D</sub> e I<sub>D</sub> sin cortocircuitar la fuente.</td></tr>
+              <tr><td>Rectificación</td><td>Monta media onda, puente y punto medio; identifica los diodos que conducen en cada semiciclo.</td></tr>
+              <tr><td>Medición de señales</td><td>Configura referencias de masa seguras y registra amplitud, componente continua y frecuencia de rizado.</td></tr>
+              <tr><td>Filtrado</td><td>Calcula y contrasta el rizado para distintos valores de capacitancia y carga.</td></tr>
+              <tr><td>Regulación</td><td>Integra el 7812, verifica margen de entrada, regulación bajo carga y disipación aproximada.</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section id="seguridad">
+          <h2>2. Reglas de seguridad</h2>
+          <div class="warning"><strong>Riesgo eléctrico y cortocircuito de masas</strong>Trabaje únicamente con el secundario aislado del transformador. La conexión del primario a 220 V debe permanecer fuera de la protoboard y bajo control del docente.</div>
+          <ul>
+            <li>Desenergice antes de cambiar diodos, cargas o condensadores. Descargue los electrolíticos mediante una resistencia.</li>
+            <li>Use condensadores de 25 V o más y compruebe su polaridad antes de energizar.</li>
+            <li>Las masas de los canales de un osciloscopio convencional están conectadas entre sí y a tierra.</li>
+            <li>En el puente rectificador, mida el secundario y la salida en forma secuencial o utilice una sonda diferencial autorizada.</li>
+            <li>En el circuito con punto medio use CT como referencia común.</li>
+            <li>El amperímetro se conecta en serie. Solicite verificación del montaje antes de energizar.</li>
+            <li>La resistencia de 240 Ω debe soportar al menos 2 W y puede calentarse.</li>
+            <li>Verifique el pinout del 7812 utilizado; la hoja de datos del fabricante prevalece.</li>
+          </ul>
+
+          <h3>Verificación previa del puesto</h3>
+          <ul class="checklist">
+            <li><input type="checkbox" aria-label="Fuente continua verificada"><span>Fuente continua limitada en corriente disponible.</span></li>
+            <li><input type="checkbox" aria-label="Transformador verificado"><span>Transformador aislado identificado y secundario medido.</span></li>
+            <li><input type="checkbox" aria-label="Osciloscopio verificado"><span>Osciloscopio con sondas compensadas.</span></li>
+            <li><input type="checkbox" aria-label="Condensadores verificados"><span>Condensadores descargados y polaridad legible.</span></li>
+            <li><input type="checkbox" aria-label="Regulador y diodos verificados"><span>Regulador y diodos sin daño visible.</span></li>
+          </ul>
+        </section>
+
+        <section id="materiales">
+          <h2>3. Equipos y materiales</h2>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Cantidad</th><th>Elemento</th><th>Especificación mínima</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Fuente DC</td><td>0–15 V con limitación de corriente</td></tr>
+              <tr><td>1</td><td>Transformador aislado</td><td>Secundario 12–0–12 V~, 0,5 A o superior</td></tr>
+              <tr><td>1</td><td>Osciloscopio</td><td>Dos canales; sondas ×10 recomendadas</td></tr>
+              <tr><td>1</td><td>Multímetro digital</td><td>VDC, VAC, resistencia y prueba de diodos</td></tr>
+              <tr><td>4</td><td>Diodo rectificador</td><td>1N4007</td></tr>
+              <tr><td>2</td><td>Resistencias de carga</td><td>1 kΩ / 0,25 W y 240 Ω / 2 W</td></tr>
+              <tr><td>1</td><td>Resistencia serie</td><td>1 kΩ / 0,25 W</td></tr>
+              <tr><td>4</td><td>Condensadores electrolíticos</td><td>100, 470, 1000 y 2200 µF; 25 V o superior</td></tr>
+              <tr><td>2</td><td>Condensadores cerámicos</td><td>0,33 µF y 0,10 µF</td></tr>
+              <tr><td>1</td><td>Regulador lineal</td><td>7812 TO-220 y disipador si corresponde</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section id="fundamento" class="page-break">
+          <h2>4. Fundamento técnico</h2>
+          <p>El diodo rectificador conduce principalmente desde ánodo hacia cátodo cuando está polarizado en forma directa. La banda del encapsulado 1N4007 identifica el cátodo. La caída directa real depende de la corriente y de la temperatura.</p>
+
+          <div class="formula-card">
+            <div class="formula-title">Ecuación 1 · Conversión de valor eficaz a valor peak</div>
+            <div class="formula-expression">V<sub>p</sub> = √2 · V<sub>rms</sub></div>
+            <div class="formula-note">Aplicable a una señal senoidal ideal.</div>
+          </div>
+
+          <figure class="diagram" data-figure="1">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 760 300" role="img" aria-label="Entrada senoidal, media onda y onda completa">
+                <defs><style>.axis{stroke:#8b929a;stroke-width:2}.wave{fill:none;stroke:#d71920;stroke-width:5}.lbl{font:20px Arial;fill:#30343b}</style></defs>
+                <text x="10" y="55" class="lbl">Entrada senoidal</text><line x1="190" y1="48" x2="745" y2="48" class="axis"/>
+                <path class="wave" d="M190 48 C235 0 280 0 325 48 S415 96 460 48 S550 0 595 48 S685 96 730 48"/>
+                <text x="10" y="150" class="lbl">Media onda</text><line x1="190" y1="143" x2="745" y2="143" class="axis"/>
+                <path class="wave" d="M190 143 C235 95 280 95 325 143 L460 143 C505 95 550 95 595 143 L730 143"/>
+                <text x="10" y="245" class="lbl">Onda completa</text><line x1="190" y1="238" x2="745" y2="238" class="axis"/>
+                <path class="wave" d="M190 238 C235 190 280 190 325 238 C370 190 415 190 460 238 C505 190 550 190 595 238 C640 190 685 190 730 238"/>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 1">
+            </div>
+            <figcaption>Figura 1. Relación cualitativa entre entrada, media onda y onda completa.</figcaption>
+          </figure>
+
+          <h3>Modelo aproximado para los cálculos</h3>
+          <div class="formula-grid">
+            <div class="formula-card">
+              <div class="formula-title">Ecuación 2 · Valor medio en media onda</div>
+              <div class="formula-expression">V<sub>DC</sub> ≈ (V<sub>p</sub> − V<sub>D</sub>) / π</div>
+              <div class="formula-note">Frecuencia de pulsos: f<sub>r</sub> = f<sub>AC</sub>.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-title">Ecuación 3 · Valor medio en onda completa</div>
+              <div class="formula-expression">V<sub>DC</sub> ≈ 2(V<sub>p</sub> − nV<sub>D</sub>) / π</div>
+              <div class="formula-note">n = 2 para puente; n = 1 para punto medio. f<sub>r</sub> = 2f<sub>AC</sub>.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-title">Ecuación 4 · Rizado peak a peak</div>
+              <div class="formula-expression">ΔV<sub>pp</sub> ≈ I<sub>L</sub> / (f<sub>r</sub> · C)</div>
+              <div class="formula-note">Aproximación válida para descarga pequeña y carga casi constante.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-title">Ecuación 5 · Valor eficaz del rizado</div>
+              <div class="formula-expression">V<sub>r,rms</sub> ≈ ΔV<sub>pp</sub> / (2√3)</div>
+              <div class="formula-note">Aproximación de rizado con forma triangular.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-title">Ecuación 6 · Porcentaje de rizado</div>
+              <div class="formula-expression">r [%] = 100 · V<sub>r,rms</sub> / V<sub>DC</sub></div>
+              <div class="formula-note">Compare el rizado eficaz con la componente continua.</div>
+            </div>
+            <div class="formula-card">
+              <div class="formula-title">Ecuación 7 · Diferencia porcentual</div>
+              <div class="formula-expression">% error = 100 · |x<sub>med</sub> − x<sub>teo</sub>| / |x<sub>teo</sub>|</div>
+              <div class="formula-note">Interprete el resultado considerando las aproximaciones del modelo.</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="trabajo-previo" class="page-break">
+          <h2>5. Trabajo previo</h2>
+          <p>Complete antes de montar. Use los valores nominales y posteriormente repita los cálculos principales con la tensión secundaria medida.</p>
+          <ol>
+            <li>Para 12 V~ RMS, calcule el valor peak del secundario.<textarea class="answer" aria-label="Respuesta trabajo previo 1"></textarea></li>
+            <li>Estime V<sub>DC</sub> para media onda con V<sub>D</sub> = 0,70 V y R<sub>L</sub> = 1 kΩ.<textarea class="answer" aria-label="Respuesta trabajo previo 2"></textarea></li>
+            <li>Estime V<sub>DC</sub> para un puente rectificador con dos caídas de 0,70 V.<textarea class="answer" aria-label="Respuesta trabajo previo 3"></textarea></li>
+            <li>Estime V<sub>DC</sub> para el rectificador con punto medio 12–0–12 V~, considerando una caída de diodo.<textarea class="answer" aria-label="Respuesta trabajo previo 4"></textarea></li>
+            <li>Con V<sub>DC</sub> = 15,5 V, R<sub>L</sub> = 1 kΩ, C = 470 µF y f<sub>r</sub> = 100 Hz, estime ΔV<sub>pp</sub>.<textarea class="answer" aria-label="Respuesta trabajo previo 5"></textarea></li>
+            <li>Indique la tensión mínima aproximada que debería mantenerse a la entrada del 7812 y explique qué ocurre si el valle del rizado cae por debajo de ella.<textarea class="answer" aria-label="Respuesta trabajo previo 6"></textarea></li>
+          </ol>
+        </section>
+
+        <section id="actividad-1" class="page-break">
+          <h2 class="activity-title">Actividad 1. Diodo rectificador en corriente continua</h2>
+          <p class="purpose"><strong>Propósito.</strong> Comprobar la conducción directa, el bloqueo inverso y la caída de tensión del 1N4007 con una resistencia limitadora.</p>
+          <figure class="diagram" data-figure="2">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 760 280" role="img" aria-label="Circuito de diodo en corriente continua">
+                <defs><style>.w{stroke:#20242a;stroke-width:5;fill:none}.t{font:22px Arial;fill:#20242a}.r{fill:none;stroke:#20242a;stroke-width:5}.red{fill:#d71920}</style></defs>
+                <circle cx="95" cy="140" r="52" class="w"/><text x="82" y="126" class="t red">+</text><text x="84" y="171" class="t">−</text><text x="20" y="230" class="t">VDC</text>
+                <line x1="95" y1="88" x2="190" y2="88" class="w"/><rect x="190" y="60" width="170" height="56" class="r"/><text x="220" y="97" class="t">R1 1 kΩ</text>
+                <line x1="360" y1="88" x2="460" y2="88" class="w"/><polygon points="460,55 460,121 535,88" fill="#20242a"/><line x1="535" y1="52" x2="535" y2="124" class="w"/><line x1="535" y1="88" x2="650" y2="88" class="w"/><text x="450" y="35" class="t">D1 1N4007</text>
+                <line x1="650" y1="88" x2="650" y2="210" class="w"/><line x1="650" y1="210" x2="95" y2="210" class="w"/><line x1="95" y1="210" x2="95" y2="192" class="w"/>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 2">
+            </div>
+            <figcaption>Figura 2. Circuito de polarización directa con resistencia limitadora.</figcaption>
+          </figure>
+          <h3>Procedimiento</h3>
+          <ol class="procedure">
+            <li>Con la fuente apagada, identifique la banda del cátodo y verifique el diodo con la función de prueba. Registre la lectura en ambos sentidos.</li>
+            <li>Monte R1 = 1 kΩ en serie con el diodo. Ajuste el límite de corriente a 20 mA.</li>
+            <li>Aumente VDC según la tabla. Mida V<sub>D</sub> y V<sub>R1</sub>. Calcule I<sub>D</sub> = V<sub>R1</sub>/R1.</li>
+            <li>Apague, invierta el diodo y repita a 5 V para observar la polarización inversa.</li>
+          </ol>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Condición</th><th>V<sub>S</sub> [V]</th><th>V<sub>D</sub> [V]</th><th>V<sub>R1</sub> [V]</th><th>I<sub>D</sub> [mA]</th><th>Estado</th><th>Observación</th></tr></thead>
+            <tbody>
+              <tr><td>Directa</td><td>1</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Directa</td><td>2</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Directa</td><td>3</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Directa</td><td>4</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Directa</td><td>5</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Inversa</td><td>5</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <h3>Análisis</h3>
+          <p>a. ¿V<sub>D</sub> permaneció constante al variar la corriente? Describa la tendencia.</p><textarea class="answer" aria-label="Análisis actividad 1 a"></textarea>
+          <p>b. Compare la corriente inversa con la directa. ¿Por qué la resistencia sigue siendo necesaria?</p><textarea class="answer" aria-label="Análisis actividad 1 b"></textarea>
+        </section>
+
+        <section id="actividad-2" class="page-break">
+          <h2 class="activity-title">Actividad 2. Rectificación de media onda con carga resistiva</h2>
+          <p class="purpose"><strong>Propósito.</strong> Relacionar la conducción del diodo con la forma de onda, el valor peak, la componente continua y la frecuencia de salida.</p>
+          <figure class="diagram" data-figure="3">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 760 280" role="img" aria-label="Rectificador de media onda">
+                <defs><style>.w{stroke:#20242a;stroke-width:5;fill:none}.t{font:22px Arial;fill:#20242a}.red{fill:#d71920}</style></defs>
+                <circle cx="100" cy="135" r="52" class="w"/><path d="M67 135 C79 105 91 105 103 135 S127 165 139 135" class="w"/><text x="35" y="230" class="t">12 V~</text>
+                <line x1="100" y1="83" x2="235" y2="83" class="w"/><polygon points="235,50 235,116 310,83" fill="#20242a"/><line x1="310" y1="47" x2="310" y2="119" class="w"/><line x1="310" y1="83" x2="560" y2="83" class="w"/><text x="244" y="35" class="t">D1</text>
+                <rect x="540" y="83" width="50" height="120" class="w"/><text x="610" y="145" class="t">R<tspan baseline-shift="sub">L</tspan> 1 kΩ</text><text x="445" y="55" class="t red">+ Vout</text>
+                <line x1="565" y1="203" x2="100" y2="203" class="w"/><line x1="100" y1="203" x2="100" y2="187" class="w"/>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 3">
+            </div>
+            <figcaption>Figura 3. Rectificador de media onda con carga resistiva.</figcaption>
+          </figure>
+          <h3>Procedimiento</h3>
+          <ol class="procedure">
+            <li>Mida el secundario aislado sin carga y registre V<sub>AC</sub> RMS y frecuencia.</li>
+            <li>Con la alimentación desconectada, monte D1 y R<sub>L</sub> = 1 kΩ.</li>
+            <li>Conecte CH1 a la entrada y CH2 a la carga sólo si ambos canales comparten el mismo retorno.</li>
+            <li>Registre V<sub>peak</sub> de entrada y salida, V<sub>DC</sub>, V<sub>RMS</sub> y frecuencia de los pulsos.</li>
+            <li>Invierta D1, capture la nueva polaridad de salida y luego restituya la conexión.</li>
+          </ol>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Magnitud</th><th>Teórica</th><th>Medida</th><th>% error</th></tr></thead>
+            <tbody>
+              <tr><td>Vsec RMS</td><td>12 V nominal</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Ventrada peak</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida peak</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida DC</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida RMS</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Frecuencia de salida</td><td>50 Hz esperados</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <p>Explique por qué la salida conserva la frecuencia de 50 Hz aunque desaparezca un semiciclo.</p><textarea class="answer" aria-label="Análisis actividad 2 a"></textarea>
+          <p>¿Qué diferencias aparecen entre el modelo de caída constante y la medición real?</p><textarea class="answer" aria-label="Análisis actividad 2 b"></textarea>
+        </section>
+
+        <section id="actividad-3" class="page-break">
+          <h2 class="activity-title">Actividad 3. Rectificación de onda completa: método 1, puente rectificador</h2>
+          <p class="purpose"><strong>Propósito.</strong> Comprobar el aprovechamiento de ambos semiciclos y el efecto de dos diodos en serie dentro del trayecto de conducción.</p>
+          <figure class="diagram" data-figure="4">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 760 360" role="img" aria-label="Puente rectificador de cuatro diodos">
+                <defs><style>.w{stroke:#20242a;stroke-width:5;fill:none}.t{font:21px Arial;fill:#20242a}.red{fill:#d71920}.d{fill:#20242a}</style></defs>
+                <text x="55" y="188" class="t">~ A</text><text x="640" y="188" class="t">B ~</text><text x="365" y="30" class="t red">+ Vout</text><text x="380" y="348" class="t">−</text>
+                <line x1="110" y1="180" x2="340" y2="55" class="w"/><line x1="420" y1="55" x2="650" y2="180" class="w"/><line x1="110" y1="180" x2="340" y2="305" class="w"/><line x1="420" y1="305" x2="650" y2="180" class="w"/>
+                <circle cx="380" cy="55" r="7" class="red"/><circle cx="380" cy="305" r="7" class="d"/>
+                <line x1="380" y1="55" x2="380" y2="95" class="w"/><rect x="355" y="95" width="50" height="170" class="w"/><line x1="380" y1="265" x2="380" y2="305" class="w"/><text x="420" y="190" class="t">R<tspan baseline-shift="sub">L</tspan> 1 kΩ</text>
+                <rect x="210" y="92" width="64" height="34" fill="#fff"/><text x="220" y="118" class="t">D1</text><rect x="492" y="92" width="64" height="34" fill="#fff"/><text x="502" y="118" class="t">D2</text>
+                <rect x="210" y="235" width="64" height="34" fill="#fff"/><text x="220" y="261" class="t">D3</text><rect x="492" y="235" width="64" height="34" fill="#fff"/><text x="502" y="261" class="t">D4</text>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 4">
+            </div>
+            <figcaption>Figura 4. Puente rectificador de cuatro diodos.</figcaption>
+          </figure>
+          <div class="warning"><strong>Medición segura con osciloscopio</strong>No conecte simultáneamente una masa a un terminal AC y otra al negativo DC del puente. Realice las mediciones secuencialmente o utilice una sonda diferencial autorizada.</div>
+          <h3>Procedimiento</h3>
+          <ol class="procedure">
+            <li>Con la alimentación desconectada, arme el puente con cuatro 1N4007.</li>
+            <li>Conecte R<sub>L</sub> = 1 kΩ entre + y −. Solicite revisión antes de energizar.</li>
+            <li>Mida el secundario y la salida en forma secuencial.</li>
+            <li>Registre V<sub>peak</sub>, V<sub>DC</sub>, V<sub>RMS</sub> y frecuencia. Identifique el par de diodos que conduce en cada semiciclo.</li>
+          </ol>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Magnitud</th><th>Teórica</th><th>Medida</th><th>% error</th></tr></thead>
+            <tbody>
+              <tr><td>Vsec RMS</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida peak</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida DC</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida RMS</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Frecuencia de salida</td><td>100 Hz esperados</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Caída total</td><td>≈ 2V<sub>D</sub></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <h3>Trayectos de corriente</h3>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Semiciclo</th><th>Terminal AC positivo</th><th>Diodos en conducción</th><th>Sentido por R<sub>L</sub></th></tr></thead>
+            <tbody>
+              <tr><td>A positivo respecto de B</td><td contenteditable="true"></td><td contenteditable="true"></td><td>+ hacia −</td></tr>
+              <tr><td>B positivo respecto de A</td><td contenteditable="true"></td><td contenteditable="true"></td><td>+ hacia −</td></tr>
+            </tbody>
+          </table></div>
+          <p>Explique por qué la polaridad en la carga no cambia aunque se invierta la polaridad instantánea del secundario.</p><textarea class="answer" aria-label="Análisis actividad 3"></textarea>
+        </section>
+
+        <section id="actividad-4" class="page-break">
+          <h2 class="activity-title">Actividad 4. Rectificación de onda completa con transformador de punto medio</h2>
+          <p class="purpose"><strong>Propósito.</strong> Verificar la rectificación de onda completa con dos diodos y analizar la función del punto medio como referencia de salida.</p>
+          <figure class="diagram" data-figure="5">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 760 350" role="img" aria-label="Rectificador con transformador de punto medio">
+                <defs><style>.w{stroke:#20242a;stroke-width:5;fill:none}.t{font:21px Arial;fill:#20242a}.red{fill:#d71920}</style></defs>
+                <path d="M90 45 q-30 20 0 40 q30 20 0 40 q-30 20 0 40 q30 20 0 40 q-30 20 0 40 q30 20 0 40" class="w"/><text x="5" y="165" class="t">12–0–12 V~</text>
+                <line x1="105" y1="45" x2="210" y2="45" class="w"/><polygon points="210,16 210,74 275,45" fill="#20242a"/><line x1="275" y1="14" x2="275" y2="76" class="w"/><line x1="275" y1="45" x2="540" y2="45" class="w"/><text x="218" y="110" class="t">D1</text>
+                <line x1="105" y1="285" x2="210" y2="285" class="w"/><polygon points="210,256 210,314 275,285" fill="#20242a"/><line x1="275" y1="254" x2="275" y2="316" class="w"/><line x1="275" y1="285" x2="540" y2="285" class="w"/><line x1="540" y1="285" x2="540" y2="45" class="w"/><text x="218" y="245" class="t">D2</text>
+                <line x1="105" y1="165" x2="400" y2="165" class="w"/><circle cx="105" cy="165" r="8" fill="#20242a"/><text x="315" y="198" class="t">0 V · CT</text>
+                <rect x="380" y="45" width="50" height="120" class="w"/><text x="450" y="110" class="t">R<tspan baseline-shift="sub">L</tspan> 1 kΩ</text><text x="460" y="30" class="t red">+ Vout</text>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 5">
+            </div>
+            <figcaption>Figura 5. Rectificador de onda completa con secundario 12–0–12 V~.</figcaption>
+          </figure>
+          <h3>Procedimiento</h3>
+          <ol class="procedure">
+            <li>Identifique los tres terminales. Mida A–CT, CT–B y A–B antes de conectar los diodos.</li>
+            <li>Conecte los ánodos de D1 y D2 a los extremos; una sus cátodos para formar +Vout. El punto medio será 0 V.</li>
+            <li>Conecte R<sub>L</sub> = 1 kΩ. Use CT como única referencia de masa.</li>
+            <li>Mida una mitad del secundario y la salida respecto de CT. Registre amplitud, componente continua y frecuencia.</li>
+          </ol>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Magnitud</th><th>Teórica</th><th>Medida</th><th>% error</th></tr></thead>
+            <tbody>
+              <tr><td>V A–CT RMS</td><td>12 V nominal</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>V CT–B RMS</td><td>12 V nominal</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>V A–B RMS</td><td>24 V nominal</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida peak</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Vsalida DC</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Frecuencia de salida</td><td>100 Hz esperados</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <h3>Comparación de los métodos de onda completa</h3>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Aspecto</th><th>Puente</th><th>Punto medio</th></tr></thead>
+            <tbody>
+              <tr><td>Diodos utilizados</td><td>4</td><td>2</td></tr>
+              <tr><td>Diodos en conducción por semiciclo</td><td>2</td><td>1</td></tr>
+              <tr><td>Secundario requerido</td><td>Dos terminales</td><td>Tres terminales con CT</td></tr>
+              <tr><td>Resultado observado</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <p>¿Cuál método produjo mayor V<sub>peak</sub> usando 12 V RMS por tramo y por qué?</p><textarea class="answer" aria-label="Análisis actividad 4"></textarea>
+        </section>
+
+        <section id="actividad-5" class="page-break">
+          <h2 class="activity-title">Actividad 5. Filtrado por condensador y análisis del rizado</h2>
+          <p class="purpose"><strong>Propósito.</strong> Cuantificar cómo la capacitancia modifica la componente continua y el rizado de una salida rectificada de onda completa.</p>
+          <figure class="diagram" data-figure="6">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 760 300" role="img" aria-label="Filtro capacitivo en paralelo con la carga">
+                <defs><style>.w{stroke:#20242a;stroke-width:5;fill:none}.t{font:21px Arial;fill:#20242a}.red{fill:#d71920}</style></defs>
+                <rect x="30" y="85" width="200" height="125" class="w"/><text x="62" y="135" class="t">Rectificador</text><text x="60" y="170" class="t">onda completa</text>
+                <line x1="230" y1="85" x2="700" y2="85" class="w"/><line x1="230" y1="210" x2="700" y2="210" class="w"/><text x="250" y="65" class="t red">+</text>
+                <line x1="390" y1="85" x2="390" y2="126" class="w"/><line x1="350" y1="126" x2="430" y2="126" class="w"/><line x1="350" y1="145" x2="430" y2="145" class="w"/><line x1="390" y1="145" x2="390" y2="210" class="w"/><text x="330" y="265" class="t">C filtro</text>
+                <rect x="590" y="85" width="48" height="125" class="w"/><text x="650" y="155" class="t">R<tspan baseline-shift="sub">L</tspan></text>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 6">
+            </div>
+            <figcaption>Figura 6. Condensador de filtro conectado en paralelo con la carga.</figcaption>
+          </figure>
+
+          <div class="formula-card">
+            <div class="formula-title">Ecuación de trabajo · Rizado peak a peak del filtro</div>
+            <div class="formula-expression">ΔV<sub>pp</sub> ≈ I<sub>L</sub> / (f<sub>r</sub> · C)</div>
+            <div class="formula-note">Para onda completa alimentada a 50 Hz use f<sub>r</sub> ≈ 100 Hz.</div>
+          </div>
+
+          <h3>Procedimiento</h3>
+          <ol class="procedure">
+            <li>Use el rectificador de onda completa indicado por el docente y R<sub>L</sub> = 1 kΩ. Registre primero la salida sin condensador.</li>
+            <li>Apague y descargue el circuito. Conecte C = 100 µF respetando la polaridad; mida V<sub>DC</sub>, V<sub>max</sub>, V<sub>min</sub> y ΔV<sub>pp</sub>.</li>
+            <li>Para observar rizado pequeño, use acoplamiento AC y una escala vertical adecuada.</li>
+            <li>Repita con 470 µF y 1000 µF, descargando cada condensador antes del reemplazo.</li>
+            <li>Calcule I<sub>L</sub> = V<sub>DC</sub>/R<sub>L</sub>, estime ΔV<sub>pp</sub> y determine el porcentaje de rizado.</li>
+          </ol>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>C [µF]</th><th>VDC [V]</th><th>Vmax [V]</th><th>Vmin [V]</th><th>ΔVpp medida [V]</th><th>ΔVpp calculada [V]</th><th>% error</th><th>r [%]</th></tr></thead>
+            <tbody>
+              <tr><td>Sin C</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td>—</td><td>—</td><td contenteditable="true"></td></tr>
+              <tr><td>100</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>470</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>1000</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <p>a. Describa la relación entre C y ΔV<sub>pp</sub>. ¿Es lineal respecto de C o de 1/C?</p><textarea class="answer" aria-label="Análisis actividad 5 a"></textarea>
+          <p>b. Explique por qué V<sub>DC</sub> aumenta al agregar el condensador, aunque el peak del secundario no cambie.</p><textarea class="answer" aria-label="Análisis actividad 5 b"></textarea>
+          <p>c. ¿Qué ocurre con el rizado si R<sub>L</sub> disminuye y la corriente de carga aumenta?</p><textarea class="answer" aria-label="Análisis actividad 5 c"></textarea>
+        </section>
+
+        <section id="actividad-6" class="page-break">
+          <h2 class="activity-title">Actividad 6. Regulador 7812 y fuente lineal regulada</h2>
+          <p class="purpose"><strong>Propósito.</strong> Integrar rectificación, filtrado y regulación; verificar 12 V de salida, margen de entrada, rizado residual y efecto de la carga.</p>
+          <figure class="diagram" data-figure="7">
+            <div class="figure-stage">
+              <svg class="default-figure" viewBox="0 0 900 320" role="img" aria-label="Etapas de una fuente lineal con regulador 7812">
+                <defs><style>.w{stroke:#20242a;stroke-width:4;fill:#fff}.a{stroke:#20242a;stroke-width:4;fill:none;marker-end:url(#m)}.t{font:19px Arial;fill:#20242a}.red{fill:#d71920}</style><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#20242a"/></marker></defs>
+                <rect x="20" y="90" width="150" height="105" class="w"/><text x="49" y="130" class="t">Secundario</text><text x="43" y="163" class="t">12–0–12 V~</text>
+                <line x1="170" y1="142" x2="215" y2="142" class="a"/><rect x="215" y="90" width="175" height="105" class="w"/><text x="240" y="130" class="t">Onda completa</text><text x="251" y="163" class="t">punto medio</text>
+                <line x1="390" y1="142" x2="435" y2="142" class="a"/><rect x="435" y="90" width="120" height="105" class="w"/><text x="460" y="130" class="t">Filtro</text><text x="450" y="163" class="t">2200 µF</text>
+                <line x1="555" y1="142" x2="600" y2="142" class="a"/><rect x="600" y="90" width="125" height="105" class="w"/><text x="638" y="130" class="t red">7812</text><text x="616" y="163" class="t">IN GND OUT</text>
+                <line x1="725" y1="142" x2="770" y2="142" class="a"/><rect x="770" y="90" width="105" height="105" class="w"/><text x="792" y="130" class="t">Carga</text><text x="790" y="163" class="t">12 VDC</text>
+                <text x="548" y="55" class="t red">CIN 0,33 µF</text><text x="718" y="55" class="t red">COUT 0,10 µF</text><line x1="95" y1="245" x2="822" y2="245" class="w"/><text x="397" y="285" class="t">0 V común</text>
+              </svg>
+              <img class="custom-figure" alt="Figura personalizada 7">
+            </div>
+            <figcaption>Figura 7. Etapas de la fuente lineal regulada de 12 V.</figcaption>
+          </figure>
+
+          <div class="formula-card">
+            <div class="formula-title">Ecuación 8 · Potencia disipada por el regulador 7812</div>
+            <div class="formula-expression">P<sub>7812</sub> ≈ (V<sub>IN,DC</sub> − V<sub>OUT</sub>) · I<sub>OUT</sub></div>
+            <div class="formula-note">Use la tensión media de entrada para estimar potencia y el valle mínimo para comprobar el margen de regulación.</div>
+          </div>
+
+          <h3>Configuración y procedimiento</h3>
+          <ol class="procedure">
+            <li>Use el rectificador con punto medio, C = 2200 µF y CT como 0 V común.</li>
+            <li>Verifique el pinout. Instale C<sub>IN</sub> = 0,33 µF y C<sub>OUT</sub> = 0,10 µF cerca del regulador.</li>
+            <li>Antes de insertar el 7812, mida V<sub>DC</sub> promedio y el valle mínimo de la entrada.</li>
+            <li>Energice primero con R<sub>L</sub> = 1 kΩ. Compruebe una salida cercana a 12 V.</li>
+            <li>Pruebe con 240 Ω / 2 W y observe la temperatura. Desenergice ante calentamiento excesivo.</li>
+          </ol>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Carga</th><th>V̄IN [V]</th><th>VIN mín. [V]</th><th>Vr IN pp [V]</th><th>VOUT [V]</th><th>Vr OUT pp [mV]</th><th>IOUT [mA]</th><th>P7812 [W]</th><th>Temp.</th></tr></thead>
+            <tbody>
+              <tr><td>1 kΩ</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>240 Ω / 2 W</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Otra:</td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+          <h3>Pruebas de funcionamiento</h3>
+          <ul class="checklist">
+            <li><input type="checkbox"><span>V<sub>OUT</sub> positiva respecto de GND.</span></li>
+            <li><input type="checkbox"><span>Salida cercana a 12 V con 1 kΩ.</span></li>
+            <li><input type="checkbox"><span>Salida estable con 240 Ω.</span></li>
+            <li><input type="checkbox"><span>V<sub>IN,min</sub> conserva margen sobre V<sub>OUT</sub>.</span></li>
+            <li><input type="checkbox"><span>Rizado de salida menor que el rizado antes del 7812.</span></li>
+          </ul>
+          <p>a. Compare el rizado antes y después del 7812. ¿Qué función cumple el regulador que el condensador no realiza?</p><textarea class="answer" aria-label="Análisis actividad 6 a"></textarea>
+          <p>b. Calcule la potencia disipada en ambas cargas. ¿Por qué la eficiencia empeora cuando aumenta V<sub>IN</sub> − V<sub>OUT</sub>?</p><textarea class="answer" aria-label="Análisis actividad 6 b"></textarea>
+          <p>c. Si V<sub>OUT</sub> cae durante los valles, identifique la causa probable y fundamente con mediciones.</p><textarea class="answer" aria-label="Análisis actividad 6 c"></textarea>
+        </section>
+
+        <section id="sintesis" class="page-break">
+          <h2>6. Síntesis de resultados</h2>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Etapa</th><th>Tipo de salida</th><th>Diodos por semiciclo</th><th>f<sub>r</sub> esperada</th><th>VDC medido</th><th>Rizado medido</th></tr></thead>
+            <tbody>
+              <tr><td>Media onda</td><td>Pulsante unipolar</td><td>1</td><td>50 Hz</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Puente</td><td>Pulsante unipolar</td><td>2</td><td>100 Hz</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Punto medio</td><td>Pulsante unipolar</td><td>1</td><td>100 Hz</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Onda completa + filtro</td><td>DC con rizado</td><td>Según método</td><td>100 Hz</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Fuente con 7812</td><td>DC regulada</td><td>D1/D2 alternan</td><td>Residual</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+
+          <h3>Preguntas integradoras</h3>
+          <ol>
+            <li>¿Qué ventaja entrega la onda completa respecto de la media onda y por qué facilita el filtrado?<textarea class="answer"></textarea></li>
+            <li>Compare puente y punto medio: cantidad de diodos, caída directa, transformador requerido y uso del secundario.<textarea class="answer"></textarea></li>
+            <li>Ordene el rizado para 100, 470, 1000 y 2200 µF. Relacione con la corriente de carga.<textarea class="answer"></textarea></li>
+            <li>¿Por qué observar 12 V en vacío no permite afirmar que una fuente está correctamente regulada?<textarea class="answer"></textarea></li>
+            <li>Indique dos causas de calentamiento del 7812 y una medida de diseño para reducir cada una.<textarea class="answer"></textarea></li>
+          </ol>
+          <h3>Conclusión técnica</h3>
+          <p>Redacte de 8 a 12 líneas. Incluya una comparación entre topologías, el efecto cuantificado del condensador y la condición necesaria para que el 7812 mantenga 12 V.</p>
+          <textarea class="answer tall" aria-label="Conclusión técnica"></textarea>
+        </section>
+
+        <section id="evaluacion" class="page-break">
+          <h2>7. Evidencias y entrega</h2>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Evidencia</th><th>Incluida</th><th>Identificación</th><th>Observación docente</th></tr></thead>
+            <tbody>
+              <tr><td>Montaje de media onda</td><td>☐</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Forma de onda del puente</td><td>☐</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Forma de onda con punto medio</td><td>☐</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Rizado con dos capacitancias</td><td>☐</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Fuente con 7812 y carga</td><td>☐</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+              <tr><td>Tablas y cálculos completos</td><td>☐</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+
+          <h3>Pauta de cotejo</h3>
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Indicador</th><th>Logrado</th><th>Parcial</th><th>No logrado</th><th>Observación</th></tr></thead>
+            <tbody>
+              <tr><td>Trabaja con procedimientos seguros y ordenados.</td><td>☐</td><td>☐</td><td>☐</td><td contenteditable="true"></td></tr>
+              <tr><td>Monta correctamente las tres topologías rectificadoras.</td><td>☐</td><td>☐</td><td>☐</td><td contenteditable="true"></td></tr>
+              <tr><td>Configura mediciones sin cortocircuitos de masa.</td><td>☐</td><td>☐</td><td>☐</td><td contenteditable="true"></td></tr>
+              <tr><td>Calcula y mide el rizado con unidades correctas.</td><td>☐</td><td>☐</td><td>☐</td><td contenteditable="true"></td></tr>
+              <tr><td>Verifica la regulación con más de una carga.</td><td>☐</td><td>☐</td><td>☐</td><td contenteditable="true"></td></tr>
+              <tr><td>Interpreta diferencias entre teoría y medición.</td><td>☐</td><td>☐</td><td>☐</td><td contenteditable="true"></td></tr>
+            </tbody>
+          </table></div>
+
+          <h3>Referencias técnicas</h3>
+          <ul class="small">
+            <li>STMicroelectronics. <em>L78 positive voltage regulators</em>.</li>
+            <li>Vishay. <em>1N4001 through 1N4007 general purpose plastic rectifiers</em>.</li>
+            <li>Texas Instruments. <em>AN-53: Rectifier and capacitor filter analysis</em>.</li>
+          </ul>
+
+          <h3>Observaciones del docente</h3>
+          <textarea class="answer tall" aria-label="Observaciones del docente"></textarea>
+          <div class="signature"><div>Firma docente</div><div>Fecha</div></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    /*
+      Reemplazo automático de figuras:
+      - Si existe N.png junto a index.html, se muestra esa imagen.
+      - Si no existe o no puede cargarse, permanece el SVG predeterminado.
+      La numeración se toma desde data-figure para evitar rutas escritas a mano.
+    */
+    document.querySelectorAll('figure[data-figure]').forEach((figure) => {
+      const number = figure.dataset.figure;
+      const image = figure.querySelector('.custom-figure');
+      image.addEventListener('load', () => figure.classList.add('has-custom'));
+      image.addEventListener('error', () => {
+        figure.classList.remove('has-custom');
+        image.removeAttribute('src');
+      });
+      image.src = `${number}.png`;
+    });
+  </script>
+</body>
+</html>
