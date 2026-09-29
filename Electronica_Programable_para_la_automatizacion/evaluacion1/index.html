@@ -1,1 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Guía de laboratorio evaluada de Arduino: entradas digitales, lectura analógica, salidas, menú serial y estructuras de programación.">
+  <title>Laboratorio evaluado Arduino | INACAP</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23d71920'/%3E%3Cpath d='M17 42V22h7v20zm11 0V22h7l6 10V22h7v20h-7L35 32v10z' fill='white'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --red: #d71920;
+      --red-dark: #aa1017;
+      --ink: #20252b;
+      --muted: #5e6772;
+      --paper: #ffffff;
+      --soft: #f3f4f6;
+      --line: #d7dbe0;
+      --green: #177957;
+      --amber: #a96300;
+      --blue: #245f9e;
+      --shadow: 0 12px 34px rgba(29, 34, 40, .10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #e8eaed;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 3.45rem;
+      padding: .65rem clamp(1rem, 4vw, 3rem);
+      color: #fff;
+      background: linear-gradient(90deg, var(--red), var(--red-dark));
+      box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
+    }
+
+    .toolbar-brand {
+      display: flex;
+      align-items: baseline;
+      gap: .8rem;
+      min-width: 0;
+    }
+
+    .brand {
+      font-weight: 900;
+      letter-spacing: .065em;
+    }
+
+    .toolbar-title {
+      overflow: hidden;
+      font-size: .9rem;
+      font-weight: 650;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      opacity: .95;
+    }
+
+    .toolbar-actions { display: flex; gap: .55rem; }
+
+    .toolbar button,
+    .toolbar a {
+      min-height: 2.25rem;
+      padding: .45rem .75rem;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: .35rem;
+      color: #fff;
+      background: rgba(255,255,255,.1);
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .document {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 1.4rem auto 3rem;
+    }
+
+    .sheet {
+      position: relative;
+      margin: 0 0 1.25rem;
+      padding: clamp(1.3rem, 3.5vw, 3rem);
+      overflow: hidden;
+      border: 1px solid #cfd3d8;
+      border-top: .46rem solid var(--red);
+      background:
+        linear-gradient(90deg, rgba(215,25,32,.026) 0 1px, transparent 1px) 0 0 / 42px 42px,
+        linear-gradient(rgba(215,25,32,.022) 0 1px, transparent 1px) 0 0 / 42px 42px,
+        var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .sheet::after {
+      content: attr(data-page);
+      position: absolute;
+      right: 1.2rem;
+      bottom: .8rem;
+      color: #7a818a;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .cover {
+      min-height: 650px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 84% 29%, rgba(215,25,32,.15), transparent 20%),
+        linear-gradient(112deg, transparent 0 67%, rgba(215,25,32,.06) 67% 100%),
+        #fff;
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      right: 6%;
+      bottom: 12%;
+      width: clamp(10rem, 24vw, 17rem);
+      aspect-ratio: 1;
+      border: 2rem solid rgba(215,25,32,.10);
+      border-radius: 50%;
+    }
+
+    .eyebrow {
+      margin: 0 0 .5rem;
+      color: var(--red);
+      font-size: .82rem;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4 { margin-top: 0; line-height: 1.12; }
+
+    h1 {
+      position: relative;
+      max-width: 13ch;
+      margin-bottom: 1rem;
+      font-size: clamp(2.6rem, 6vw, 5.4rem);
+      letter-spacing: -.045em;
+    }
+
+    h2 {
+      margin-bottom: 1.15rem;
+      font-size: clamp(1.75rem, 3.7vw, 3rem);
+      letter-spacing: -.03em;
+    }
+
+    h3 { margin-bottom: .7rem; font-size: 1.25rem; }
+    h4 { margin-bottom: .45rem; font-size: 1rem; }
+    p { margin: 0 0 .85rem; }
+    ul, ol { margin: .45rem 0 0; padding-left: 1.35rem; }
+    li + li { margin-top: .35rem; }
+
+    .lead {
+      position: relative;
+      max-width: 42rem;
+      color: #424952;
+      font-size: clamp(1.1rem, 2vw, 1.45rem);
+      line-height: 1.45;
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1rem; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.15rem;
+      padding: .4rem .78rem;
+      border: 1px solid #cbd0d6;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      font-size: .85rem;
+      font-weight: 750;
+    }
+
+    .identity {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem 1.2rem;
+      max-width: 51rem;
+      margin-top: 1.7rem;
+    }
+
+    .field {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: end;
+      gap: .55rem;
+      font-size: .88rem;
+      font-weight: 750;
+    }
+
+    .line { height: 1.45rem; border-bottom: 1px solid #6f7781; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-bottom: 1.1rem;
+      padding-bottom: .7rem;
+      border-bottom: 2px solid #e3e5e8;
+    }
+
+    .section-number {
+      display: grid;
+      flex: 0 0 2.3rem;
+      height: 2.3rem;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--red);
+      font-weight: 900;
+    }
+
+    .section-head h2 { margin: 0; font-size: clamp(1.55rem, 3vw, 2.4rem); }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      min-width: 0;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      background: rgba(255,255,255,.95);
+      box-shadow: 0 4px 14px rgba(30,35,40,.06);
+    }
+
+    .card.redline { border-top: .3rem solid var(--red); }
+    .card.blueline { border-top: .3rem solid var(--blue); }
+    .card.greenline { border-top: .3rem solid var(--green); }
+    .card.amberline { border-top: .3rem solid var(--amber); }
+
+    .callout {
+      margin: 1rem 0;
+      padding: .9rem 1rem;
+      border-left: .35rem solid var(--red);
+      background: #fff3f3;
+    }
+
+    .callout strong { color: var(--red-dark); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      font-size: .9rem;
+    }
+
+    th, td {
+      padding: .62rem .68rem;
+      border: 1px solid #cfd4d9;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #fff;
+      background: #343a42;
+      font-weight: 800;
+    }
+
+    tbody tr:nth-child(even) { background: #f6f7f8; }
+
+    code { font-family: Consolas, "Courier New", monospace; }
+
+    pre {
+      margin: .65rem 0 0;
+      padding: .9rem 1rem;
+      overflow: auto;
+      border: 1px solid #3a4149;
+      border-radius: .45rem;
+      color: #eef4f8;
+      background: #20252b;
+      font: .86rem/1.5 Consolas, "Courier New", monospace;
+      white-space: pre-wrap;
+    }
+
+    .token-key { color: #ff8c91; }
+    .token-fn { color: #8fc9ff; }
+    .token-comment { color: #aeb7c0; font-style: italic; }
+    .token-num { color: #ffd479; }
+
+    .fragment-label {
+      display: inline-flex;
+      margin-bottom: .2rem;
+      padding: .25rem .55rem;
+      border-radius: .25rem;
+      color: #fff;
+      background: var(--blue);
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .todo {
+      color: #9f3c00;
+      background: #fff5dd;
+      font-weight: 800;
+    }
+
+    .flow-wrap {
+      overflow: auto;
+      padding: .7rem;
+      border: 1px solid var(--line);
+      border-radius: .55rem;
+      background: #fff;
+    }
+
+    .flow-wrap svg { display: block; width: 100%; min-width: 760px; height: auto; }
+    .flow-node { fill: #fff; stroke: #343a42; stroke-width: 2; }
+    .flow-start { fill: #fce9ea; stroke: var(--red); stroke-width: 2.5; }
+    .flow-decision { fill: #fff6df; stroke: #9b6500; stroke-width: 2.2; }
+    .flow-menu { fill: #eaf2fb; stroke: var(--blue); stroke-width: 2.2; }
+    .flow-action { fill: #eaf7f1; stroke: var(--green); stroke-width: 2.2; }
+    .flow-line { fill: none; stroke: #343a42; stroke-width: 2.2; marker-end: url(#arrow); }
+    .flow-return { fill: none; stroke: var(--red); stroke-width: 2.6; marker-end: url(#arrowRed); }
+    .flow-join { fill: none; stroke: var(--red); stroke-width: 2.6; }
+    .flow-text { fill: #20252b; font: 700 16px "Segoe UI", Arial, sans-serif; text-anchor: middle; }
+    .flow-small { fill: #4c555f; font: 650 13px "Segoe UI", Arial, sans-serif; text-anchor: middle; }
+    .flow-label { fill: #20252b; font: 800 13px "Segoe UI", Arial, sans-serif; }
+
+    .video-box {
+      position: relative;
+      display: grid;
+      min-height: 370px;
+      place-items: center;
+      overflow: hidden;
+      border: 2px dashed #aeb4bb;
+      border-radius: .65rem;
+      background:
+        linear-gradient(135deg, rgba(215,25,32,.05), transparent 55%),
+        #f7f8f9;
+    }
+
+    .video-box iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-placeholder { max-width: 34rem; padding: 2rem; text-align: center; }
+
+    .play {
+      display: grid;
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--red);
+      font-size: 1.4rem;
+    }
+
+    .checkpoint {
+      display: grid;
+      grid-template-columns: 3rem 1fr auto;
+      gap: .8rem;
+      align-items: start;
+      padding: .85rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .checkpoint:last-child { border-bottom: 0; }
+
+    .checkpoint-num {
+      display: grid;
+      width: 2.45rem;
+      height: 2.45rem;
+      place-items: center;
+      border-radius: .35rem;
+      color: #fff;
+      background: #343a42;
+      font-weight: 900;
+    }
+
+    .points {
+      white-space: nowrap;
+      color: var(--red-dark);
+      font-weight: 900;
+    }
+
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { position: relative; padding-left: 1.75rem; }
+    .checklist li::before {
+      content: "□";
+      position: absolute;
+      left: 0;
+      top: -.08rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .answer-lines { margin-top: .6rem; }
+    .answer-lines span { display: block; height: 1.75rem; border-bottom: 1px solid #aeb4ba; }
+
+    .rubric td:last-child,
+    .rubric th:last-child { width: 5.2rem; text-align: center; }
+
+    .rubric .subtotal { font-weight: 850; background: #fff0f1; }
+
+    .signature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .signature { padding-top: .55rem; border-top: 1px solid #5e6670; text-align: center; font-size: .83rem; }
+
+    .screen-only-note {
+      margin: 1rem 0 0;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    @media (max-width: 760px) {
+      .document { width: min(100% - 1rem, 1120px); margin-top: .6rem; }
+      .sheet { padding: 1.1rem; }
+      .grid-2, .grid-3, .identity, .signature-grid { grid-template-columns: 1fr; }
+      .toolbar-title { display: none; }
+      .toolbar-actions a { display: none; }
+      .checkpoint { grid-template-columns: 2.6rem 1fr; }
+      .points { grid-column: 2; }
+      .cover { min-height: 560px; }
+    }
+
+    @page { size: A4 portrait; margin: 12mm; }
+
+    @media print {
+      body { background: #fff; font-size: 10.2pt; }
+      .toolbar, .screen-only-note { display: none !important; }
+      .document { width: auto; margin: 0; }
+      .sheet {
+        min-height: 0;
+        margin: 0;
+        padding: 9mm 9mm 11mm;
+        border: 0;
+        border-top: 3mm solid var(--red);
+        box-shadow: none;
+        break-after: page;
+      }
+      .sheet:last-child { break-after: auto; }
+      .cover { min-height: 255mm; }
+      h1 { font-size: 36pt; }
+      h2 { font-size: 21pt; }
+      h3 { font-size: 13pt; }
+      p, li, td, th { font-size: 9.5pt; }
+      pre { font-size: 8.2pt; }
+      .card, .flow-wrap, table, pre { break-inside: avoid; }
+      .video-box { min-height: 108mm; }
+      .flow-wrap svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div class="toolbar-brand">
+      <span class="brand">INACAP</span>
+      <span class="toolbar-title">Laboratorio evaluado · Arduino y Tinkercad</span>
+    </div>
+    <div class="toolbar-actions">
+      <a href="#inicio">Inicio</a>
+      <button type="button" onclick="window.print()">Imprimir / PDF</button>
+    </div>
+  </header>
+
+  <main class="document" id="inicio">
+    <section class="sheet cover" data-page="1">
+      <p class="eyebrow">Guía de laboratorio evaluada · Ejecución práctica</p>
+      <h1>Estación de monitoreo y clasificación</h1>
+      <p class="lead">Programación de Arduino con entradas digitales, lectura analógica, salidas LED y un menú de supervisión mediante el monitor serial.</p>
+      <div class="pills">
+        <span class="pill">2 pulsadores</span>
+        <span class="pill">3 LED</span>
+        <span class="pill">1 potenciómetro</span>
+        <span class="pill">Monitor serial</span>
+        <span class="pill">100 puntos</span>
+      </div>
+      <div class="identity">
+        <div class="field"><span>Asignatura:</span><span class="line"></span></div>
+        <div class="field"><span>Sección:</span><span class="line"></span></div>
+        <div class="field"><span>Estudiante(s):</span><span class="line"></span></div>
+        <div class="field"><span>Fecha:</span><span class="line"></span></div>
+        <div class="field"><span>Docente:</span><span class="line"></span></div>
+        <div class="field"><span>Sede:</span><span class="line"></span></div>
+      </div>
+    </section>
+
+    <section class="sheet" data-page="2">
+      <div class="section-head"><span class="section-number">1</span><h2>Propósito y desafío</h2></div>
+      <div class="grid-2">
+        <article class="card redline">
+          <h3>Aprendizaje esperado</h3>
+          <p>Implementar y comprobar un sistema físico programado, relacionando entradas, decisiones, repeticiones, selección de alternativas, funciones y comunicación serial.</p>
+          <h3>Se evaluará que el estudiante pueda</h3>
+          <ul>
+            <li>Interpretar una especificación funcional.</li>
+            <li>Montar y verificar correctamente el hardware.</li>
+            <li>Organizar el programa en funciones.</li>
+            <li>Usar <code>if</code>, <code>switch case</code> y <code>while</code> con sentido.</li>
+            <li>Demostrar y explicar el funcionamiento.</li>
+          </ul>
+        </article>
+        <article class="card blueline">
+          <h3>Situación problemática</h3>
+          <p>Una estación debe supervisar una variable de proceso representada por un potenciómetro. En modo automático, tres LED comunican si el valor está en zona baja, media o alta. En modo manual, un operador puede seleccionar los indicadores para comprobarlos.</p>
+          <p>La estación también debe aceptar órdenes desde el monitor serial del IDE de Arduino, mostrar datos del proceso y permitir cambiar su modo de trabajo.</p>
+          <div class="callout"><strong>Importante:</strong> esta guía entrega fragmentos y criterios. El programa completo debe ser diseñado, integrado y probado por el estudiante.</div>
+        </article>
+      </div>
+      <h3 style="margin-top:1.2rem;">Condición de logro</h3>
+      <p>El sistema debe cumplir todas las funciones obligatorias sin reiniciar la simulación y debe responder de forma controlada a cada pulsación y orden serial.</p>
+    </section>
+
+    <section class="sheet" data-page="3">
+      <div class="section-head"><span class="section-number">2</span><h2>Hardware y asignación de pines</h2></div>
+      <div class="grid-2">
+        <div>
+          <h3>Materiales</h3>
+          <ul class="checklist">
+            <li>Arduino UNO.</li>
+            <li>Protoboard y cables de conexión.</li>
+            <li>2 pulsadores.</li>
+            <li>2 resistencias de 10 kΩ para <em>pull-down</em>.</li>
+            <li>3 LED: verde, amarillo y rojo.</li>
+            <li>3 resistencias de 220 Ω a 330 Ω.</li>
+            <li>1 potenciómetro de 10 kΩ.</li>
+          </ul>
+          <div class="callout"><strong>Antes de energizar:</strong> revise polaridad de los LED, valor de resistencias y continuidad de GND.</div>
+        </div>
+        <div>
+          <h3>Mapa obligatorio de conexiones</h3>
+          <table>
+            <thead><tr><th>Elemento</th><th>Pin</th><th>Función</th></tr></thead>
+            <tbody>
+              <tr><td>Botón MODO</td><td>A0</td><td>Alterna AUTO / MANUAL</td></tr>
+              <tr><td>Botón ACCIÓN</td><td>A1</td><td>Acción según el modo</td></tr>
+              <tr><td>Potenciómetro</td><td>A2</td><td>Variable analógica 0–1023</td></tr>
+              <tr><td>LED verde</td><td>D8</td><td>Zona baja / prueba manual</td></tr>
+              <tr><td>LED amarillo</td><td>D9</td><td>Zona media / prueba manual</td></tr>
+              <tr><td>LED rojo</td><td>D10</td><td>Zona alta / prueba manual</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <h3 style="margin-top:1.2rem;">Verificación eléctrica previa</h3>
+      <table>
+        <thead><tr><th>Prueba</th><th>Resultado esperado</th><th>V°B°</th></tr></thead>
+        <tbody>
+          <tr><td>Medición del potenciómetro</td><td>La lectura cambia progresivamente entre valores cercanos a 0 y 1023.</td><td>□</td></tr>
+          <tr><td>Botón sin pulsar</td><td>La entrada se mantiene en LOW por la resistencia <em>pull-down</em>.</td><td>□</td></tr>
+          <tr><td>Prueba individual de LED</td><td>Cada salida enciende solamente el LED asignado.</td><td>□</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="sheet" data-page="4">
+      <div class="section-head"><span class="section-number">3</span><h2>Especificación funcional</h2></div>
+      <div class="grid-2">
+        <article class="card greenline">
+          <h3>Modo AUTOMÁTICO</h3>
+          <p>El potenciómetro representa el valor del proceso.</p>
+          <table>
+            <thead><tr><th>Lectura A2</th><th>Estado</th><th>Salida</th></tr></thead>
+            <tbody>
+              <tr><td>0 a 339</td><td>Zona baja</td><td>LED verde</td></tr>
+              <tr><td>340 a 699</td><td>Zona media</td><td>LED amarillo</td></tr>
+              <tr><td>700 a 1023</td><td>Zona alta</td><td>LED rojo</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:.8rem;">Solo un LED debe permanecer encendido. La selección debe resolverse con una estructura <code>if / else if / else</code>.</p>
+        </article>
+        <article class="card amberline">
+          <h3>Modo MANUAL</h3>
+          <ul>
+            <li>El potenciómetro continúa siendo leído y puede mostrarse por serial.</li>
+            <li>El botón ACCIÓN avanza: verde → amarillo → rojo → apagado → verde.</li>
+            <li>El botón MODO vuelve a activar el modo automático.</li>
+            <li>La secuencia manual puede resolverse con una variable de estado y <code>switch case</code>.</li>
+          </ul>
+        </article>
+      </div>
+      <div class="grid-2" style="margin-top:1rem;">
+        <article class="card redline">
+          <h3>Comportamiento de los botones</h3>
+          <ul>
+            <li>Leer el estado del botón antes de evaluarlo con <code>if</code>.</li>
+            <li>Si está pulsado, un <code>while</code> debe releer la entrada mientras continúe en 1.</li>
+            <li>La acción se ejecuta solamente después de detectar la liberación del botón.</li>
+          </ul>
+        </article>
+        <article class="card blueline">
+          <h3>Información mínima por serial</h3>
+          <ul>
+            <li>Modo actual: AUTOMÁTICO o MANUAL.</li>
+            <li>Lectura cruda del potenciómetro.</li>
+            <li>Porcentaje aproximado.</li>
+            <li>Zona o LED activo.</li>
+            <li>Mensajes de confirmación y error.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="sheet" data-page="5">
+      <div class="section-head"><span class="section-number">4</span><h2>Menú de supervisión serial</h2></div>
+      <p>Al iniciar, y cada vez que se solicite ayuda, el monitor serial debe mostrar un menú semejante al siguiente:</p>
+      <pre>===== ESTACIÓN DE MONITOREO =====
+1 - Mostrar estado actual
+2 - Activar modo AUTOMÁTICO
+3 - Activar modo MANUAL
+4 - Ejecutar prueba de los tres LED
+5 - Apagar salidas y reiniciar estado manual
+M - Mostrar nuevamente este menú
+Ingrese una opción:</pre>
+      <div class="grid-2" style="margin-top:1rem;">
+        <article class="card blueline">
+          <h3>Requisitos del menú</h3>
+          <ul>
+            <li>Leer una opción solamente cuando <code>Serial.available() &gt; 0</code>.</li>
+            <li>Resolver las órdenes mediante <code>switch (opcion)</code>.</li>
+            <li>Informar por serial qué acción se ejecutó.</li>
+            <li>Incluir <code>default</code> para opciones inválidas.</li>
+          </ul>
+        </article>
+        <article class="card redline">
+          <h3>Restricción de diseño</h3>
+          <p>Los botones físicos y el menú serial deben modificar las mismas variables de estado. No se aceptan dos sistemas independientes que se contradigan entre sí.</p>
+          <p>Ejemplo: si la opción <strong>3</strong> activa MANUAL, el siguiente toque del botón MODO debe regresar a AUTOMÁTICO.</p>
+        </article>
+      </div>
+      <h3 style="margin-top:1.2rem;">Registro de decisiones</h3>
+      <p>Explique qué variables usará para recordar el modo y la salida manual:</p>
+      <div class="answer-lines"><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="sheet" data-page="6">
+      <div class="section-head"><span class="section-number">5</span><h2>Diagrama de flujo general</h2></div>
+      <p>Las flechas muestran el recorrido completo del programa. Después de actualizar las salidas, la ejecución vuelve directamente a leer el potenciómetro y continúa el ciclo.</p>
+      <div class="flow-wrap" aria-label="Diagrama de flujo general del sistema">
+        <svg viewBox="0 0 960 1190" role="img" aria-labelledby="flowTitle flowDesc">
+          <title id="flowTitle">Flujo general de la estación Arduino</title>
+          <desc id="flowDesc">Inicio, configuración, lectura analógica, menú serial, botones, modos automático y manual, actualización de salidas y retorno a la lectura.</desc>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#343a42"/></marker>
+            <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d71920"/></marker>
+          </defs>
+
+          <ellipse class="flow-start" cx="480" cy="45" rx="105" ry="30"/>
+          <text class="flow-text" x="480" y="51">Inicio</text>
+          <path class="flow-line" d="M480 75 V105"/>
+
+          <rect class="flow-node" x="295" y="105" width="370" height="64" rx="8"/>
+          <text class="flow-text" x="480" y="132">Configurar pines, Serial y estados</text>
+          <text class="flow-small" x="480" y="154">setup()</text>
+          <path class="flow-line" d="M480 169 V202"/>
+
+          <rect class="flow-menu" x="335" y="202" width="290" height="56" rx="8"/>
+          <text class="flow-text" x="480" y="236">Mostrar menú serial</text>
+          <path class="flow-line" d="M480 258 V296"/>
+
+          <rect class="flow-action" x="335" y="296" width="290" height="56" rx="8"/>
+          <text class="flow-text" x="480" y="330">Leer potenciómetro A2</text>
+          <path class="flow-line" d="M480 352 V392"/>
+
+          <polygon class="flow-decision" points="480,392 610,448 480,504 350,448"/>
+          <text class="flow-text" x="480" y="443">¿Hay dato</text>
+          <text class="flow-text" x="480" y="464">en Serial?</text>
+          <text class="flow-label" x="622" y="432">Sí</text>
+          <text class="flow-label" x="491" y="527">No</text>
+
+          <path class="flow-line" d="M610 448 H685"/>
+          <rect class="flow-menu" x="685" y="410" width="225" height="76" rx="8"/>
+          <text class="flow-text" x="797" y="441">Leer opción</text>
+          <text class="flow-small" x="797" y="465">Serial.read()</text>
+          <path class="flow-line" d="M797 486 V520"/>
+          <rect class="flow-menu" x="670" y="520" width="255" height="112" rx="8"/>
+          <text class="flow-text" x="797" y="547">switch (opcion)</text>
+          <text class="flow-small" x="797" y="573">1: estado · 2: AUTO · 3: MANUAL</text>
+          <text class="flow-small" x="797" y="596">4: prueba · 5: reinicio · M: menú</text>
+          <text class="flow-small" x="797" y="617">default: informar error</text>
+          <path class="flow-line" d="M670 596 H635 V675 H605"/>
+
+          <path class="flow-line" d="M480 504 V620"/>
+          <polygon class="flow-decision" points="480,620 605,675 480,730 355,675"/>
+          <text class="flow-text" x="480" y="670">¿Botón MODO</text>
+          <text class="flow-text" x="480" y="691">pulsado?</text>
+          <text class="flow-label" x="322" y="658">Sí</text>
+          <text class="flow-label" x="491" y="754">No</text>
+
+          <path class="flow-line" d="M355 675 H210"/>
+          <rect class="flow-action" x="35" y="635" width="175" height="82" rx="8"/>
+          <text class="flow-text" x="122" y="665">Releer entrada</text>
+          <text class="flow-small" x="122" y="690">while: mientras sea 1</text>
+          <path class="flow-line" d="M122 717 V750"/>
+          <rect class="flow-action" x="35" y="750" width="175" height="58" rx="8"/>
+          <text class="flow-text" x="122" y="785">Cambiar modo</text>
+          <path class="flow-line" d="M210 779 H290 V845 H355"/>
+
+          <path class="flow-line" d="M480 730 V790"/>
+          <polygon class="flow-decision" points="480,790 605,845 480,900 355,845"/>
+          <text class="flow-text" x="480" y="840">¿Botón ACCIÓN</text>
+          <text class="flow-text" x="480" y="861">pulsado?</text>
+          <text class="flow-label" x="615" y="829">Sí</text>
+          <text class="flow-label" x="491" y="925">No</text>
+
+          <path class="flow-line" d="M605 845 H690"/>
+          <rect class="flow-action" x="690" y="805" width="220" height="82" rx="8"/>
+          <text class="flow-text" x="800" y="835">Releer entrada</text>
+          <text class="flow-small" x="800" y="860">while: mientras sea 1</text>
+          <path class="flow-line" d="M800 887 V920"/>
+          <rect class="flow-action" x="690" y="920" width="220" height="72" rx="8"/>
+          <text class="flow-text" x="800" y="949">Ejecutar acción</text>
+          <text class="flow-small" x="800" y="974">según el modo actual</text>
+          <path class="flow-line" d="M690 966 H625 V1020 H600"/>
+
+          <path class="flow-line" d="M480 900 V950"/>
+          <polygon class="flow-decision" points="480,950 600,1020 480,1090 360,1020"/>
+          <text class="flow-text" x="480" y="1015">¿Modo</text>
+          <text class="flow-text" x="480" y="1036">AUTOMÁTICO?</text>
+          <text class="flow-label" x="327" y="1004">Sí</text>
+          <text class="flow-label" x="612" y="1004">No</text>
+
+          <path class="flow-line" d="M360 1020 H250 V1095"/>
+          <rect class="flow-node" x="80" y="1095" width="340" height="62" rx="8"/>
+          <text class="flow-text" x="250" y="1122">Evaluar rangos con if</text>
+          <text class="flow-small" x="250" y="1146">seleccionar un LED</text>
+
+          <path class="flow-line" d="M600 1020 H710 V1095"/>
+          <rect class="flow-node" x="540" y="1095" width="340" height="62" rx="8"/>
+          <text class="flow-text" x="710" y="1122">Conservar selección manual</text>
+          <text class="flow-small" x="710" y="1146">actualizar las salidas</text>
+
+          <path class="flow-join" d="M250 1157 V1173 H480"/>
+          <path class="flow-join" d="M710 1157 V1173 H480"/>
+          <path class="flow-return" d="M480 1173 H18 V324 H335"/>
+          <text class="flow-label" x="28" y="740" transform="rotate(-90 28 740)" fill="#d71920">Repetición continua: volver a leer A2</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="sheet" data-page="7">
+      <div class="section-head"><span class="section-number">6</span><h2>Detalle de lectura de un pulsador</h2></div>
+      <p>El flujo representa directamente el código utilizado en clases. Dentro del <code>while</code> se vuelve a leer el botón; cuando cambia a 0, el ciclo termina y recién entonces se ejecuta la acción.</p>
+      <pre><span class="token-key">estado_boton</span> = <span class="token-fn">digitalRead</span>(A0);
+<span class="token-key">if</span> (estado_boton == <span class="token-num">1</span>) {
+  <span class="token-key">while</span> (estado_boton == <span class="token-num">1</span>) {
+    estado_boton = <span class="token-fn">digitalRead</span>(A0);
+  }
+  <span class="token-comment">// acción del botón</span>
+}</pre>
+      <div class="flow-wrap" aria-label="Diagrama de flujo de lectura de botón mediante if y while" style="margin-top:1rem;">
+        <svg viewBox="0 0 960 710" role="img" aria-labelledby="buttonFlowTitle">
+          <title id="buttonFlowTitle">Lectura de botón con if y while</title>
+          <defs>
+            <marker id="bArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#343a42"/></marker>
+          </defs>
+          <ellipse class="flow-start" cx="480" cy="40" rx="120" ry="30"/>
+          <text class="flow-text" x="480" y="46">Lectura del botón</text>
+          <path d="M480 70 V105" class="flow-line" style="marker-end:url(#bArrow)"/>
+
+          <rect class="flow-action" x="290" y="105" width="380" height="62" rx="8"/>
+          <text class="flow-text" x="480" y="142">estado_boton = digitalRead(A0)</text>
+          <path d="M480 167 V205" class="flow-line" style="marker-end:url(#bArrow)"/>
+
+          <polygon class="flow-decision" points="480,205 635,270 480,335 325,270"/>
+          <text class="flow-text" x="480" y="264">¿estado_boton</text>
+          <text class="flow-text" x="480" y="285">== 1?</text>
+          <text class="flow-label" x="492" y="360">Sí</text>
+          <text class="flow-label" x="290" y="253">No</text>
+
+          <path d="M480 335 V375" class="flow-line" style="marker-end:url(#bArrow)"/>
+          <polygon class="flow-decision" points="480,375 635,440 480,505 325,440"/>
+          <text class="flow-text" x="480" y="432">while:</text>
+          <text class="flow-text" x="480" y="453">¿estado_boton == 1?</text>
+          <text class="flow-label" x="647" y="423">Sí</text>
+          <text class="flow-label" x="492" y="530">No</text>
+
+          <path d="M635 440 H690" class="flow-line" style="marker-end:url(#bArrow)"/>
+          <rect class="flow-action" x="690" y="405" width="245" height="70" rx="8"/>
+          <text class="flow-text" x="812" y="432">estado_boton =</text>
+          <text class="flow-text" x="812" y="455">digitalRead(A0)</text>
+          <path d="M812 475 V525 H940 V350 H480 V375" class="flow-line" style="marker-end:url(#bArrow)"/>
+          <text class="flow-small" x="790" y="548">releer y volver a evaluar el while</text>
+
+          <path d="M480 505 V555" class="flow-line" style="marker-end:url(#bArrow)"/>
+          <rect class="flow-node" x="315" y="555" width="330" height="62" rx="8"/>
+          <text class="flow-text" x="480" y="592">Ejecutar acción del botón</text>
+          <path d="M480 617 V650" class="flow-line" style="marker-end:url(#bArrow)"/>
+
+          <path d="M325 270 H145 V665 H345" class="flow-line" style="marker-end:url(#bArrow)"/>
+          <ellipse class="flow-start" cx="480" cy="665" rx="135" ry="30"/>
+          <text class="flow-text" x="480" y="671">Continuar programa</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="sheet" data-page="8">
+      <div class="section-head"><span class="section-number">7</span><h2>Fragmentos de código orientadores</h2></div>
+      <div class="callout"><strong>No constituyen un programa completo.</strong> Faltan declaraciones, llamadas, integración de estados, funciones y decisiones que forman parte de la evaluación.</div>
+      <div class="grid-2">
+        <article class="card">
+          <span class="fragment-label">Fragmento A · Lectura analógica</span>
+          <pre><span class="token-key">int</span> valor = <span class="token-fn">analogRead</span>(A2);
+
+<span class="token-key">int</span> porcentaje = <span class="token-fn">map</span>(valor,
+                     <span class="token-num">0</span>, <span class="token-num">1023</span>, <span class="token-num">0</span>, <span class="token-num">100</span>);
+
+<span class="token-comment">// COMPLETAR: guardar o mostrar los datos</span></pre>
+        </article>
+        <article class="card">
+          <span class="fragment-label">Fragmento B · Rangos con if</span>
+          <pre><span class="token-key">if</span> (valor &lt;= <span class="token-num">339</span>) {
+  <span class="token-comment">// Encender verde y apagar los otros</span>
+}
+<span class="token-key">else if</span> (<span class="todo">/* condición zona media */</span>) {
+  <span class="token-comment">// COMPLETAR</span>
+}
+<span class="token-key">else</span> {
+  <span class="token-comment">// COMPLETAR zona alta</span>
+}</pre>
+        </article>
+        <article class="card">
+          <span class="fragment-label">Fragmento C · Lectura del botón</span>
+          <pre>estado_boton = <span class="token-fn">digitalRead</span>(A0);
+
+<span class="token-key">if</span> (estado_boton == <span class="token-num">1</span>) {
+  <span class="token-key">while</span> (estado_boton == <span class="token-num">1</span>) {
+    estado_boton = <span class="token-fn">digitalRead</span>(A0);
+  }
+
+  <span class="token-comment">// COMPLETAR: acción del botón</span>
+}</pre>
+          <p style="margin-top:.65rem;"><strong>Segundo botón:</strong> aplicar la misma estructura leyendo <code>A1</code>.</p>
+        </article>
+        <article class="card">
+          <span class="fragment-label">Fragmento D · Entrada serial</span>
+          <pre><span class="token-key">if</span> (Serial.<span class="token-fn">available</span>() &gt; <span class="token-num">0</span>) {
+  <span class="token-key">char</span> opcion = Serial.<span class="token-fn">read</span>();
+
+  <span class="token-key">switch</span> (opcion) {
+    <span class="token-key">case</span> <span class="token-num">'1'</span>:
+      <span class="token-comment">// Llamar función de estado</span>
+      <span class="token-key">break</span>;
+
+    <span class="token-comment">// COMPLETAR los demás case y default</span>
+  }
+}</pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="sheet" data-page="9">
+      <div class="section-head"><span class="section-number">8</span><h2>Plan de construcción y evaluación</h2></div>
+      <p>Solicite validación docente al terminar cada hito. No continúe si el montaje anterior presenta fallas.</p>
+      <div class="checkpoint">
+        <span class="checkpoint-num">1</span>
+        <div><h3>Montaje y pruebas básicas</h3><p>Conectar elementos, comprobar entradas y encender cada LED de forma individual.</p></div>
+        <span class="points">15 pt</span>
+      </div>
+      <div class="checkpoint">
+        <span class="checkpoint-num">2</span>
+        <div><h3>Modo automático</h3><p>Leer A2, calcular porcentaje y representar correctamente las tres zonas con <code>if</code>.</p></div>
+        <span class="points">20 pt</span>
+      </div>
+      <div class="checkpoint">
+        <span class="checkpoint-num">3</span>
+        <div><h3>Botones y modo manual</h3><p>Conmutar el modo, avanzar la selección manual y controlar una sola acción por pulsación mediante <code>while</code>.</p></div>
+        <span class="points">20 pt</span>
+      </div>
+      <div class="checkpoint">
+        <span class="checkpoint-num">4</span>
+        <div><h3>Menú serial</h3><p>Implementar las seis opciones, usar <code>switch case</code> y mantener coherencia con los controles físicos.</p></div>
+        <span class="points">20 pt</span>
+      </div>
+      <div class="checkpoint">
+        <span class="checkpoint-num">5</span>
+        <div><h3>Integración, organización y demostración</h3><p>Usar funciones, nombres claros, mensajes útiles, probar casos límite y explicar las decisiones del programa.</p></div>
+        <span class="points">25 pt</span>
+      </div>
+      <div class="callout"><strong>Total: 100 puntos.</strong> Una función que no pueda demostrarse durante la ejecución se considera pendiente, aunque exista código asociado.</div>
+    </section>
+
+    <section class="sheet" data-page="10">
+      <div class="section-head"><span class="section-number">9</span><h2>Video de funcionamiento esperado</h2></div>
+      <div class="video-box" id="videoBox">
+        <div class="video-placeholder">
+          <div class="play" aria-hidden="true">▶</div>
+          <h3>Video de funcionamiento esperado</h3>
+          <p>Si el reproductor no se carga, abra el video directamente en YouTube.</p>
+          <p><a href="https://youtu.be/2bMowyqF0LQ" target="_blank" rel="noopener noreferrer"><strong>Abrir video en YouTube</strong></a></p>
+        </div>
+      </div>
+      <p class="screen-only-note"><a href="https://youtu.be/2bMowyqF0LQ" target="_blank" rel="noopener noreferrer">Abrir el video directamente en YouTube</a></p>
+      <h3 style="margin-top:1.2rem;">Antes de programar, observe y registre</h3>
+      <ol>
+        <li>¿Qué ocurre al pasar de una zona a otra con el potenciómetro?</li>
+        <li>¿Cómo informa el sistema el cambio entre AUTOMÁTICO y MANUAL?</li>
+        <li>¿Qué diferencia existe entre el botón MODO y el botón ACCIÓN?</li>
+      </ol>
+      <div class="answer-lines"><span></span><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="sheet" data-page="11">
+      <div class="section-head"><span class="section-number">10</span><h2>Plan de pruebas</h2></div>
+      <p>Complete la tabla con el resultado real antes de solicitar la evaluación final.</p>
+      <table>
+        <thead><tr><th>Caso</th><th>Acción de prueba</th><th>Resultado esperado</th><th>Resultado real</th><th>OK</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>A2 = 0</td><td>Zona baja; solo LED verde.</td><td></td><td>□</td></tr>
+          <tr><td>2</td><td>A2 = 339</td><td>Permanece en zona baja.</td><td></td><td>□</td></tr>
+          <tr><td>3</td><td>A2 = 340</td><td>Cambia a zona media.</td><td></td><td>□</td></tr>
+          <tr><td>4</td><td>A2 = 700</td><td>Cambia a zona alta.</td><td></td><td>□</td></tr>
+          <tr><td>5</td><td>Mantener MODO pulsado</td><td>Solo un cambio al soltar.</td><td></td><td>□</td></tr>
+          <tr><td>6</td><td>MANUAL + 4 pulsaciones ACCIÓN</td><td>Verde, amarillo, rojo, apagado.</td><td></td><td>□</td></tr>
+          <tr><td>7</td><td>Enviar opciones 1–5 y M</td><td>Todas responden según el menú.</td><td></td><td>□</td></tr>
+          <tr><td>8</td><td>Enviar opción X</td><td>Mensaje de opción inválida.</td><td></td><td>□</td></tr>
+        </tbody>
+      </table>
+      <h3 style="margin-top:1.2rem;">Pregunta de análisis</h3>
+      <p>Explique por qué el <code>while</code> de lectura del pulsador debe terminar cuando el botón cambia a LOW y qué problema ocurriría si esa condición nunca pudiera cumplirse.</p>
+      <div class="answer-lines"><span></span><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="sheet" data-page="12">
+      <div class="section-head"><span class="section-number">11</span><h2>Pauta de evaluación</h2></div>
+      <table class="rubric">
+        <thead><tr><th>Criterio observable</th><th>Indicador de logro</th><th>Puntaje</th></tr></thead>
+        <tbody>
+          <tr><td>Montaje eléctrico</td><td>Conexiones correctas, resistencias adecuadas, entradas estables y salidas verificadas.</td><td>15</td></tr>
+          <tr><td>Lectura analógica y modo automático</td><td>Lee A2, calcula el porcentaje y aplica correctamente los tres rangos, incluidos sus límites.</td><td>20</td></tr>
+          <tr><td>Botones y control de pulsación</td><td>Ambos botones cumplen su función; el <code>while</code> relee la entrada hasta detectar la liberación y evita repetir la acción.</td><td>15</td></tr>
+          <tr><td>Modo manual</td><td>La secuencia de LED avanza en el orden solicitado y mantiene su estado entre ciclos.</td><td>10</td></tr>
+          <tr><td>Menú y comunicación serial</td><td>El menú es legible, informa el estado, ejecuta las seis opciones y controla errores mediante <code>switch case</code>.</td><td>20</td></tr>
+          <tr><td>Organización del programa</td><td>Usa funciones, nombres significativos, indentación coherente y comentarios útiles.</td><td>10</td></tr>
+          <tr><td>Pruebas y explicación</td><td>Demuestra casos normales y límites; explica el flujo y las estructuras utilizadas.</td><td>10</td></tr>
+          <tr class="subtotal"><td colspan="2">Puntaje total</td><td>100</td></tr>
+        </tbody>
+      </table>
+      <div class="grid-2" style="margin-top:1.2rem;">
+        <div>
+          <h3>Puntaje obtenido</h3>
+          <div class="answer-lines"><span></span></div>
+        </div>
+        <div>
+          <h3>Calificación</h3>
+          <div class="answer-lines"><span></span></div>
+        </div>
+      </div>
+      <h3 style="margin-top:1.2rem;">Retroalimentación</h3>
+      <div class="answer-lines"><span></span><span></span><span></span><span></span></div>
+      <div class="signature-grid">
+        <div class="signature">Firma del estudiante</div>
+        <div class="signature">Firma del docente</div>
+      </div>
+    </section>
+
+    <section class="sheet" data-page="13">
+      <div class="section-head"><span class="section-number">12</span><h2>Entrega final</h2></div>
+      <div class="grid-2">
+        <article class="card redline">
+          <h3>Archivos y evidencias</h3>
+          <ul class="checklist">
+            <li>Enlace del circuito Tinkercad con acceso habilitado.</li>
+            <li>Archivo o copia del programa desarrollado.</li>
+            <li>Captura del montaje completo.</li>
+            <li>Captura del monitor serial mostrando el menú y el estado.</li>
+            <li>Tabla de pruebas completada.</li>
+          </ul>
+        </article>
+        <article class="card blueline">
+          <h3>Demostración presencial</h3>
+          <ol>
+            <li>Iniciar el sistema y mostrar el menú.</li>
+            <li>Recorrer las tres zonas automáticas.</li>
+            <li>Cambiar de modo con el botón y por serial.</li>
+            <li>Ejecutar la secuencia manual.</li>
+            <li>Probar una opción inválida.</li>
+            <li>Explicar dónde se utilizan <code>if</code>, <code>switch case</code> y <code>while</code>.</li>
+          </ol>
+        </article>
+      </div>
+      <div class="callout" style="margin-top:1rem;"><strong>Criterio de autoría:</strong> el estudiante debe poder explicar y modificar su solución durante la evaluación. Código que funcione, pero que no pueda ser interpretado por quien lo entrega, no demuestra por sí solo el aprendizaje esperado.</div>
+      <h3 style="margin-top:1.2rem;">Enlace de entrega</h3>
+      <div class="answer-lines"><span></span><span></span></div>
+      <h3 style="margin-top:1.2rem;">Observación final del estudiante</h3>
+      <div class="answer-lines"><span></span><span></span><span></span></div>
+    </section>
+  </main>
+
+  <script>
+    const VIDEO_ID = "2bMowyqF0LQ";
+
+    if (VIDEO_ID.trim()) {
+      const videoBox = document.getElementById("videoBox");
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(VIDEO_ID.trim())}`;
+      iframe.title = "Video de funcionamiento esperado";
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.loading = "lazy";
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.allowFullscreen = true;
+      videoBox.replaceChildren(iframe);
+    }
+  </script>
+</body>
+</html>
 
