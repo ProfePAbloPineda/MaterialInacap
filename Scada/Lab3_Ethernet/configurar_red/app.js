@@ -7,6 +7,6 @@ document.querySelectorAll('[data-save]').forEach(el=>{const key='red-scada-check
  if(h==='youtu.be')id=u.pathname.split('/')[1]||'';
  else if(['youtube.com','m.youtube.com','youtube-nocookie.com'].includes(h)){const parts=u.pathname.split('/').filter(Boolean);id=u.searchParams.get('v')||(['embed','shorts','live'].includes(parts[0])?parts[1]:'');}
  }catch{return}if(!/^[A-Za-z0-9_-]{11}$/.test(id||''))return;
- const frame=document.createElement('iframe');frame.className='video';frame.title='Explicación completa de la red SCADA';frame.src='https://www.youtube-nocookie.com/embed/'+id;frame.loading='lazy';frame.referrerPolicy='strict-origin-when-cross-origin';frame.allow='encrypted-media; picture-in-picture';frame.allowFullscreen=true;host.replaceChildren(frame);
+ const frame=document.createElement('iframe');frame.className='video';frame.title='Configurar Parametros De Red1';frame.src='https://www.youtube-nocookie.com/embed/'+id;frame.loading='lazy';frame.referrerPolicy='strict-origin-when-cross-origin';frame.allow='encrypted-media; picture-in-picture';frame.allowFullscreen=true;host.replaceChildren(frame);
  const line=document.getElementById('generalVideoExternal');const a=document.createElement('a');a.href='https://www.youtube.com/watch?v='+id;a.textContent='Abrir video en YouTube ↗';a.className='textlink';a.target='_blank';a.rel='noopener noreferrer';line.append(a);line.hidden=false;
 })();
