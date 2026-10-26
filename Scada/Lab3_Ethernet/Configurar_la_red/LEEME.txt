@@ -1,7 +1,0 @@
-Descomprime y sube todos los archivos juntos a GitHub Pages. Abre index.html.
-
-VIDEO GENERAL
-Edita config.js y pega el enlace entre las comillas de window.SCADA_VIDEO_GENERAL.
-Mientras esté vacío aparecerá el espacio reservado bajo el mapa de la red.
-Admite youtube.com/watch?v=..., youtu.be/..., shorts y live.
-El video de la experiencia anterior permanece en Recursos.
